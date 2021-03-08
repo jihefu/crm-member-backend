@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>客户评级上传</title>
+</head>
+<body>
+    <h1>客户评级上传</h1>
+    <h4>格式要求：YYYY-XXX（如 2018-客户评级.xlsx）</h4>
+    <input type="file" id="ff" onchange="file();">
+    <button onclick="sub();">提交</button>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var change = 0;
+    function file(){
+        change = 1;
+    }
+    function sub(){
+        if(!change) return;
+        var filenode = document.getElementById("ff");
+        var data = new FormData();
+        data.append("img", filenode.files[0]);
+        $('button').attr('disabled','disabled');
+        $.ajax({
+            url: route('upload/excel/cusLatestRating'),
+            type: 'POST',
+            data: data,
+            dataType:"json",
+            cache: false,
+            contentType: false, //不可缺参数
+            processData: false, //不可缺参数
+            success: function(data) {
+                alert(data.msg);
+            }
+        });
+    }
+</script>
+</html>

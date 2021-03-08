@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>质量统计</title>
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<style type="text/css">
+		html, body {
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+    <div id="chart"></div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+    var token;
+    $(document).ready(function(){
+        var href = window.location.href;
+        token = href.split('?token=')[1];
+        getData();
+    });
+
+    function getData() {
+        $.ajax({
+            url:route('home/repairs/getRepairRateData'),
+            type:'get',
+            dataType:'json',
+            timeout:30000,
+            headers: {
+                token: token
+            },
+            success:function(res){
+                const dataPool = [];
+                // res.data['2018-07'].delivery = 300;
+                // res.data['2018-07'].repair = 30;
+                for (const date in res.data) {
+                    var repairNum = Number(res.data[date].repair);
+                    var deliveryNum = Number(res.data[date].delivery);
+                    var repairRate;
+                    if (deliveryNum == 0) {
+                        repairRate = '1.00';
+                    } else {
+                        repairRate = (repairNum / deliveryNum).toFixed(2);
+                    }
+                    repairRate = Number(repairRate) > 1 ? '1.00' : repairRate;
+                    var normal = Number(deliveryNum) - Number(repairNum);
+                    normal = normal < 0 ? 0 : normal;
+                    const obj = {
+                        date: date,
+                        product: res.data[date].product,
+                        repair: repairNum,
+                        normal: normal,
+                        repairRate: repairRate,
+                    };
+                    dataPool.push(obj);
+                }
+                renderChart(dataPool);
+            }
+        });
+    }
+
+    function renderChart(dataPool) {
+        $("#chart").kendoChart({
+            title: {
+                text: "产品质量"
+            },
+            legend: {
+                position: "bottom"
+            },
+            seriesDefaults: {
+                type: "bar",
+                stack: true
+            },
+            dataSource: {
+                data: dataPool
+            },
+            series: [{
+                type: "column",
+                field: "normal",
+                name: '正常数',
+                categoryField: "date",
+                axis: "num"
+            }, {
+                type: "column",
+                field: "repair",
+                name: '维修数',
+                categoryField: "date",
+                axis: "num"
+            }, {
+                type: "line",
+                field: "repairRate",
+                name: '维修率',
+                categoryField: "date",
+                axis: "repairRate",
+                color: '#a52ed5'
+            }],
+            categoryAxis: {
+                baseUnit: 'months',
+                labels: {
+                    dateFormats: {
+                        months: "MM/yy"
+                    }
+                },
+                majorGridLines: {
+                    visible: false
+                }
+            },
+            valueAxis: {
+                line: {
+                    visible: false
+                }
+            },
+            valueAxes: [{
+                name: "num",
+                // title: { text: '发货量' }
+            }, {
+                name: "repairRate",
+                // title: { text: '维修率' }
+            }],
+            tooltip: {
+                visible: true,
+                template: "#= series.name #: #= value #"
+            },
+            pannable: {
+                lock: "y"
+            },
+            zoomable: {
+                mousewheel: {
+                    lock: "y"
+                },
+                selection: {
+                    lock: "y"
+                }
+            }
+        });
+    }
+</script>
+</html>

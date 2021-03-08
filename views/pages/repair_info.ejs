@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title><%= data.serial_no %></title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/slider.css" rel="stylesheet" />
+	<!-- <link href="../styles/step.css" rel="stylesheet" /> -->
+	<link rel="stylesheet" href="../layui/css/layui.css">
+	<style>
+		.icon-update1 {
+			margin-right: 0.4rem;
+			font-size: 0.7rem;
+			color: #6F6F6F;
+		}
+		.update {
+			min-width: 2rem!important;
+			font-size: 0.9rem;
+			float: right;
+			margin-right: 0.5rem!important;
+			border: 1px solid #999;
+			border-radius: 0.2rem;
+			text-align: center;
+			width: 2.5rem;
+		}
+		.table_v {
+			width: 100%;
+			border: none;
+			background: inherit;
+		}
+		#grid {
+			min-height: 1rem;
+		}
+		#uploaderInput {
+            display: none;
+        }
+		.icon-photo {
+            position: absolute;
+            z-index: 111;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #999;
+        }
+
+		.chat {
+			position: absolute;
+			right: 1rem;
+			top: -0.4rem;
+			font-size: 2.2rem;
+			color: #5FB878;
+		}
+		.layui-timeline {
+			margin-top: 1rem;
+			margin-left: 0.6rem;
+		}
+		.layui-timeline-item {
+			display: none;
+		}
+		.stage {
+			font-size: 1rem;
+			margin-left: 1rem;
+			color: #5FB878;
+		}
+	</style>
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		<% if (isStaff == 1) { %>
+			<input id="uploaderInput" onchange="uploadImg(this);" type="file" accept="image/*">
+			<i class="iconfont icon-photo" onclick="photoEdit();"></i>
+		<% } %>
+		<div class="img" id="aui-slide" style="background:none">
+			<div class="aui-slide-wrap">
+				<div class="aui-slide-node">
+					<img src="../img/no_img.png" height="100%">
+				</div>
+			</div>
+			<div class="aui-slide-page-wrap"></div>
+		</div>
+		<div id="loading" style="text-align:center;">
+			<i class="weui-loading weui-icon_toast"></i>
+		</div>
+	</div>
+	<div style="position: relative;">
+		<ul class="layui-timeline">
+			<li class="layui-timeline-item">
+				<i class="layui-icon layui-timeline-axis"></i>
+				<div class="layui-timeline-content layui-text">
+					<h3 class="layui-timeline-title">已收件<span class="stage stage5"></span></h3>
+					<% if (data.take_person) { %>
+						<div class="takeGoods">签收人：<%= data.take_person %></div>
+					<% } %>
+					<% if (data.take_time) { %>
+						<div>客户收件时间：<%= data.take_time %></div>
+					<% } %>
+				</div>
+			</li>
+			<li class="layui-timeline-item">
+				<i class="layui-icon layui-timeline-axis"></i>
+				<div class="layui-timeline-content layui-text">
+					<h3 class="layui-timeline-title">已发件<span class="stage stage4"></span></h3>
+					<% if (data.express) { %>
+						<div class="express">发件快递单号：<a onclick="queryExpress();" href="javascript:void(0);"><%= data.express %></a></div>
+					<% } %>
+					<% if (data.deliver_time) { %>
+						<div>发件时间：<%= data.deliver_time %></div>
+					<% } %>
+				</div>
+			</li>
+			<li class="layui-timeline-item">
+				<i class="layui-icon layui-timeline-axis"></i>
+				<div class="layui-timeline-content layui-text">
+					<h3 class="layui-timeline-title">待发件<span class="stage stage3"></span></h3>
+				</div>
+			</li>
+			<li class="layui-timeline-item">
+				<i class="layui-icon layui-timeline-axis"></i>
+				<div class="layui-timeline-content layui-text">
+					<h3 class="layui-timeline-title">维修检验中<span class="stage stage2"></span></h3>
+					<% if (data.again_conclusion) { %>
+						<div>维修检验结果：<%= data.again_conclusion %></div>
+					<% } %>
+					<% if (data.again_check_person) { %>
+						<% if (isStaff == 1) { %>
+							<div>维修检验人：<%= data.again_check_person %></div>
+						<% } %>
+					<% } %>
+				</div>
+			</li>
+			<li class="layui-timeline-item">
+				<i class="layui-icon layui-timeline-axis"></i>
+				<div class="layui-timeline-content layui-text">
+					<h3 class="layui-timeline-title">维修中<span class="stage stage1"></span></h3>
+					<% if (data.repair_conclusion) { %>
+						<div>维修操作：<%= data.repair_conclusion %></div>
+					<% } %>
+					<% if (data.repair_person) { %>
+						<% if (isStaff == 1) { %>
+							<div>维修人：<%= data.repair_person %></div>
+						<% } %>
+					<% } %>
+				</div>
+			</li>
+			<li class="layui-timeline-item">
+				<i class="layui-icon layui-timeline-axis"></i>
+				<div class="layui-timeline-content layui-text">
+					<h3 class="layui-timeline-title">送修检验中<span class="stage stage0"></span></h3>
+					<% if (data.problems) { %>
+						<div>客户反映故障：<%= data.problems %></div>
+					<% } %>
+					<% if (data.conclusion) { %>
+						<div>检验发现：<%= data.conclusion %></div>
+					<% } %>
+					<% if (data.treatement) { %>
+						<div>处理方法：<%= data.treatement %></div>
+					<% } %>
+					<% if (data.pri_check_person) { %>
+						<% if (isStaff == 1) { %>
+							<div>送修检验人：<%= data.pri_check_person %></div>
+						<% } %>
+					<% } %>
+				</div>
+			</li>
+			<li class="layui-timeline-item">
+				<i class="layui-icon layui-timeline-axis"></i>
+				<div class="layui-timeline-content layui-text">
+					<h3 class="layui-timeline-title">已登记<span class="stage"><%= data.receive_time %></span></h3>
+					<div>送修单位：<%= data.cust_name %></div>
+				</div>
+			</li>
+		</ul>
+		<i class="chat iconfont icon-bangzhu" onclick="chat();"></i>
+	</div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script src="../js/slider.js" type="text/javascript"></script>
+<script src="../js/repair_info.js" type="text/javascript"></script>
+<script src="../js/ljRotateImg.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var img_height, table_height;
+	var data = JSON.parse('<%- JSON.stringify(result)%>');
+	var info = JSON.parse('<%- JSON.stringify(data)%>');
+	var status = "<%= status %>";
+	var isStaff = "<%= isStaff %>";
+
+	function chat() {
+		window.location.href = route('repair/msg?sn='+info.serial_no + '&repair_no=' + info.repair_contractno);
+	}
+
+	function photoEdit() {
+        $('#uploaderInput').trigger('click');
+	}
+	
+	function uploadImg(fileObj) {
+        var file = document.getElementById('uploaderInput');
+        ljDealerPhoto(fileObj, function(dataUrl){
+			wxLoadToast('正在上传');
+			var formData = new FormData();
+            formData.append('file', dataURLtoBlob(dataUrl), file.files[0]);
+            $.ajax({
+                url: route('repair/uploadImg'),
+                type: 'POST',
+                data: formData,
+                dataType:"json",
+                cache: false,
+                contentType: false, //不可缺参数
+                processData: false, //不可缺参数
+                success: function(res) {
+                    $('#loadingToast').remove();
+                    if(res.code==200){
+                        var repair_contractno;
+                        data.forEach(items => {
+                            if (items.column_name == 'repair_contractno') {
+                                repair_contractno = items.val;
+                            }
+                        });
+                        $.ajax({
+                            url: route('repair/updateAlbum'),
+                            type: 'put',
+                            data: {
+                                repair_contractno: repair_contractno,
+                                album: '/repair/' + res.data[0],
+                            },
+                            dataType:"json",
+                            success: function(res) {
+                                if(res.code==200){
+                                    setTimeout(function(){
+                                        window.location.reload();
+                                    },2000);
+                                }
+                                wxToast(res.msg);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    }
+</script>
+</html>

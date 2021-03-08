@@ -1,0 +1,46 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+a {
+	text-decoration: none;
+}
+#wrap ul{
+	width: 70%;
+	margin: 0 auto;
+}
+#wrap ul li {
+	width: 100%;
+	margin: 0 auto;
+	height: 40px;
+	/*background: #999;*/
+	margin-top: 80px;
+	border-radius: 7px;
+	cursor: pointer;
+}
+#wrap ul li a:nth-child(1) p{
+	float: left;
+}
+#wrap ul li a:nth-child(2) p{
+	float: right;
+}
+#wrap ul li p{
+	width: 47%;
+	height: 100%;
+	text-align: center;
+	background: #999;
+	color: #000;
+	position: relative;
+	top: 16px;
+	color: #000;
+	font-size: 19px;
+	border-radius: 7px;
+	padding-top: 18px;
+}
+#wrap ul li a {
+	color: #000;
+}
+.light-high {
+	background: #ded126!important;
+	transform: scale(1.05,1.05);
+}

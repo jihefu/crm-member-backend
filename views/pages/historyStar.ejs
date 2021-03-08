@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>历史评级</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+</head>
+<body>
+    <div class="weui-cells">
+
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var data = JSON.parse('<%- JSON.stringify(result)%>');
+    if (data.length === 0) {
+        $('body').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+    }
+    for (var i = 0; i < data.length; i++) {
+        var ratingYear = data[i].ratingYear;
+        var star = Number(data[i].star);
+        var starStr = '';
+        var needHalf = false;
+        if (star % 2 === 1) needHalf = true;
+        for (var j = 0; j < parseInt(star / 2); j++) {
+            starStr += '<i style="margin-right: 4px;" class="iconfont icon-all-star"></i>';
+        }
+        if (needHalf) {
+            starStr += '<i style="margin-right: 4px;" class="iconfont icon-half-star"></i>';
+        }
+        var temp = '<div class="weui-cell">'+
+            '<div class="weui-cell__bd">'+
+                '<p>'+ratingYear+'</p>'+
+            '</div>'+
+            '<div class="weui-cell__ft" style="color: rgb(255, 193, 7);">'+starStr+'</div>'+
+        '</div>';
+        $('.weui-cells').append(temp);
+    }
+</script>
+</html>

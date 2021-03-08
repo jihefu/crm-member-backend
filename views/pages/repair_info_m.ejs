@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>基本信息</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/slider.css" rel="stylesheet" />
+	<style>
+		.update {
+			min-width: 2rem!important;
+			font-size: 0.5rem;
+			float: right;
+			margin-right: 0.5rem!important;
+			border: 1px solid #999;
+			border-radius: 0.2rem;
+			text-align: center;
+			width: 2.5rem;
+		}
+		.table_v {
+			width: 100%;
+			border: none;
+			background: inherit;
+		}
+		#grid {
+			min-height: 1rem;
+		}
+	</style>
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		<div class="img" id="aui-slide" style="background:none">
+			<div class="aui-slide-wrap">
+				<div class="aui-slide-node">
+					<img src="../img/no_img.png" height="100%">
+				</div>
+			</div>
+			<div class="aui-slide-page-wrap"></div>
+		</div>
+		<div id="loading" style="text-align:center;">
+			<i class="weui-loading weui-icon_toast"></i>
+		</div>
+		<form action="" method="post">
+			<div id="grid" data-role="grid"></div>
+		</form>
+		<div class="btn-groups">
+			<button onclick="comfirm()" class="k-primary" style="display:none">确认收件</button>
+			<button class="queryExpress" onclick="queryExpress()" style="display:none;">快递查询</button>
+		</div>
+	</div>
+</div>
+<!-- 提示框 -->
+<div class="weui-mask" style="display:none" onclick="cancel();"></div>
+<div class="weui-dialog" style="display:none" onclick="cancel();">
+    <div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>
+    <div class="weui-dialog__bd">确认收件？</div>
+    <div class="weui-dialog__ft">
+        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="take();">是</a>
+        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">否</a>
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<!-- <script src="../js/jquery.lazyload.min.js" type="text/javascript"></script> -->
+<script src="../js/slider.js" type="text/javascript"></script>
+<script src="../js/repair_info_m.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var img_height, table_height;
+	// $('#loading').remove();
+	// var height = window.innerHeight;
+	// var width = window.innerWidth;
+	// var img_height = width/2.68;
+	// $('.img,.img img').height(img_height);
+	// var table_height = height-img_height-80;
+    var data = JSON.parse('<%- JSON.stringify(result)%>');
+	var status = "<%= status %>";
+	var showExpressBtn = "<%-showExpressBtn%>";
+	
+	function queryExpress() {
+		var no;
+		data.forEach(function(items,index){
+			if(items.column_name=='repair_contractno') no = items.val;
+		});
+		window.location.href = route('repair/queryExpress/'+no);
+	}
+</script>
+</html>

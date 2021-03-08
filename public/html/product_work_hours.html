@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>走势分析</title>
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<style type="text/css">
+		html,body {
+			height: 100%;
+		}
+		#wrap,#content,#credit {
+            text-align: left;
+            margin-top: 30px;
+            margin-left: 40px;
+        }
+        #content {
+            margin-top: 10px;
+        }
+        .box {
+            margin-top: 10px;
+        }
+        #credit {
+            margin-top: 100px;
+            margin-bottom: 100px;
+        }
+	</style>
+</head>
+<body>
+    <div id="content">
+        <p style="font-size: 12px;position: absolute;top: 30px;z-index: 111;left: 47px;">
+            <span>
+                <span>前年递延：</span>
+                <span class="two"></span>
+            </span>
+            <span style="margin-left: 20px;">
+                <span>去年递延：</span>
+                <span class="one"></span>
+            </span>
+            <span style="margin-left: 20px;">
+                <span>今年递延：</span>
+                <span class="zero"></span>
+            </span>
+        </p>
+        <div class="demo-section k-content wide">
+            <div id="chart"></div>
+        </div>
+        <div class="demo-section k-content wide">
+            <div id="chart2"></div>
+        </div>
+    </div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+    var token;
+    $(document).ready(function(){
+        var href = window.location.href;
+        token = href.split('?token=')[1];
+        getData();
+        getDerredData();
+    });
+
+    function getData() {
+        var endTime = dateTime();
+        var yyyy = new Date().getFullYear();
+        var startTime = yyyy - 2 + '-01-01';
+        $.ajax({
+            url:route('home/productsLibrary/getWorkHoursChartData'),
+            type:'get',
+            dataType:'json',
+            timeout:30000,
+            headers: {
+                token: token
+            },
+            data:{
+                startTime: startTime,
+                endTime: endTime
+            },
+            success:function(res){
+                renderChart(res.data);
+                renderChart2(res.data);
+            }
+        });
+    }
+
+    function getDerredData() {
+        $.ajax({
+            url:route('home/productsLibrary/getDerredData'),
+            type:'get',
+            dataType:'json',
+            timeout:30000,
+            headers: {
+                token: token
+            },
+            success:function(res){
+                $('.zero').html(res.data[0]);
+                $('.one').html(res.data[1]);
+                $('.two').html(res.data[2]);
+            }
+        });
+    }
+
+    function renderChart(data) {
+        var yyyy = new Date().getFullYear();
+        var _data1 = [];
+        var total_data1 = [];
+        var _data2 = [];
+        var total_data2 = [];
+        var _data3 = [];
+        var total_data3 = [];
+        var _data4 = [];
+        var total_data4 = [];
+
+        data.forEach(items => {
+            if (new Date(items.sign_time).getFullYear() == yyyy - 2 && items.hasDelivery == 1) {
+                _data1.push(items);
+            } else if (new Date(items.sign_time).getFullYear() == yyyy - 1 && items.hasDelivery == 1) {
+                _data2.push(items);
+            } else if (new Date(items.sign_time).getFullYear() == yyyy) {
+                _data3.push(items);
+                if (items.hasDelivery == 1) {
+                    _data4.push(items);
+                }
+            }
+        });
+        _data1 = sortArr(_data1);
+        _data2 = sortArr(_data2);
+        _data3 = sortArr(_data3);
+        _data4 = sortArr(_data4);
+
+        total_data1 = sortTotalarr(_data1);
+        total_data2 = sortTotalarr(_data2);
+        total_data3 = sortTotalarr(_data3);
+        total_data4 = sortTotalarr(_data4);
+
+        function sortArr(arr){
+            var _arr = [];
+            for(var i = 0; i < 12; i++ ){
+                _arr[i] = [];
+            }
+            arr.forEach(function(items,index){
+                var _i = new Date(items.sign_time).getMonth();
+                _arr[_i].push(items);
+            });
+            _arr.forEach(function(items,index){
+                var sum = 0;
+                items.forEach(function(it,ind){
+                    sum += Number(it.work_hours);
+                });
+                _arr[index] = sum.toFixed(2);
+            });
+            return _arr;
+        }
+        function sortTotalarr(arr){
+            var _arr = [];
+            for(var i = 11; i >= 0;i-- ){
+                var sum = 0;
+                arr.forEach(function(items,index){
+                    if(index<=i){
+                        sum += Number(items);
+                    }
+                });
+                _arr[i] = sum.toFixed(2);
+            }
+            return _arr;
+        }
+        $("#chart").kendoChart({
+            renderAs: "canvas",
+            title: {
+                text: "工时同比"
+            },
+            legend: {
+                position: "bottom"
+            },
+            series: [{
+                type: "column",
+                name: yyyy-2+"年",
+                field: "value",
+                data: _data1,
+                color: 'rgb(255,112,14)'
+            },{
+                type: "line",
+                name: yyyy-2+"年",
+                field: "value",
+                data: total_data1,
+                color: 'rgb(255,112,14)'
+            },{
+                type: "column",
+                name: yyyy-1+"年",
+                field: "value",
+                data: _data2,
+                color: '#0f0'
+            },{
+                type: "line",
+                name: yyyy-1+"年",
+                field: "value",
+                data: total_data2,
+                color: '#0f0'
+            },{
+                type: "column",
+                name: yyyy+"年",
+                field: "value",
+                data: _data3,
+                color: '#00f'
+            },{
+                type: "line",
+                name: yyyy+"年",
+                field: "value",
+                data: total_data3,
+                color: '#00f'
+            }
+            ,{
+                type: "column",
+                name: yyyy+"年已发货",
+                field: "hasDelivery",
+                data: _data4,
+                color: '#a52ed5'
+            },{
+                type: "line",
+                name: yyyy+"年已发货",
+                field: "hasDelivery",
+                data: total_data4,
+                color: '#a52ed5'
+            }],
+            categoryAxis: {
+                categories: ["1月", "2月", "3月", "4月", "5月", "6月","7月", "8月", "9月", "10月", "11月", "12月"],
+                majorGridLines: {
+                    visible: false
+                }
+            },
+            tooltip: {
+                visible: true,
+                template: "#= series.name #: #= value #"
+            },
+            pannable: {
+                lock: "y"
+            },
+            zoomable: {
+                mousewheel: {
+                    lock: "y"
+                },
+                selection: {
+                    lock: "y"
+                }
+            }
+        });
+    }
+
+    function renderChart2(data) {
+        const dataPool = [];
+        data.forEach(items => {
+            const o = {
+                value: Number(items.work_hours),
+                date: new Date(items.sign_time),
+            };
+            if (items.hasDelivery) {
+                o.hasDelivery = Number(items.work_hours);
+                o.notDelivery = 0;
+            } else {
+                o.hasDelivery = 0;
+                o.notDelivery = Number(items.work_hours);
+            }
+            dataPool.push(o);
+        });
+        $("#chart2").kendoChart({
+            title: {
+                text: "工时走势"
+            },
+            renderAs: "canvas",
+            legend: {
+                position: "bottom"
+            },
+            seriesDefaults: {
+                type: "bar",
+                stack: true
+            },
+            dataSource: {
+                data: dataPool
+            },
+            series: [{
+                type: "column",
+                field: "hasDelivery",
+                name: '已发货',
+                aggregate: 'sum',
+                categoryField: "date",
+                color: '#a52ed5'
+            },{
+                type: "column",
+                field: "notDelivery",
+                name: '未发货',
+                aggregate: 'sum',
+                categoryField: "date",
+                color: '#00f'
+            }],
+            categoryAxis: {
+                baseUnit: 'months',
+                labels: {
+                    dateFormats: {
+                        months: "MM/yy"
+                    }
+                },
+                majorGridLines: {
+                    visible: false
+                }
+            },
+            valueAxis: {
+                line: {
+                    visible: false
+                }
+            },
+            tooltip: {
+                visible: true,
+                template: "#= series.name #: #= value.toFixed(2) #"
+            },
+            pannable: {
+                lock: "y"
+            },
+            zoomable: {
+                mousewheel: {
+                    lock: "y"
+                },
+                selection: {
+                    lock: "y"
+                }
+            }
+        });
+    }
+</script>
+</html>

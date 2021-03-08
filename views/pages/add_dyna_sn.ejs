@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title><%= pageTitle %></title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		<a href="<%=pageHref%>">
+			<div class="img">
+				<img src="<%=imgSrc%>" height="100%" alt="">
+			</div>
+		</a>
+		<div id="grid" data-role="grid" data-bind="source: products"></div>
+		<div class="btn-groups">
+			<button class="k-primary" onclick="sub()" style="display:none">提交</button>
+		</div>
+	</div>
+	<div id="loading" style="text-align:center;">
+		<i class="weui-loading weui-icon_toast"></i>
+	</div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script type="text/javascript">
+	var data = JSON.parse('<%- JSON.stringify(result)%>');
+	setTimeout(function(){
+		$('#loading').remove();
+		var height = window.innerHeight;
+		var width = window.innerWidth;
+		var img_height = width/2.68;
+		img_height = img_height > 320 ? 320 : img_height;
+		var btnHeight = height > 900 ? 160 : 80;
+		$('.img,.img img').height(img_height);
+		var table_height = height-img_height-btnHeight;
+
+		mid = data.data.machineNo;
+		sn = data.data.serialNo;
+		// 传导航的href和name
+		var con_arr = [];
+		var con_obj = {};
+		con_obj.path = route('service/products');
+		con_obj.name = '产品服务中心';
+		con_arr.push(con_obj);
+		nav(con_arr);
+
+		var arr = [];
+		for (var key in data.label) {
+			var o = {
+				key: key,
+				name: data.label[key].name,
+				readonly: 'readonly',
+				type: 'input',
+				arr: '',
+				val: data.label[key].val
+			};
+			if (key == 'model') {
+				o.type = 'select';
+				o.arr = 'D921,D910,D900,D700';
+			} else if (key == 'storage') {
+				o.type = 'select';
+				o.arr = ',杭州办,济南办';
+			}
+			if (['batch', 'chnlNum', 'remark', 'caliCoeff', 'machineNo', 'modelCode', 'fwVer', 'authType', 'oemUser', 'max_count', 'user_count', 'GP0', 'GP1', 'GP2', 'GP3', 'GP4', 'GP5'].indexOf(key) != -1) {
+				o.readonly = '';
+			}
+			arr.push(o);
+		}
+
+		var temp = "<input type='#:type#' #:readonly# data-arr='#:arr#' data-key='#:key#' style='border:none;background:inherit' value=#:val# >";
+		$("#grid").kendoGrid({
+			height: table_height,
+			columns:[
+				{
+				field: "name",
+				title: "产品项目"
+				},
+				{
+				field: "val",
+				title: "产品参数",
+				template: temp
+				}
+			],
+			dataSource: {
+				data: arr
+			}
+		});
+		$('button').show().kendoButton();
+		var val_str = '';
+		$('#grid tr input').each(function(){
+			var type = $(this).attr('type');
+			if(type=='select'){
+				var str = '';
+				var str_arr = $(this).attr('data-arr');
+				var arr = str_arr.split(',');
+				var v = $(this).val();
+				var d = $(this).attr('data-key');
+				for (var i = 0; i < arr.length; i++) {
+					if (arr[i] == v) {
+						str += '<option selected>'+arr[i]+'</option>';
+					} else {
+						str += '<option>'+arr[i]+'</option>';
+					}
+				};
+				var _str = '<select style="background:inherit;width:150px;border:none;" data-key="'+d+'">'+str+'</select>';
+				$(this).parent().html(_str);
+			}
+		});
+	}, 300);
+
+function sub() {
+	var form_data = {
+		model: $('select[data-key=model]').val(),
+		storage: $('select[data-key=storage]').val(),
+		batch: $('input[data-key=batch]').val(),
+		remark: $('input[data-key=remark]').val(),
+		chnlNum: $('input[data-key=chnlNum]').val(),
+		caliCoeff: $('input[data-key=caliCoeff]').val(),
+		modelCode: $('input[data-key=modelCode]').val(),
+		fwVer: $('input[data-key=fwVer]').val(),
+		authType: $('input[data-key=authType]').val(),
+		oemUser: $('input[data-key=oemUser]').val(),
+		max_count: $('input[data-key=max_count]').val(),
+		user_count: $('input[data-key=user_count]').val(),
+		vibAmp: $('input[data-key=vibAmp]').val(),
+		GP0: $('input[data-key=GP0]').val(),
+		GP1: $('input[data-key=GP1]').val(),
+		GP2: $('input[data-key=GP2]').val(),
+		GP3: $('input[data-key=GP3]').val(),
+		GP4: $('input[data-key=GP4]').val(),
+		GP5: $('input[data-key=GP5]').val(),
+	};
+	wxLoadToast('正在提交');
+	$.ajax({
+		url:route('service/product/staffUpdateInfo'),
+		type:'put',
+		dataType:'json',
+		timeout:30000,
+		data:{
+			"form_data":JSON.stringify(form_data),
+			"sn":sn
+		},
+		success:function(res){
+			$('#loadingToast').remove();
+			if(res&&res.code==200){
+				wxToast('更新成功');
+				setTimeout(function(){
+					window.location.reload();
+				},2000);
+			}
+		}
+	});
+}
+</script>
+</html>

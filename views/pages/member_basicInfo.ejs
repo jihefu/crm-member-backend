@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>基本信息</title>
+    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <link rel="stylesheet" href="../styles/upload_portrait/page-common.css">
+    <link rel="stylesheet" href="../styles/upload_portrait/upload.css">
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo.css">
+</head>
+<body>
+<div id="wrap" data-name="<%= result.name %>" data-phone="<%= result.phone %>">
+    <div class="page__bd">
+        <div class="weui-cells" style="margin-top:10px">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>本人头像</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <div class="cd_portrait">
+                        <% if(result.portrait==''||result.portrait=='null'||result.portrait==null){ %>
+                            <img src="../img/default_member2.jpg" class="click3" alt="default">
+                        <% }else{ %>
+                            <img src="../img/member/<%= result.portrait %>" class="click3" alt="<%= result.portrait %>">
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>姓名</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.name %></span>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>电话</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.phone %></span>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>性别</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.gender %></span>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>出生日期</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.birth %></span>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>毕业院校</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.college %></span>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>专业</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.major %></span>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>常用社交帐号</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.qq %></span>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>通讯地址</p>
+                </div>
+                <div class="weui-cell__ft">
+                     <span class="text"><%= result.addr %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-groups">
+        <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="edit();">编辑</a>
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function edit(){
+        window.location.href = route('member/basicInfo_edit');
+    }
+</script>
+</html>

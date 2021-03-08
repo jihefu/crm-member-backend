@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>快递信息</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/vir8_info.css" rel="stylesheet" />
+    <style>
+        .weui-form-preview__bd {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-form-preview">
+        <div class="weui-form-preview__hd">
+            <div class="weui-form-preview__item">
+                <label class="weui-form-preview__label">单号</label>
+                <em class="weui-form-preview__value"><%= number %></em>
+            </div>
+            <div class="weui-form-preview__item">
+                <label class="weui-form-preview__label">类型</label>
+                <em class="weui-form-preview__value"><%= type %></em>
+            </div>
+        </div>
+        <div class="weui-form-preview__bd">
+            <% for(var i = 0;i < list.length;i++ ) { %>
+                <div class="weui-form-preview__item" style="margin-top: 10px;">
+                    <label class="weui-form-preview__label"><%= list[i].time %></label>
+                    <span class="weui-form-preview__value"><%= list[i].status %></span>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+</html>

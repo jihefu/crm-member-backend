@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>编辑短信</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/m_admin.css" rel="stylesheet" />
+	<style>
+		body{
+            background-color: #efeeee;
+        }
+	</style>
+</head>
+<body>
+
+    <div class="weui-cells weui-cells_form cd_margin">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入短信内容" oninput="input(this)" rows="6"  id="text2"></textarea>
+                <div class="weui-textarea-counter"><span id="num">0</span>/100</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips" onclick="send();">发送</a>
+    </div>
+
+    <div class="js_dialog" id="dialog" style="opacity:1;display:none">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>
+            <div class="weui-dialog__bd">确定发送信息？</div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">取消</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="sub();">确定</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script type="text/javascript">
+    function input(obj){
+        var max = 100;
+        var len = $(obj).val().length;
+        if(len>max){
+            $(obj).val($(obj).val().slice(0,max));
+            $('#num').text(max);
+        }else{
+            $('#num').text(len);
+        }
+    }
+
+    function send(){
+        var text = $('#text2').val();
+        if(text=='') return;
+        $('#dialog').show();
+    }
+
+    function cancel(){
+        $('#dialog').hide();
+    }
+
+    function sub(){
+        var text = $('#text2').val();
+        var phone = GetRequest('phone');
+        if(text=='') return;
+        cancel();
+        wxLoadToast('正在发送');
+        $.ajax({
+            url:route('member/sendSMSContent'),
+            type:'post',
+            dataType:'json',
+            timeout:30000,
+            data:{
+                'text': text,
+                'phone': phone
+            },
+            success:function(res){
+                $('#loadingToast').remove();
+                wxToast(res.msg);
+            }
+        });
+    }
+</script>
+</html>

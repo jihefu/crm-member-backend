@@ -1,0 +1,58 @@
+body{
+    background-color: #efeeee;
+    position: relative;
+    overflow: hidden;
+}
+.modal{
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    background-color: #efeeee;
+    z-index: 100;
+}
+.cd_box{
+    overflow: auto;
+    height: 31.5rem;
+}
+.cd_margin{
+    margin-top: 0;
+}
+
+#cd_xian:before{
+     content: "";
+    display: none;
+ }
+#cd_xian:after{
+    content: "";
+    display: none;
+}
+.cd_hide{
+    display: none;
+}
+.cd_in{
+    display: block;
+
+}
+.cd_left{
+    transform: translateX(-68px)
+}
+.cd_right{
+    transform: translateX(0)
+}
+.cd_select_box{
+    overflow: auto;
+    height: 19rem;
+}
+.weui-cells:after{
+    display: none;
+}
+
+.cd_modal_confim{
+    width: 30%;
+    float: left;
+    margin-left: 10%;
+}
+.cd_modal_all{
+    width: 30%;
+}

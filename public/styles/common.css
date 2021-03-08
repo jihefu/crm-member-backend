@@ -1,0 +1,94 @@
+@charset 'utf-8';
+* {
+	margin: 0;
+	padding: 0;
+}
+ul li {
+	list-style:none;
+}
+a {
+	text-decoration: none;
+}
+html {
+	/*font-size: 100px;*/
+	font-family: '微软雅黑';
+}
+header {
+	width: 100%;
+	height: 0.5rem;
+	background: #303f9f;
+	color: #fff;
+	font-size: 0.2rem;
+	position: fixed;
+	top: 0;
+	z-index: 9999;
+}
+#main {
+	/*margin-top: 0.5rem;*/
+}
+.header-back {
+	color: #fff;
+	position: relative;
+    top: -2.5rem;
+    left: 0.9375rem;
+    font-size: 1.125rem;
+}
+.header-title {
+	text-align: center;
+	line-height: 3.125rem;
+	font-weight: 400;
+	letter-spacing: 0.0625rem;
+}
+.bar-line {
+	width: 100%;
+	height: 0.25rem;
+}
+.bar-line p{
+	width: 25%;
+	height: 0.25rem;
+	float: left;
+}
+.bar-line p:nth-child(1) {
+	background: #f36c60;
+}
+.bar-line p:nth-child(2) {
+	background: #4fc3f7;
+}
+.bar-line p:nth-child(3) {
+	background: #42bd41;
+}
+.bar-line p:nth-child(4) {
+	background: #bd6fca;
+}
+footer {
+	width: 100%;
+	height: 3.125rem;
+	margin-top: 3.125rem;
+	background: #e8e8e7;
+	color: #1A247E;
+	text-align: center;
+	border-top: 0.0625rem solid #999;
+}
+footer p {
+	font-size: 1.125rem;
+	line-height: 3.125rem;
+	font-weight: 400;
+}
+
+.lj-text {
+	color: rgba(131, 130, 129, 1);
+    font-size: 1rem;
+    font-weight: normal;
+    margin-top: 0.6875rem;
+    text-indent: 2rem;
+    line-height: 1.375rem;
+    letter-spacing: 0.0625rem;
+    text-align: justify;
+}
+
+.lj-second-title {
+	color: rgba(1, 9, 41, 1);
+}
+.mobile-inner-nav {
+	font-size: 1rem;
+}

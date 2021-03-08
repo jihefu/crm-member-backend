@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>安全设置</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+</head>
+<body>
+    <div class="weui-cells" style="margin-top:20">
+        <% if (isIntroced == 0) { %>
+            <a class="weui-cell weui-cell_access" href="javascript:;" onclick="showIntroDialog();">
+                <div class="weui-cell__hd">
+                    <i class="iconfont icon-icon31" style="color:#4fc3f7"></i>
+                </div>
+                <div class="weui-cell__bd">
+                    <p>添加介绍人</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+        <% } %>
+        <a class="weui-cell weui-cell_access" href="javascript:;" onclick="logout();">
+            <div class="weui-cell__hd">
+                <i class="iconfont icon-log-out" style="color:#4fc3f7"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p>安全退出</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </a>
+    </div>
+
+    <div class="js_dialog" id="iosDialog1" style="opacity: 1;display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>
+            <div class="weui-dialog__bd">确定退出？</div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">否</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="sub();">是</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="js_dialog" id="iosDialog2" style="opacity: 1;display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">请输入介绍人手机号</strong></div>
+            <div class="weui-dialog__bd">
+                <input type="text" name="phone">
+            </div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">否</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="addIntro();">是</a>
+            </div>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var isloading = false;
+    function logout(){
+        $('#iosDialog1').show();
+    }
+
+    function showIntroDialog() {
+        $('#iosDialog2').show();
+    }
+
+    function cancel(){
+        $('#iosDialog1, #iosDialog2').hide();
+    }
+    function sub(){
+        cancel();
+        $.ajax({
+            url:route('deleteSuperAuth'),
+            type:'put',
+            dataType:'json',
+            timeout:30000,
+            success:function(res){
+                wxToast(res.msg);
+            }
+        });
+    }
+
+    function addIntro() {
+        if (isloading) {
+            return;
+        }
+        var phone = $('input[name=phone]').val();
+        if (phone.length !== 11) {
+            wxToast('请输入正确的手机号');
+            return;
+        }
+        isloading = true;
+        wxLoadToast('正在提交');
+        $.ajax({
+            url:route('member/addIntroducePerson'),
+            type:'post',
+            dataType:'json',
+            timeout:30000,
+            data: {
+                phone: phone
+            },
+            success:function(res){
+                isloading = false;
+                $('#loadingToast').remove();
+                wxToast(res.msg);
+                if (res.code == 200) {
+                    setTimeout(() => {
+                        window.location.href = route('member/index');
+                    }, 1000);
+                }
+            }
+        });
+    }
+</script>
+</html>

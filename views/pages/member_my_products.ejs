@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>我的产品</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <% if (list.length === 0) { %>
+        <div class="weui-loadmore weui-loadmore_line">
+            <span class="weui-loadmore__tips">暂无数据</span>
+        </div>
+    <% } else { %>
+        <div class="weui-cells__title">控制器序列号</div>
+        <div class="weui-cells">
+            <% for(var i = 0; i < list.length; i++ ) { %>
+                <a class="weui-cell weui-cell_access" href="<%- list[i].link %>">
+                    <div class="weui-cell__bd">
+                        <p><%= list[i].serialNo %></p>
+                    </div>
+                    <div class="weui-cell__ft">
+                    </div>
+                </a>
+            <% } %>
+        </div>
+    <% } %>
+</body>
+</html>

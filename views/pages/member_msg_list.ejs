@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>消息</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_message.css">
+    <style>
+        .msg {
+            margin-top: 0.625rem;
+            text-indent: 1.625rem;
+        }
+        .icon-star {
+            color: #BBB;
+            position: relative;
+            left: 0.5rem;
+            top: -0.05rem;
+            font-size: 1.2rem;
+        }
+        .mark {
+            color: #FFD94A;
+        }
+    </style>
+</head>
+<body style="background-color: #efeeee;" data-scroll="0">
+    
+</body>
+
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var render_data = JSON.parse('<%- JSON.stringify(msg)%>');
+</script>
+<script src="../js/member_msg_list.js"></script>
+</html>

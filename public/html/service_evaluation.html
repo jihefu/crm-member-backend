@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>服务评价</title>
+    <link href="../styles/weui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="../bootstrap/bootstrap-star-rating/css/star-rating.min.css">
+    <link rel="stylesheet" href="../bootstrap/bootstrap-star-rating/themes/krajee-svg/theme.min.css">
+    <script src="../bootstrap/jquery-2.0.0.min.js" type="text/javascript"></script>
+    <script src="../bootstrap/js/bootstrap.js"></script>
+    <script src="../bootstrap/bootstrap-star-rating/js/star-rating.min.js"></script>
+    <script src="../bootstrap/bootstrap-star-rating/js/locales/zh.js"></script>
+    <script src="../bootstrap/bootstrap-star-rating/themes/krajee-svg/theme.min.js"></script>
+</head>
+<body>
+	<div class="container">
+        <div class="form">
+            <!-- <form> -->
+                <fieldset disabled>
+                    <div class="form-group">
+                        <label class=" control-label">服务工程师姓名</label>
+                        <input class="form-control" id="service_person" size="16" type="text" value="">
+                    </div>
+                    <div class="form-group">
+                        <label class=" control-label">到达时间</label>
+                        <input class="form-control" id="start_time" size="16" type="text" value="">
+                    </div>
+                    <div class="form-group">
+                        <label class=" control-label">离开时间</label>
+                        <input class="form-control" id="end_time" size="16" type="text" value="">
+                    </div>
+                    <div class="form-group">
+                        <label class=" control-label">服务内容及成果</label>
+                        <textarea class="form-control" id="content" rows="4" maxlength="100"></textarea>
+                        <!-- <input class="form-control" id="content" size="16" type="text" value=""> -->
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    <label class=" col-form-label">服务质量</label>
+                    <div class=" input-group date">
+                        <input id="quality_score" type="text">            
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class=" col-form-label">服务态度</label>
+                    <div class=" input-group date">
+                        <input id="attitude_score" type="text">            
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class=" col-form-label">客户意见</label>
+                    <textarea class="form-control" id="opinion"  rows="4" maxlength="100"></textarea>
+                </div>
+                <!-- <small id="emailHelp" class="form-text text-muted">1星不满意、2星有待提高、3星还好、4星满意、5星非常满意 </small> -->
+                <div style="display: flex;justify-content: space-around;margin-top: 60px;">
+                    <button class="btn btn-primary" onclick="handleSubmit();">提交</button>
+                </div>
+            <!-- </form> -->
+        </div>
+    </div>
+</body>
+<script src="../js/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var service_person, start_time, end_time, signature, id;
+    $(function(){
+        service_person = decodeURIComponent(GetRequest('service_person'));
+        start_time = GetRequest('start_time');
+        end_time = GetRequest('end_time');
+        signature = GetRequest('signature');
+        id = GetRequest('id');
+        $('#service_person').val(service_person);
+        $('#start_time').val(start_time);
+        $('#end_time').val(end_time);
+        checkHasEvalution();
+    });
+
+    function handleSubmit() {
+        var quality_score = $('#quality_score').val();
+        var attitude_score = $('#attitude_score').val();
+        var opinion = $('#opinion').val();
+        if (!quality_score || !attitude_score) {
+            wxToast('请打分');
+            return;
+        }
+        $.ajax({
+            url: route('hybrid/service_evalution'),
+            type: 'post',
+            data: {
+                service_quality: quality_score,
+                service_attitude: attitude_score,
+                service_opinion: opinion,
+                id: id,
+                signature: signature,
+            },
+            success: function(res){
+                wxToast(res.msg);
+            }
+        });
+    }
+
+    function checkHasEvalution() {
+        $.ajax({
+            url: route('hybrid/check_service_evalution'),
+            type: 'get',
+            data: {
+                id: id,
+            },
+            success: function(res){
+                if (res.code == -1) {
+                    wxToast(res.msg);
+                    $('#opinion').val(res.data.service_opinion).attr('disabled', 'disabled');
+                    $('#quality_score').val(res.data.service_quality).attr('disabled', 'disabled');
+                    $('#attitude_score').val(res.data.service_attitude).attr('disabled', 'disabled');
+                    $('.btn-primary').attr('disabled', 'disabled');
+                }
+                $('#content').val(res.data.content);
+                init();
+            }
+        });
+    }
+
+    function init() {
+        var $quality_inp = $("#quality_score");
+        $quality_inp.rating({
+            starCaptions: function (val) {
+                if (val == 1) {
+                    return '不满意';
+                } else if (val == 2) {
+                    return '有待提高';
+                } else if (val == 3) {
+                    return '还好';
+                } else if (val == 4) {
+                    return '满意';
+                }
+                return '非常满意';
+            },
+            min: 0,
+            max: 5,
+            step: 1,
+            size: 'sm',
+            showClear: false
+        })
+
+        var $attitude_inp = $("#attitude_score");
+        $attitude_inp.rating({
+            starCaptions: function (val) {
+                if (val == 1) {
+                    return '不满意';
+                } else if (val == 2) {
+                    return '有待提高';
+                } else if (val == 3) {
+                    return '还好';
+                } else if (val == 4) {
+                    return '满意';
+                }
+                return '非常满意';
+            },
+            min: 0,
+            max: 5,
+            step: 1,
+            size: 'sm',
+            showClear: false
+        })
+    }
+</script>
+</html>

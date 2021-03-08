@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>杭州朗杰测控技术开发有限公司</title>
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link href="../styles/admin.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<style type="text/css">
+		html,body {
+			height: 100%;
+		}
+		header {
+		    background: #5f6f8d;
+		    font-size: 20px;
+		}
+		header p {
+		    padding-top: 11px;
+		}
+		#wrap {
+			display: flex;
+		}
+		#left {
+			width: 300px;
+			border-right: 1px solid #eee;
+		}
+		#right {
+			flex: none;
+			padding: 5px;
+		}
+		#credit {
+			height: 80px;
+		}
+		.list-group-item:hover {
+			cursor: pointer;
+		}
+		.filter {
+			width: 100%;
+			height: 100px;
+			margin-top: 10px;
+			margin-left: 0px;
+		}	
+		.search {
+            background: #fff;
+        }
+        #search {
+        	width: 200px!important;
+        	height: 100%;
+        }
+        .form-control {
+        	padding: 8px 12px;
+        }
+        .badge {
+        	color: #000;
+        	background: #fff;
+        	font-size: 15px;
+        	font-weight: normal;
+        }
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="left">
+			<div class="filter">
+				<div class="col-lg-6">
+				    <div class="input-group">
+				      <div class="input-group-btn">
+				        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				        	<span class="year">今年</span>
+				        	<span class="caret"></span>
+				        </button>
+				        <ul class="dropdown-menu">
+				          	<li><a href="#">今年</a></li>
+				          	<li><a href="#">近两年</a></li>
+				          	<li><a href="#">近三年</a></li>
+				        </ul>
+				      </div>
+				      <input type="text" id="search" class="form-control" placeholder="请输入公司">
+				    </div>
+				  </div>
+			</div>
+		</div>
+		<div id="right">
+			<div id="credit">
+				<ul class="list-group">
+					<a class="list-group-item">
+						<span class="credit_line badge"></span>
+						<span>总信用额</span>
+					</a>
+					<a class="list-group-item">
+						<span class="credit_period badge"></span>
+						<span>信用期</span>
+					</a>
+					<a class="list-group-item">
+						<span class="over_price badge"></span>
+						<span>信用余额</span>
+					</a>
+					<a class="list-group-item">
+						<span class="over_all badge" style="color: #f00;"></span>
+						<span>总欠款</span>
+					</a>
+					<a class="list-group-item">
+						<span class="over_time badge"></span>
+						<span>信用余期</span>
+					</a>
+					<a class="list-group-item" onclick="getList(this)" data-type="inside_count">
+						<span class="inside_count badge"></span>
+						<span>信用期内付款合同</span>
+					</a>
+					<a class="list-group-item" onclick="getList(this)" data-type="outside_count">
+						<span class="outside_count badge"></span>
+						<span>逾期合同</span>
+					</a>
+					<a class="list-group-item" onclick="getList(this)" data-type="freeze_count">
+						<span class="freeze_count badge"></span>
+						<span>冻结合同</span>
+					</a>
+				</ul>
+				<ul class="list-group">
+					<a class="list-group-item" onclick="getList(this)" data-type="contract_num">
+						<span class="contract_num badge"></span>
+						<span>生效合同数</span>
+					</a>
+					<a class="list-group-item"">
+						<span class="sum badge"></span>
+						<span>总金额</span>
+					</a>
+					<a class="list-group-item">
+						<span class="favo badge"></span>
+						<span>优惠金额</span>
+					</a>
+					<a class="list-group-item">
+						<span class="payment_num badge"></span>
+						<span>支付货款</span>
+					</a>
+				</ul>
+			</div>
+			<div id="num"></div>
+			<div id="price"></div>
+		</div>
+	</div>
+	<div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">欠款合同</h4>
+				</div>
+			  	<div class="modal-body" style="display:flex;flex-wrap:wrap;"></div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var company = window.top.$('body').attr('data-company');
+	$('#search').val(company);
+	if(!company) window.top.$('header p').html('济南天辰试验机制造有限公司');
+	var width = window.innerWidth;
+	$('#right').width(width-320);
+	$('.dropdown-menu li').click(function(){
+		$('.year').text($(this).text());
+		var company = $('#search').val();
+    	var year = $('.year').text();
+    	if(year=='今年'){
+    		year = 0;
+    	}else if(year=='近两年'){
+    		year = 1;
+    	}else{
+    		year = 2;
+    	}
+    	$('.badge').text('');
+    	getContractReportData(company);
+		getCreditData(company,year);
+	});
+	getContractReportData(company);
+	getCreditData(company);
+	init();
+	function getContractReportData(company){
+		$.ajax({
+            url: route('admin/getContractReportData'),
+            type: 'get',
+            dataType:"json",
+            data: {
+            	company: company
+            },
+            success: function(res) {
+            	$('.credit_line').html('￥'+res.data.credit_line);
+            	$('.credit_period').html(res.data.credit_period+'天');
+            	$('.freeze_count').html(res.data.freeze_count);
+            	$('.inside_count').html(res.data.inside_count);
+            	$('.outside_count').html(res.data.outside_count);
+            	$('.over_price').html('￥'+res.data.over_price);
+            	$('.over_time').html(res.data.over_time+'天');
+            	$('header p').html(res.data.company);
+            	$('.over_all').html('￥'+(res.data.credit_line-res.data.over_price));
+            }
+        });
+	}
+	function getCreditData(company,year){
+		$.ajax({
+            url: route('admin/getCreditData'),
+            type: 'get',
+            dataType:"json",
+            data: {
+            	company: company,
+            	time: year
+            },
+            success: function(res) {
+                $('.contract_num').html(res.data.contract_num);
+            	$('.favo').html('￥'+res.data.favo);
+            	$('.payment_num').html(res.data.payment_num+'笔');
+            	$('.sum').html('￥'+res.data.sum);
+            }
+        });
+	}
+	function init(){
+		$('#search').kendoAutoComplete({
+            dataSource: {
+                serverFiltering: true,
+                transport: {
+                    read: {
+                        url: route('common/fogSearchCustomerName')
+                    }
+                },
+            },
+            clearButton: false,
+            close: function(e){
+            	var company = $('#search').val();
+            	var year = $('.year').text();
+            	if(year=='今年'){
+            		year = 0;
+            	}else if(year=='近两年'){
+            		year = 1;
+            	}else{
+            		year = 2;
+            	}
+            	$('.badge').text('');
+            	getContractReportData(company);
+				getCreditData(company,year);
+            }
+        });
+	}
+	function getList(obj){
+		var company = $('#search').val();
+		var type = $(obj).attr('data-type');
+		var year = $('.year').text();
+    	if(year=='今年'){
+    		year = 0;
+    	}else if(year=='近两年'){
+    		year = 1;
+    	}else{
+    		year = 2;
+    	}
+		$.ajax({
+            url: route('admin/getReportList'),
+            type: 'get',
+            dataType:"json",
+            data: {
+            	company: company,
+            	time: year,
+            	type: type
+            },
+            success: function(res) {
+                dialog(res.data);
+                $('.modal-title').text($(obj).find('span').eq(1).html());
+            }
+        });
+	}
+	function dialog(data){
+		var _str = '';
+		for (var i = 0; i < data.length; i++) {
+			if(data[i].contract_no){
+				_str += '<p style="flex:0 0 33.33%">'+data[i].contract_no+'</p>';
+			}else{
+				_str += '<p style="flex:0 0 33.33%">'+data[i].data.contract_no+'</p>';
+			}
+		}
+		$('.modal-body').html(_str);
+		$('#myModal').modal();
+	}
+</script>
+</html>

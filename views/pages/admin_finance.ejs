@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>杭州朗杰测控技术开发有限公司</title>
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link href="../styles/admin.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<style type="text/css">
+		html {
+			height: 100%;
+		}
+		header {
+		    background: #5f6f8d;
+		    font-size: 20px;
+		}
+		header p {
+		    padding-top: 11px;
+		}
+		a {
+			color: #fff;
+		}
+		#wrap ul {
+			width: 55%;
+			margin: auto;
+			margin-top: 60px;
+			padding-left: 0px!important;
+		}
+		#wrap ul li {
+			width: 48%;
+			height: 70px;
+			display: inline-block;
+			text-align: center;
+			border-radius: 4px;
+			padding-top: 24px;
+			font-size: 16px;
+			color: #fff;
+		}
+		.odd {
+			background: #999;
+		}
+		.even {
+			background: #999;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<p>杭州朗杰测控技术开发有限公司</p>
+	</header>
+	<div id="wrap">
+		<ul>
+			<li class="odd">
+				<a href="<%= router %>/admin/payments">
+					<p>信息录入</p>
+				</a>
+			</li>
+			<li class="even">
+				<a href="<%= router %>/admin/creditReport">
+					<p>欠款情况</p>
+				</a>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>

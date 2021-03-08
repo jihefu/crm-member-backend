@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>知识库</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/n_index.css" rel="stylesheet" />
+	<style>
+		.content li .weui-cell__hd img {
+			margin-left: 1rem;
+		}
+		.content li p {
+			padding: 2px;
+   			padding-left: 18px;
+		}
+		.weui-cell {
+			padding: 15px 15px;
+		}
+		.goods {
+			margin-right: 20px;
+		}	
+		.weui-cell__bd {
+			position: relative;
+		}
+		.icon-deliver {
+		    font-size: 4rem;
+			color: #EAB4B4;
+			position: absolute;
+			right: 11px;
+			top: -19px;
+			transform: rotate(58deg);
+		}
+		.content li .weui-cell__hd img {
+    		width: 6.5rem;
+    	}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div class="search">
+			<div class="form">
+				<input type="text" placeholder="现象，标签">
+				<span class="iconfont icon-form-del" onclick="cl()" style="display: none;"></span>
+				<div class="search2" onclick="search()">
+					<span>搜索</span>
+				</div>
+			</div>
+		</div>
+		<div id="main">
+			<div class="content">
+				<ul>
+					<% for(let i = 0; i < result.length; i++){ %>
+					<li class="weui-cell weui-cell_access" style="padding-left:0px;" onclick="check(this)" data-id="<%= result[i].id %>">
+						<div class="weui-cell__hd">
+							<div class="default_member">
+								<% if(arr[i]==''){ %>
+									<img class="assign_member" src="../img/controller_system.png">
+								<% }else{ %>
+									<img class="assign_member" src="../img<%= arr[i] %>">
+								<% } %>
+							</div>
+						</div>
+		                <div class="weui-cell__bd">
+		                    <p class="content-cpy">问题现象：<%= result[i].question %></p>
+							<p class="content-cpy">问题标签：<%= result[i].question_tags %></p>
+							<p class="content-cpy">产品标签：<%= result[i].products_tags %></p>
+		                </div>
+		                <div class="weui-cell__ft"></div>
+		            </li>
+		            <% } %>
+					<li class="weui-cell weui-cell_access li-mark"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/m_knowledge.js" type="text/javascript"></script>
+<script>
+	var input_width = $('.form input[type=text]').width()+5;
+	$('.search-list').width(input_width);
+</script>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>会员列表</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/m_admin.css" rel="stylesheet" />
+	<style>
+		.search2 {
+			width: 34%;
+		}
+		.search input[type=text] {
+		    width: 60%;
+		}
+		.search2 span {
+			position: relative;
+			top: 0px;
+		    display: inline-block;
+		    width: 46%;
+		    height: 42px;
+		    padding-top: 8px;
+		}
+		.icon-weibiaoti1 {
+			top: 7px;
+			border-left: 1px solid #fff;
+		}
+	</style>
+</head>
+<body data-scroll='0' data-type='default'>
+	<div id="wrap">
+		<div class="search">
+			<div class="form">
+				<input type="text" placeholder="姓名，手机，公司">
+				<div class="search-list">
+					<ul>
+						<li>
+							<p>暂无搜索历史</p>
+						</li>
+					</ul>
+				</div>
+				<span class="iconfont icon-form-del" onclick="cl()" style="display: none;"></span>
+				<div class="search2">
+					<span style="left: 3px;" onclick="search();">搜索</span>
+					<span class="iconfont icon-weibiaoti1" onclick="memberSelect();"></span>
+				</div>
+			</div>
+			<div class="select">
+				<select id="select" onchange="sort()">
+					<option value="all">请选择排序方式</option>
+					<option value="checked">未审核</option>
+				</select>
+			</div>
+		</div>
+		<div id="main">
+			<div class="content">
+				<ul>
+					<% for(var i=0;i<result.length;i++){ %>
+					<li class="weui-cell weui-cell_access" style="padding-left:0px;" data-name="<%= result[i].name %>" data-phone="<%= result[i].phone %>" onclick="check(this);">
+						<div class="weui-cell__hd">
+							<% if(result[i].portrait==''||result[i].portrait=='null'||result[i].portrait==null){ %>
+								<div class="default_member">
+									<img src="../img/default_member2.jpg" alt="<%= result[i].name %>">
+								</div>
+							<% }else{ %>
+								<img class="assign_member" src="../img/member/<%= result[i].portrait %>" alt="<%= result[i].name %>">
+							<% } %>
+						</div>
+		                <div class="weui-cell__bd" class="content-menu">
+		                    <p>姓名：<%= result[i].name %></p>
+							<p>手机：<%= result[i].phone %></p>
+							<p class="content-cpy">公司：<%= result[i].company %></p>
+		                </div>
+		                <div class="weui-cell__ft">
+		                </div>
+		            </li>
+		            <% } %>
+					<li class="weui-cell weui-cell_access li-mark"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/memberList.js" type="text/javascript"></script>
+<script>
+	var input_width = $('.form input[type=text]').width()+5;
+	$('.search-list').width(input_width);
+	function memberSelect(){
+		window.location.href = mRoute('admin/member_select');
+	}
+</script>
+</html>

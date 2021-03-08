@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>基本信息</title>
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo.css">
+    <style type="text/css">
+        .cd_portrait {
+            float: none;
+            overflow: hidden;
+        }
+        .date {
+            text-align: right;
+            text-shadow: none;
+            color: #999;
+            font-weight: inherit;
+            margin: 0px;
+            line-height: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <div class="page__bd">
+        <div class="weui-cells" style="margin-top:10px">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>头像</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <div class="cd_portrait">
+                        <% if(result.album.value==''||result.album.value=='null'||result.album.value==null){ %>
+                            <img src="../img/default_member2.jpg" class="click3" alt="default">
+                        <% }else{ %>
+                            <img src="../img/<%= result.album.value %>" class="click3" alt="<%= result.album.value %>">
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <% for(var i in result){ %>
+                <% if(result[i].visible){ %>
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <p><%= result[i].comment %></p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <p><%= result[i].value %></p>
+                        </div>
+                    </div>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+    <div class="btn-groups">
+        <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="edit();">编辑</a>
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function edit(){
+        window.location.href = route('m/staff/basicInfoEdit');
+    }
+</script>
+</html>

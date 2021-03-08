@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>工资表上传</title>
+</head>
+<body>
+    <h1>工资表上传</h1>
+    <input type="file" id="ff" onchange="file();">
+    <button onclick="sub();">提交</button>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script type="text/javascript">
+    var change = 0;
+    function file(){
+        change = 1;
+    }
+    function sub(){
+        if(!change) return;
+        var filenode = document.getElementById("ff");
+        var data = new FormData();
+        data.append("img", filenode.files[0]);
+        $.ajax({
+            url: route('upload/excel/salary'),
+            type: 'POST',
+            data: data,
+            dataType:"json",
+            cache: false,
+            contentType: false, //不可缺参数
+            processData: false, //不可缺参数
+            success: function(data) {
+                alert(data.msg);
+            }
+        });
+    }
+</script>
+</html>

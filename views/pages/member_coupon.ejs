@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>抵价券</title>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/responsive.css">
+    <!-- <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo_edit.css"> -->
+</head>
+<body>
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <div class="weui-navbar__item weui-bar__item_on" onclick="getCoup(this);">可用</div>
+            <div class="weui-navbar__item" onclick="getCoup(this);">全部</div>
+        </div>
+        <div class="weui-tab__panel">
+            <div class="weui-form-preview">
+                <div class="weui-form-preview__hd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">抵价券总金额</label>
+                        <em class="weui-form-preview__value total_amount"><i class="weui-loading"></i></em>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">抵价券总数量</label>
+                        <em class="weui-form-preview__value total_num"><i class="weui-loading"></i></em>
+                    </div>
+                </div>
+            </div>
+            <div id="wrap">
+                <div class="weui-cells__title">抵价券编号</div>
+                <div class="weui-cells">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>  
+<script>
+    $('.weui-tab__panel').css({
+        overflow: 'auto',
+        height: window.innerHeight
+    });
+    var walletCoups = JSON.parse('<%- JSON.stringify(WalletCoups)%>');
+    var total_amount = 0, total_num = 0;
+    render();
+    
+    function render() {
+        total_amount = 0;
+        total_num = 0;
+        let str = '';
+        $('.total_amount').html('￥'+total_amount);
+        $('.total_num').html(total_num);
+        $('#wrap').html('');
+        for (var i = 0; i < walletCoups.length; i++) {
+            if ($('.weui-bar__item_on').text() == '可用') {
+                if (walletCoups[i].isPower == 1) {
+                    total_amount += Number(walletCoups[i].amount);
+                    total_num++;
+                    str += '<a class="weui-cell weui-cell_access" href="javascript:;" data-i="'+i+'" onClick="couponInfo(this);">'+
+                        '<div class="weui-cell__bd">'+
+                            '<p>'+walletCoups[i].coupon_no+'</p>'+
+                            '</div>'+
+                        '<div class="weui-cell__ft">'+
+                        '</div>'+
+                    '</a>';
+                }
+            } else {
+                total_amount += Number(walletCoups[i].amount);
+                total_num++;
+                str += '<a class="weui-cell weui-cell_access" href="javascript:;" data-i="'+i+'" onClick="couponInfo(this);">'+
+                            '<div class="weui-cell__bd">'+
+                                '<p>'+walletCoups[i].coupon_no+'</p>'+
+                                '</div>'+
+                            '<div class="weui-cell__ft">'+
+                            '</div>'+
+                        '</a>';
+            }
+        }
+        $('.total_amount').html('￥'+total_amount);
+        $('.total_num').html(total_num);
+        $('#wrap').html(str);
+    }
+    function couponInfo(obj) {
+        var i = $(obj).attr('data-i');
+        window.location.href = route('html/couponInfo.html?data=' + encodeURIComponent(JSON.stringify(walletCoups[i])));
+    }
+    function getCoup(obj) {
+        $('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $(obj).addClass('weui-bar__item_on');
+        render();
+    }
+</script>
+</html>

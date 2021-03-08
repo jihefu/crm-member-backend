@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>产品申诉</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <link href="../styles/main.css" rel="stylesheet" />
+    <link href="../styles/weui.min.css" rel="stylesheet" />
+    <link href="../styles/icon/iconfont.css" rel="stylesheet" />
+    <link href="../styles/common2.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="weui-cells__title">申诉内容</div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入..." rows="3"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" onclick="sub();">提交</a>
+    </div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/base.js" type="text/javascript"></script>
+<script>
+    var sn = '<%= sn %>';
+
+    function sub() {
+        var content = $('textarea').val();
+        if (!content) {
+            wxToast('内容不能为空');
+            return;
+        }
+        wxLoadToast('正在提交');
+        $.ajax({
+            url: route('retail/vir/appeal/' + sn),
+            type: "post",
+            dataType: "JSON",
+            data: {
+                content: content,
+            },
+            success: function (res) {
+                $('#loadingToast').remove();
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.href = route('retail/vir/' + sn);
+                }, 1000);
+            },
+        });
+    }
+</script>
+
+</html>

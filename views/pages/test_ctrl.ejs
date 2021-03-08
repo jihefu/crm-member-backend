@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>试验机</title>
+	<%- include("../includes/styles.ejs") %>
+	<!-- <link rel="stylesheet" href="../styles/line_chart.css"> -->
+	<link rel="stylesheet" href="../styles/test_machine.css">
+</head>
+<body>
+<div id="wrap">
+	
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<!-- <script type="text/javascript" src="../js/kendo/kendo.all.min.js"></script> -->
+<script src="https://cdn.bootcss.com/socket.io/2.0.1/socket.io.js"></script>
+<script>
+	var socket = io('ws://www.langjie.com:8090'); 
+	socket.on('connect', function () {
+		socket.emit('Login', {
+			class: 'rtc',			
+			tcInfo: {id:1234},	
+			security: {},			
+			pipe: {}				
+		});
+	});
+	//传输数据流
+	// setInterval(function(){
+	// 	socket.emit('TestPipe', {
+	// 		'tick': [],
+	// 		'load': [],
+	// 		'disp': [],
+	// 		'digital': []
+	// 	});
+	// },1000);
+
+
+	// setTimeout(function(){
+	// 	socket.emit('TestCmd', {
+	// 		"jsonrpc":"2.0", 
+	// 		"method": "subtract", 
+	// 		"params":{
+	// 			"subtrahend": 23, 
+	// 			"minuend": 42
+	// 		}, 
+	// 		"id": 3
+	// 	}, function (data) {
+	// 		console.log(data); 
+	// 	});
+	// },1000);
+
+</script>
+</html>

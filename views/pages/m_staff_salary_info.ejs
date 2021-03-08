@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>工资单</title>
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+	<link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <style type="text/css">
+        body {
+            background: #fff;
+        }
+        #head_contain {
+            width: 100%;
+            overflow: auto;
+        }
+        #head {
+            width: 195%;
+            height: 5rem;
+            display: flex;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #D4D4D4;
+        }
+        .month-btn {
+            width: 6rem;
+            flex: 1;
+            margin-top: 1rem!important;
+            margin-left: 0.6rem;
+            padding-top: 0.4rem;
+        }
+        .weui-btn_plain-default {
+            color: #999;
+            border: 1px solid #999;
+        }
+        .icon-triangledown {
+            display: inline-block;
+        }
+        .child_key {
+            margin-left: 1rem;
+        }
+        .child_val {
+            margin-right: 1rem;
+        }
+        .weui-form-preview__label {
+            color: #000;
+        }
+        .weui-form-preview__value {
+            color: #000;
+        }
+        .child_key,.child_val {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div id="head_contain">
+        <div id="head"></div>
+    </div>
+    <div id="main">
+        <div class="weui-form-preview">
+            <div class="weui-form-preview__hd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">实发工资</label>
+                    <span class="weui-form-preview__value">
+                        ￥<span class="actual_pay"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="weui-form-preview__bd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">工号</label>
+                    <span class="weui-form-preview__value">
+                        <span class="user_id"></span>
+                        <span class="iconfont"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">姓名</label>
+                    <span class="weui-form-preview__value">
+                        <span class="user_name"></span>
+                        <span class="iconfont"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">月发基本工资</label>
+                    <span class="weui-form-preview__value">
+                        <span class="basic_salary"></span>
+                        <span class="iconfont"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">绩效工资</label>
+                    <span class="weui-form-preview__value">
+                        <span class="performance_salary"></span>
+                        <span class="iconfont"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">应发工资</label>
+                    <span class="weui-form-preview__value">
+                        <span class="should_pay"></span>
+                        <span class="iconfont"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">补贴</label>
+                    <span class="weui-form-preview__value">
+                        <span class="subsidy"></span>
+                        <span class="iconfont icon-triangledown"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">扣款</label>
+                    <span class="weui-form-preview__value">
+                        <span class="chargeback"></span>
+                        <span class="iconfont icon-triangledown"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">奖金</label>
+                    <span class="weui-form-preview__value">
+                        <span class="bonus"></span>
+                        <span class="iconfont icon-triangledown"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">代扣款项</label>
+                    <span class="weui-form-preview__value">
+                        <span class="withholding"></span>
+                        <span class="iconfont icon-triangledown"></span>
+                    </span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">企业缴纳</label>
+                    <span class="weui-form-preview__value">
+                        <span class="enterprise"></span>
+                        <span class="iconfont icon-triangledown"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+ </body>
+<%- include("../includes/scripts.ejs") %>
+<script type="text/javascript" src="../js/m_staff_salary_info.js"></script>
+<script>
+    var data_arr = JSON.parse('<%- JSON.stringify(result[0])%>');
+    var comment_arr = JSON.parse('<%- JSON.stringify(result[1][0])%>');
+    var month_arr = JSON.parse('<%- JSON.stringify(result[2])%>');
+</script>
+</html>

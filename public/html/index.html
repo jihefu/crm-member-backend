@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>产品服务中心</title>
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link href="../styles/weui.min.css" rel="stylesheet" />
+	<link href="../styles/common2.css" rel="stylesheet" />
+	<link href="../styles/index.css" rel="stylesheet" />
+</head>
+<body>
+	<!-- <header>
+		<div class="navbar">
+			<p class="header-title">首页</p>
+		</div>
+	</header> -->
+	<div id="wrap">
+		<div class="search">
+			<div class="form">
+				<input type="text" placeholder="序列号，机器号">
+				<span class="iconfont icon-form-del" onclick="cl()" style="display: none;"></span>
+				<div class="search2" onclick="search()">
+					<span>搜索</span>
+				</div>
+			</div>
+		</div>
+		<div id="main">
+			<div class="content">
+				<ul>
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	var height = window.innerHeight;
+	document.getElementsByClassName('content')[0].style.height = height-150+'px';
+</script>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/index.js" type="text/javascript"></script>
+<script>
+	// console.log(getCookie("type"));
+</script>
+</html>

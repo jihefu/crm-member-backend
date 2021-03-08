@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>客户管理系统</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/m_admin.css" rel="stylesheet" />
+	<style>
+		.search2 {
+			width: 34%;
+		}
+		.search input[type=text] {
+		    width: 60%;
+		}
+		.search2 span {
+			position: relative;
+			top: 0px;
+		    display: inline-block;
+		    width: 46%;
+		    height: 42px;
+		    padding-top: 8px;
+		}
+		.icon-add {
+			top: 7px;
+			border-left: 1px solid #fff;
+		}
+	</style>
+</head>
+<body data-scroll='0' data-type='default'>
+	<div id="wrap">
+		<div class="search">
+			<div class="form">
+				<input type="text" placeholder="公司，简称，法人，注册人">
+				<div class="search-list">
+					<ul>
+						<li>
+							<p>暂无搜索历史</p>
+						</li>
+					</ul>
+				</div>
+				<span class="iconfont icon-form-del" onclick="cl()" style="display: none;"></span>
+				<div class="search2">
+					<span style="left: 3px;" onclick="search()">搜索</span>
+					<span class="iconfont icon-add" onclick="add()"></span>
+				</div>
+			</div>
+			<div class="select">
+				<select id="select" onchange="sort()">
+					<option value="all">请选择排序方式</option>
+					<option value="level">等级</option>
+					<option value="total_sale">累计销售额</option>
+					<option value="last_sale">上年销售额</option>
+					<option value="update_time">最近更新</option>
+				</select>
+			</div>
+		</div>
+		<div id="main">
+			<div class="content">
+				<ul>
+					<% for(var i=0;i<result.length;i++){ %>
+					<li class="weui-cell weui-cell_access" style="padding-left:0px;" data-abb="<%= result[i].abb %>" onclick="check(this);">
+						<div class="weui-cell__hd">
+							<% if(result[i].album==''||result[i].album==null){ %>
+								<div class="default_member">
+									<img src="../img/default_member2.jpg">
+								</div>
+							<% }else{ %>
+								<img class="assign_member" src="../img/<%= album_arr[i] %>">
+							<% } %>
+						</div>
+		                <div class="weui-cell__bd" class="content-menu">
+		                    <p>等级：<%= result[i].level %></p>
+							<p>客户号：<%= result[i].user_id %></p>
+							<p class="content-cpy">公司名：<%= result[i].company %></p>
+		                </div>
+		                <div class="weui-cell__ft">
+		                </div>
+		            </li>
+		            <% } %>
+					<li class="weui-cell weui-cell_access li-mark"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/m_customers.js" type="text/javascript"></script>
+<script>
+	var input_width = $('.form input[type=text]').width()+5;
+	$('.search-list').width(input_width);
+</script>
+</html>

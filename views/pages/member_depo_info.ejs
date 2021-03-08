@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>服务保证金详情</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+</head>
+
+<body>
+    <div class="weui-form-preview__bd">
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">编号</label>
+            <span class="weui-form-preview__value"><%= result.contract_no %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">类型</label>
+            <span class="weui-form-preview__value">通用</span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">面值</label>
+            <span class="weui-form-preview__value"><%= result.original_amount %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">可用值</label>
+            <span class="weui-form-preview__value"><%= result.amount %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">失效日期</label>
+            <span class="weui-form-preview__value"><%= result.endTime %></span>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+
+</html>

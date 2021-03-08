@@ -1,0 +1,118 @@
+@media screen and (max-width: 500px){
+    #main .content li .content-cpy {
+        width: 12.5rem;
+    }
+}
+
+@media screen and (min-width: 501px) and (max-width: 700px){
+    #main .content li .content-cpy {
+        width: 12.5rem;
+    }
+}
+
+@media screen and (min-width: 701px) and (max-width: 900px){
+    #main .content li .content-cpy {
+        width: 20rem;
+    }
+}
+
+@media screen and (min-width: 901px) and (max-width: 1400px){
+    #main .content li .content-cpy {
+        width: 20rem;
+    }
+}
+.weui-cell_access .weui-cell__ft {
+    padding-right: 6px;
+}
+
+
+.search {
+    height: 6.25rem;
+}
+.form {
+    height: 3.75rem;
+}
+.search input[type=text] {
+    width: 69%;
+    height: 2.5rem;
+    margin-top: 1.875rem;
+    margin-left: 0.5rem;
+    padding-left: 0.3125rem;
+    font-size: 1.1875rem;
+}
+::-webkit-input-placeholder { 
+    font-size:1rem;
+} 
+.icon-form-del {
+    top: 2.44rem;
+}
+.search2 {
+    height: 2.625rem;
+    margin-top: 1.875rem;
+}
+.search2 span {
+    top: 0.5rem;
+}
+/*#main .content li .weui-cell__hd {
+    padding: 0.5rem 1rem;
+}*/
+/*#main .content li img {
+    width: 4rem;
+    margin-top: 0rem;
+    display: block;
+}*/
+#main .content li .content-cpy {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.weui-cell_access .weui-cell__ft:after {
+    height: 0.375rem;
+    width: 0.375rem;
+}
+.icon-triangledown,.icon-form-del {
+    font-size: 1rem;
+}
+.search2 {
+    width: 34%;
+}
+.search input[type=text] {
+    width: 60%;
+}
+.search2 span {
+    position: relative;
+    top: 0px;
+    display: inline-block;
+    width: 46%;
+    height: 2.625rem;
+    padding-top: 0.5rem;
+}
+.icon-add,.icon-scan {
+    top: 0.4375rem;
+    border-left: 1px solid #fff;
+}
+.del {
+    background: #f00;
+    position: absolute;
+    right: 0px;
+    top: 0;
+    color: #fff;
+}
+.del p {
+    text-align: center;
+    margin-top: 2.375rem;
+    letter-spacing: 2px;
+    font-size: 1.125rem;
+}
+.icon-add {
+    font-size: 1rem;
+}
+.icon-scan {
+    font-size: 1rem;
+}
+.content li .weui-cell__hd img {
+    width: 7.625rem;
+    height: 5.5rem;
+    margin-right: 0.3125rem;
+    display:block;
+}

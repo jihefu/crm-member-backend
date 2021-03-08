@@ -1,0 +1,1 @@
+supervisor -w app.js startTimer.js

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>编辑消息</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/m_admin.css" rel="stylesheet" />
+	<style>
+		body{
+            background-color: #efeeee;
+        }
+        .cd_bk{
+            background-color: #ffffff;
+        }
+        .cd-top{
+            margin-top: 1.17647059em;
+        }
+        .cd_margin{
+            margin-top: 0;
+        }
+        .cd_hide{
+            display: none;
+        }
+        .cd_in{
+            display: block;
+        }
+        .weui-dialog {
+        	top: 40%;
+        }
+        .url {
+            display: none;
+        }
+	</style>
+</head>
+<body data-sender="<%= sender %>">
+	<div class="weui-cells">
+        <div class="weui-cell weui-cell_select">
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="template" id="cd_select" onchange="temp(this);">
+                    <option selected="" value="singleMsg">单消息模板</option>
+                    <option value="linkMsg">带链接模板</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!--template1-->
+<div id="template1" class="cd_in">
+    <div class="weui-cells title">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="title" type="text" placeholder="请输入标题">
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-cells url">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="url" type="text" placeholder="请输入跳转链接">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="weui-cells weui-cells_form message">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" name="message" placeholder="请输入正文" oninput="input()" rows="3"  id="text1"></textarea>
+                <div class="weui-textarea-counter"><span id="num1">0</span>/100</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!--template2-->
+<div id="template2" class="cd_hide">
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" placeholder="请输入标题">
+            </div>
+        </div>
+    </div>
+
+    <p class="cd_bk cd-top">尊敬的XXX先生/女士:</p>
+    <p class="cd_bk">&nbsp;&nbsp;您好！</p>
+    <div class="weui-cells weui-cells_form cd_margin">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入正文" oninput="input(event)" rows="3"  id="text2"></textarea>
+                <div class="weui-textarea-counter"><span id="num2">0</span>/100</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips" onclick="send();">发送</a>
+</div>
+
+<div class="js_dialog" id="dialog" style="opacity:1;display:none">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>
+        <div class="weui-dialog__bd">确定发送信息？</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">取消</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="sub();">确定</a>
+        </div>
+    </div>
+</div>
+
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/member_send.js"></script>
+</html>

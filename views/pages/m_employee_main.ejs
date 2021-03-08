@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>员工管理系统</title>
+	<link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <link rel="stylesheet" href="../styles/upload_portrait/page-common.css">
+    <link rel="stylesheet" href="../styles/upload_portrait/upload.css">
+	<%- include("../includes/styles.ejs") %>
+	<!-- <link href="../styles/mobiscroll.2.13.2.css" rel="stylesheet" /> -->
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/slider.css" rel="stylesheet" />
+	<style>
+		body {
+			background: none;	
+		}
+		button {
+			width: auto;
+			text-shadow: none;
+			font-weight: inherit;
+		}
+		.app .bar {
+		    background: #000;
+		}
+		.app .photo-canvas, .app .preview-box {
+		    top: 43%;
+		}
+		.app .upload-mask {
+		    top: -40px;
+		}
+		.app {
+			z-index: 111;
+		}
+		#file {
+			opacity: 0;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+		}
+		#grid input[type=button] {
+			text-align: left;
+		}
+	</style>
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		<div class="img" id="aui-slide" style="background:none">
+			<div class="aui-slide-wrap">
+				<% if(result.album==''){ %>
+					<div class="aui-slide-node">
+						<img src="../img/default_member2.jpg" height="100%" alt="<%= result.name %>">
+					</div>
+				<% }else{ %>
+					<% for(var i=0;i<album_arr.length;i++){ %>
+						<div class="aui-slide-node">
+							<img src="../img/<%= album_arr[i] %>" height="100%" alt="<%= result.name %>">
+						</div>
+					<% } %>
+				<% } %>
+			</div>
+			<div class="aui-slide-page-wrap"><!--分页容器--></div>
+		</div>
+		<div id="grid" data-role="grid" data-bind="source: products" data-id="<%= result.user_id %>"></div>
+		<div class="btn-groups" style="display:none;">
+			<button>
+				<input type="file" id="file" accept="image/*">上传图片
+			</button>
+			<button onclick="sub()" class="k-primary" style="display:none">提交</button>
+		</div>
+	</div>
+	<div id="loading" style="text-align:center;">
+		<i class="weui-loading weui-icon_toast"></i>
+	</div>
+</div>
+<div class="app" id="uploadPage" style="background: #000;">
+    <div class="upload-loading">
+        <span class="centerXY">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        </span>
+    </div>
+    <div class="bar">
+        <a class="back pull-left" id="closeCrop" onclick="close();">
+            取消
+        </a> 
+        <a id="getFile" class="pull-right">确定</a>
+    </div>
+    <div class="main">
+        <canvas class="upload-mask">
+
+        </canvas>
+        <div class="preview-box">
+            <img id="preview"/>
+        </div>
+        <canvas class="photo-canvas">
+
+        </canvas>
+        <a id="rotateBtn">
+            <i class="fa fa-rotate-right  fa-3x"></i>
+            <div>旋转照片</div>
+        </a>
+    </div>
+</div>
+<!-- datePicker -->
+<div style="display:none;" class="weui-mask weui-animate-fade-in"></div>
+<div style="display:none;" class="weui-picker weui-animate-slide-up"> 
+    <div class="weui-picker__hd"> 
+        <a href="javascript:;" data-action="cancel" class="weui-picker__action">取消</a> 
+        <a href="javascript:;" data-action="select" class="weui-picker__action" id="weui-picker-confirm">确定</a>
+    </div> 
+    <div class="weui-picker__bd">
+        <div class="weui-picker__group"> 
+            <div class="weui-picker__mask"></div> 
+            <div class="weui-picker__indicator"></div> 
+            <div class="weui-picker__content" style="transform: translate3d(0px, -374px, 0px);">
+                <div class="weui-picker__item">1990年</div>
+            </div> 
+        </div>
+        <div class="weui-picker__group" style="display: block;"> 
+            <div class="weui-picker__mask"></div> 
+            <div class="weui-picker__indicator"></div> 
+            <div class="weui-picker__content" style="transform: translate3d(0px, -102px, 0px);">
+                <div class="weui-picker__item">1月</div>
+            </div> 
+        </div>
+        <div class="weui-picker__group" style="display: block;"> 
+            <div class="weui-picker__mask"></div> 
+            <div class="weui-picker__indicator"></div> 
+            <div class="weui-picker__content" style="transform: translate3d(0px, -408px, 0px);">
+                <div class="weui-picker__item">1日</div>
+            </div> 
+        </div>
+    </div> 
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script src="../js/slider.js" type="text/javascript"></script>
+<script src="../js/m_employees_main.js" type="text/javascript"></script>
+<script type="text/javascript" src="../js/upload_portrait/require.js"></script>
+<script type="text/javascript" src="../js/upload_portrait/main.js"></script>
+<script src="../js/upload_portrait/canvas-toBlob.js"></script>
+<script type="text/javascript" src="../js/upload_portrait/upload_portrait_employees.js"></script>
+<script type="text/javascript">
+    var g_update_time,g_input_time;
+	$('#loading').remove();
+	var height = window.innerHeight;
+	var width = window.innerWidth;
+	var img_height = width/2.68;
+	$('.img,.img img').height(img_height);
+	var table_height = height-img_height-80;
+
+	var data = JSON.parse('<%- JSON.stringify(result)%>');
+	var arr = [];
+	for(var i in data){
+		var obj = init(i);
+		obj.val = (data[i]!='null'&&data[i]!=null&&data[i]!='undefined')?data[i]:'';
+		if(obj.name!='其它'){
+			arr.push(obj);
+		}
+		if(i=='update_time'&&(data[i]!='null'&&data[i]!=null&&data[i]!='undefined')){
+			g_update_time = data[i];
+		}else if(i=='insert_time'&&(data[i]!='null'&&data[i]!=null&&data[i]!='undefined')){
+			g_input_time = data[i];
+		}
+	}
+	$('button').show();
+	var temp = "<input type='#:type#' #:readonly# pattern='#:pattern#' data-arr='#:arr#' data-key='#:key#' style='border:none;background:inherit' value=#:val# >";
+	$("#grid").kendoGrid({
+        height: table_height,
+		columns:[
+			{
+			  field: "name",
+			  title: "项目"
+			},
+			{
+			  field: "val",
+			  title: "信息",
+			  template: temp
+			}
+		],
+		dataSource: {
+			data: arr
+		}
+    });
+    $('button').kendoButton();
+    $('#grid tr input').each(function(){
+    	var type = $(this).attr('type');
+    	if(type=='select'){
+    		var str = '';
+    		var s = $(this).attr('data-arr');
+    		var _arr = s.split(',');
+    		var arr = [];
+    		for (var i = 0; i < _arr.length; i++) {
+    			arr.push(_arr[i]);
+    		};
+    		var v = $(this).val();
+    		var d = $(this).attr('data-key');
+    		if(v==''){
+    			str += '<option value="">-请选择-</option>';
+    		}else if(v==1){
+    			arr[0]='在职';
+    			arr[1]='离职'
+    		}else if(v==0){
+    			arr[0]='离职';
+    			arr[1]='在职'
+    		}else{
+        		for (var i = 0; i < arr.length; i++) {
+        			if(arr[i]==v){
+        				var t = arr[0];
+        				arr[0] = arr[i];
+        				arr[i] = t;
+        			}
+        		};
+    		}
+    		for (var i = 0; i < arr.length; i++) {
+    			str += '<option value="'+arr[i]+'">'+arr[i]+'</option>';
+    		};
+    		var _str = '<select style="background:inherit;width:150px;border:none;" data-key="'+d+'">'+str+'</select>';
+    		$(this).parent().html(_str);
+    	}else{
+    		var dk = $(this).attr('data-key');
+    		if(dk=='update_time'){
+    			$(this).val(g_update_time);
+    		}else if(dk=='insert_time'){
+    			$(this).val(g_input_time);
+    		}else if(dk=='update_person'){
+    			var val = $(this).val();
+    			transPerson(val,this);
+    		}
+    	}
+    });
+    $('.btn-groups').show();
+</script>
+</html>

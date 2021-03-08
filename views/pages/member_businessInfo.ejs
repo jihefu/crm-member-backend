@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>商务信息</title>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo_edit.css">
+</head>
+<body>
+<div id="wrap">
+    <div class="page__bd">
+        <div class="weui-cells" style="margin-top:10px">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>公司名称</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.company %></span>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>职位</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <span class="text"><%= result.job %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-groups">
+        <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="edit();">编辑</a>
+        <a href="javascript:;" style="margin-top: -0.5rem;" class="weui-btn weui-btn_default text btn-big" onclick="changeCompany();">切换公司</a>
+        <a href="javascript:;" style="margin-top: -0.5rem;" class="weui-btn weui-btn_default text btn-big" onclick="bankToPersonal();">切回个人身份</a>
+        <!-- <% if(!result.checked){ %>
+            <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="edit();">编辑</a>
+        <% }%> -->
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function edit(){
+        window.location.href = route('member/businessInfo_edit');
+    }
+
+    function changeCompany() {
+        window.location.href = route('member/changeCompany');
+    }
+
+    function bankToPersonal() {
+        $.ajax({
+            url: route('member/bankToPersonal'),
+            type: 'put',
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(() => {
+                    reLogin();
+                }, 2000);
+            }
+        });
+    }
+
+    function reLogin() {
+        $.ajax({
+            url: route('deleteSuperAuth'),
+            type: 'put',
+            success: function(res) {
+                window.location.href = route('member/index');
+            }
+        });
+    }
+</script>    
+</html>

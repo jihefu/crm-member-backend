@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>切换公司</title>
+    <%- include("../includes/styles.ejs") %>
+    <link href="../styles/index.css" rel="stylesheet" />
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+    <style>
+        .weui-swiped-btn {
+            padding: 20px 1em;
+        }
+        .swiper-item {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells weui-cells_radio">
+        <div class="companyList">
+
+        </div>
+        <a href="javascript:void(0);" class="weui-cell weui-cell_link">
+            <div class="weui-cell__bd" onclick="addCompany();">添加公司</div>
+        </a>
+        <% if (isUser == 0) { %>
+            <!-- <a href="javascript:void(0);" class="weui-cell weui-cell_link">
+                <div class="weui-cell__bd" onclick="bankToPersonal();">切回个人身份</div>
+            </a> -->
+        <% } %>
+    </div>
+    <div class="js_dialog" style="opacity: 1;display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__hd"><strong class="weui-dialog__title">新增公司</strong></div>
+            <div class="weui-dialog__bd">
+                <div class="weui-cell" style="display:flex;">
+                    <div class="weui-cell__hd" style="width: 70px;text-align: left;">
+                        <label class="weui-label">公司：</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input type="text" style="border: 1px solid #d1d1d1;border-radius: 4px;" class="weui-input" name="company" placeholder="">
+                    </div>
+                </div>
+                <div class="weui-cell" style="display:flex;">
+                    <div class="weui-cell__hd" style="width: 70px;text-align: left;">
+                        <label class="weui-label">职位：</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select style="width: 100%" name="job">
+                            <option value="法人">法人</option>
+                            <option value="合伙人">合伙人</option>
+                            <option value="注册人">注册人</option>
+                            <option value="财务">财务</option>
+                            <option value="采购">采购</option>
+                            <option value="开发">开发</option>
+                            <option value="其它" selected>其它</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">否</a>
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="add();">是</a>
+            </div>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var clientX = 0;
+    var isTrigger = false;
+    var disp = 0;
+    var timer;
+    var triggerObj;
+    fetchData();
+    $(document).on('touchstart', '.swiper-item', function(e) {
+        clientX = e.originalEvent.touches[0].clientX;
+    });
+    $(document).on('touchmove', '.swiper-item', function(e) {
+        if ($(e.target).parents('.weui-cell_swiped').attr('data-selected') == 1) {
+            return;
+        }
+        if (isTrigger) {
+            return;
+        }
+        if (clientX - e.originalEvent.touches[0].clientX > 100) {
+            triggerObj = $(e.target).parents('.swiper-item');
+            isTrigger = true;
+            timer = setInterval(function() {
+                disp -= 5;
+                if (disp < -65) {
+                    clearInterval(timer);
+                    return;
+                }
+                triggerObj.css({
+                    transform: 'translateX('+disp+'px)',
+                });
+            }, 20);
+        }
+    });
+    function fetchData() {
+        $.ajax({
+            url: route('member/getMuilCompanyList'),
+            type: 'get',
+            success: function(res) {
+                var multCompanyList = res.data;
+                var str = '';
+                for (var i = 0; i < multCompanyList.length; i++) {
+                    var checkedStr = '';
+                    if (multCompanyList[i].selected) {
+                        checkedStr = 'checked=checked';
+                    }
+                    str += '<div class="weui-cell weui-cell_swiped" data-company="'+multCompanyList[i].company+'" data-selected="'+multCompanyList[i].selected+'" onclick="selectCompany(this)">'+
+                        '<div class="weui-cell__bd swiper-item">'+
+                            '<div class="weui-cell">'+
+                                '<div class="weui-cell__bd">'+
+                                        '<p>' + multCompanyList[i].company + '</p>'+
+                                        '<p>' + multCompanyList[i].job + '</p>'+
+                                '</div>'+
+                                '<div class="weui-cell__ft">'+
+                                        '<input type="radio" class="weui-check" name="multCompany" '+checkedStr+'>'+
+                                        '<span class="weui-icon-checked"></span>'+    
+                                '</div>'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="weui-cell__ft">'+
+                            '<a class="weui-swiped-btn weui-swiped-btn_warn" href="javascript:" data-company="'+multCompanyList[i].company+'" onclick=del(this);>删除</a>'+
+                        '</div>'+
+                    '</div>';
+                }
+                $('.companyList').html(str);
+                setTimeout(function(){
+                    if ($('.companyList>.weui-cell_swiped').length === 1 && GetRequest('fromCreate') == 1) {
+                        $('.companyList>.weui-cell_swiped').eq(0).trigger('click');
+                    }
+                }, 500);
+            }
+        });
+    }
+
+    function addCompany() {
+        window.location.href = route('member/createCompany');
+        // $('.js_dialog').show();
+    }
+    
+    function cancel() {
+        $('.js_dialog').hide();
+    }
+
+    function add() {
+        var company = $('.js_dialog input[name=company]').val();
+        var job = $('.js_dialog select[name=job]').val();
+        if (!company) {
+            wxToast('公司名不能为空');
+            return;
+        }
+        $.ajax({
+            url: route('member/addMuilCompany'),
+            type: 'post',
+            data: {
+                company: company,
+                job: job,
+            },
+            success: function(res) {
+                wxToast(res.msg);
+                cancel();
+                fetchData();
+            }
+        });
+    }
+
+    function del(obj) {
+        var company = $(obj).attr('data-company');
+        var r = window.confirm('确定删除' + company + '？');
+        if (!r) {
+            return;
+        }
+        $.ajax({
+            url: route('member/delMuilCompany'),
+            type: 'delete',
+            data: {
+                company: company,
+            },
+            success: function(res) {
+                wxToast(res.msg);
+                fetchData();
+            }
+        });
+    }
+
+    function selectCompany(obj) {
+        if (disp < 0) {
+            isTrigger = false;
+            timer = setInterval(function() {
+                disp += 5;
+                if (disp > 0) {
+                    clearInterval(timer);
+                    return;
+                }
+                $(triggerObj).css({
+                    transform: 'translateX('+disp+'px)',
+                });
+            }, 20);
+            return;
+        }
+        if ($(obj).attr('data-selected') == 1) {
+            return;
+        }
+        var company = $(obj).attr('data-company');
+        $.ajax({
+            url: route('member/selectMuilCompany'),
+            type: 'put',
+            data: {
+                company: company,
+            },
+            success: function(res) {
+                wxToast(res.msg);
+                fetchData();
+                setTimeout(() => {
+                    reLogin();
+                }, 2000);
+            }
+        });
+    }
+
+    function reLogin() {
+        $.ajax({
+            url: route('deleteSuperAuth'),
+            type: 'put',
+            success: function(res) {
+                window.location.href = route('member/index');
+            }
+        });
+    }
+
+    function bankToPersonal() {
+        $.ajax({
+            url: route('member/bankToPersonal'),
+            type: 'put',
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(() => {
+                    reLogin();
+                }, 2000);
+            }
+        });
+    }
+
+</script>
+</html>

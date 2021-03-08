@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+    <link href="../styles/kendo/kendo.common.min.css" rel="stylesheet">
+    <link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+</head>
+    <title></title>
+    <style type="text/css">
+        #main {
+            height: 700px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <select name="type" onchange="typeChange();">
+            <option value="1" selected>销售额</option>
+            <option value="2">联系数</option>
+        </select>
+        <!-- <select name="range" onchange="rangeChange();">
+            <option value="近一年" selected>近一年</option>
+            <option value="近半年">近半年</option>
+            <option value="近三月">近三月</option>
+            <option value="近一月">近一月</option>
+            <option value="今年">今年</option>
+        </select> -->
+    </div>
+    <div style="margin-bottom: 20px;">
+        <span>
+            起始日期：<input id="startDatePicker" value="" style="width: 150px" />
+        </span>
+        <span style="margin-left: 20px;">
+            终止日期：<input id="endDatePicker" value="" style="width: 150px" />
+        </span>
+        <button style="margin-left: 20px;" onclick="fetch();">搜索</button>
+    </div>
+    <div id="main">
+        
+    </div>
+</body>
+<script src="../js/echarts.min.js"></script>
+<script src="../js/china.js"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var data = [
+        { name: '北京', value: 0 }, { name: '天津', value: 0 },
+        { name: '上海', value: 0 }, { name: '重庆', value: 0 },
+        { name: '河北', value: 0 }, { name: '河南', value: 0 },
+        { name: '云南', value: 0 }, { name: '辽宁', value: 0 },
+        { name: '黑龙江', value: 0 }, { name: '湖南', value: 0 },
+        { name: '安徽', value: 0 }, { name: '山东', value: 0 },
+        { name: '新疆', value: 0 }, { name: '江苏', value: 0 },
+        { name: '浙江', value: 0 }, { name: '江西', value: 0 },
+        { name: '湖北', value: 0 }, { name: '广西', value: 0 },
+        { name: '甘肃', value: 0 }, { name: '山西', value: 0 },
+        { name: '内蒙古', value: 0 }, { name: '陕西', value: 0 },
+        { name: '吉林', value: 0 }, { name: '福建', value: 0 },
+        { name: '贵州', value: 0 }, { name: '广东', value: 0 },
+        { name: '青海', value: 0 }, { name: '西藏', value: 0 },
+        { name: '四川', value: 0 }, { name: '宁夏', value: 0 },
+        { name: '海南', value: 0 }, { name: '台湾', value: 0 },
+        { name: '香港', value: 0 }, { name: '澳门', value: 0 }
+    ];
+    var visualMap = {};
+    var type_title = '销售额';
+    var time_title = '近一年';
+    var dataSource = [];
+    $(function () {
+        $('#main').height(window.innerHeight);
+        $('#main').css('min-height', '700px');
+        $("#startDatePicker").val(dateTime(Date.parse(dateTime()) - 60 * 60 * 1000 * 24 * 30)).kendoDatePicker({
+            format: "yyyy-MM-dd"
+        });
+        $("#endDatePicker").val(dateTime).kendoDatePicker({
+            format: "yyyy-MM-dd"
+        });
+        fetch();
+    });
+
+    function rangeChange() {
+        var v = $('select[name=range]').val();
+        if (v == '近一年') {
+            time_title = '近一年';
+        } else if (v == '近半年') {
+            time_title = '近半年';
+        } else if (v == '近三月') {
+            time_title = '近三月';
+        } else if (v == '近一月') {
+            time_title = '近一月';
+        } else if (v == '今年') {
+            time_title = '今年';
+        }
+        fetch(v);
+    }
+
+    function fetch(range) {
+        $('#main').append('<div class="alert alert-info" style="margin-top: 50px;position: fixed;top: 0px;width: 100%;" role="alert"> <p style="text-align: center;">加载中...</p></div>');
+        range = range ? range : '近一年';
+        var href = window.location.href;
+        var token = href.split('?token=')[1];
+        $.ajax({
+            url: route('home/contracts/getAmountInProvince'),
+            type: 'get',
+            dataType: 'json',
+            timeout: 30000,
+            headers: {
+                token: token
+            },
+            data: {
+                type: range,
+                startTime: $('#startDatePicker').val(),
+                endTime: $('#endDatePicker').val(),
+            },
+            success: function (res) {
+                dataSource = res.data;
+                $('.alert').remove();
+                for (var i = 0; i < data.length; i++) {
+                    data[i].value = 0;
+                }
+                typeChange();
+            }
+        });
+    }
+
+    function fillAmount() {
+        for (var province in dataSource) {
+            for (var i = 0; i < data.length; i++) {
+                if (province.indexOf(data[i].name) !== -1) {
+                    data[i].value += dataSource[province].amount ? dataSource[province].amount : 0;
+                    break;
+                }
+            }
+        }
+        visualMap = {
+            show: true,
+            x: 'left',
+            y: 'center',
+            splitList: [
+                { start: 2000000, end: 20000000 }, { start: 1000000, end: 2000000 },
+                { start: 500000, end: 1000000 }, { start: 100000, end: 500000 },
+                { start: 10000, end: 100000 }, { start: 0, end: 10000 },
+            ],
+            color: ['#01579b', '#0277bd', '#039be5', '#29b6f6', '#81d4fa', '#e1f5fe']
+        };
+        render();
+    }
+
+    function fillOrders() {
+        for (var province in dataSource) {
+            for (var i = 0; i < data.length; i++) {
+                if (province.indexOf(data[i].name) !== -1) {
+                    data[i].value += dataSource[province].orders ? dataSource[province].orders : 0;
+                    break;
+                }
+            }
+        }
+        visualMap = {
+            show: true,
+            x: 'left',
+            y: 'center',
+            splitList: [
+                { start: 2000, end: 5000 }, { start: 1000, end: 2000 },
+                { start: 500, end: 1000 }, { start: 100, end: 500 },
+                { start: 50, end: 100 }, { start: 0, end: 50 },
+            ],
+            color: ['#01579b', '#0277bd', '#039be5', '#29b6f6', '#81d4fa', '#e1f5fe']
+        };
+        render();
+    }
+
+    function render() {
+        var optionMap = {
+            backgroundColor: '#FFFFFF',
+            title: {
+                text: time_title+type_title,
+                subtext: '',
+                x: 'center'
+            },
+            tooltip: {
+                formatter: function (params, ticket, callback) {
+                    return params.seriesName + '<br />' + params.name + '：' + params.value
+                }
+            },
+
+            //左侧小导航图标
+            visualMap: visualMap,
+
+            //配置属性
+            series: [{
+                name: '数据',
+                type: 'map',
+                mapType: 'china',
+                roam: true,
+                label: {
+                    normal: {
+                        show: true  //省份名称  
+                    },
+                    emphasis: {
+                        show: false
+                    }
+                },
+                data: data  //数据
+            }]
+        };
+        //初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        //使用制定的配置项和数据显示图表
+        myChart.setOption(optionMap);
+    }
+
+    function typeChange() {
+        var v = $('select[name=type]').val();
+        for (var i = 0; i < data.length; i++) {
+            data[i].value = 0;
+        }
+        if (v == 1) {
+            type_title = '销售额';
+            fillAmount();
+        } else {
+            type_title = '联系单数';
+            fillOrders();
+        }
+    }
+</script>
+
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>威程卡管理系统</title>
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link href="../styles/admin.css" rel="stylesheet" />
+	<link href="../styles/vir8.css" rel="stylesheet" />
+</head>
+<body data-type="default">
+	<header>
+		<p>威程卡管理系统</p>
+	</header>
+	<div id="wrap">
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h5 class="modal-title" id="myModalLabel">
+							创建新卡
+						</h5>
+					</div>
+					<div class="modal-body">
+						<div class="input-group">
+						  <span class="input-group-addon" id="basic-addon1">序列号</span>
+						  <input type="text" class="form-control province" placeholder="序列号" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消
+						</button>
+						<button type="button" class="btn btn-primary" onclick="sub();">
+							提交
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+		<div class="left-bar">
+			<div class="bar-top">
+				<!-- <div class="search">搜索</div> -->
+				<div class="navbar-form sear" role="search">
+					<div class="form-group">
+						<input type="search" id="search" class="form-control" placeholder="序列号，机器号">
+						<span class="iconfont icon-form-del" onclick="cl()"></span>
+					</div>
+					<button class="btn btn-default" onclick="search()">搜索</button>
+				</div>
+				<!-- <div class="sort search">排序</div> -->
+				<div class="dropdown">
+				    <button type="button" class="btn dropdown-toggle sel" id="dropdownMenu1" data-toggle="dropdown">请选择排序方式 <span class="caret"></span>
+				    </button>
+				    <button type="button" class="btn btn-default inputInfo" onclick="inputInfo()">批量更新</button>
+				    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+				    	<li role="presentation" data-key="all">
+				            <a role="menuitem" tabindex="-1" href="#">请选择排序方式</a>
+				        </li>
+				        <li role="presentation" data-key="update_time">
+				            <a role="menuitem" tabindex="-1" href="#">最近更新</a>
+				        </li>
+				    </ul>
+				</div>
+				<div class="search" style="margin-top:33px">
+					<p class="list-left-tit">威程卡列表</p>
+					<p class="list-right-tit" onclick="newCpy()">
+						<span class="cpy-add">新增</span>
+						<span class="iconfont icon-add"></span>
+					</p>
+				</div>
+			</div>
+			<div class="bar-bottom">
+				<ul>
+					<% for(var i=0;i<list.length;i++){ %>
+						<li onclick="checkCpy(this);" data-sn="<%= list[i].serialNo %>">
+							<p><span>序列号：</span><%= list[i].serialNo %><span class="iconfont icon-correct"></span></p>
+						</li>
+					<% } %>
+				</ul>
+			</div>
+			<div class="page" data-page="1">
+				<button type="button" class="btn btn-primary prev_page" onclick="prev()">上一页</button>
+				<span>第
+					<span class="page_num">1</span>
+				页</span>
+				<button type="button" class="btn btn-primary next_page" onclick="next()">下一页</button>
+			</div>
+		</div>
+		<div class="main">
+			<div id="myCarousel" class="carousel slide" style="overflow:hidden">
+				<% if(result[0].model=='V802'){ %>
+					<img src="../img/1802.jpg" alt="">
+				<% }else if(result[0].model=='V801'){ %>
+					<img src="../img/1801.jpg" alt="">
+				<% }else if(result[0].model=='V800'){ %>
+					<img src="../img/1800.jpg" alt="">
+				<% }else if(result[0].model=='V881'){ %>
+					<img src="../img/1881.jpg" alt="">
+				<% }else if(result[0].model=='V884'){ %>
+					<img src="../img/1884.jpg" alt="">
+				<% }else{ %>
+					<img src="../img/800.jpg" alt="">
+				<% } %>
+			</div>
+			<div class="search cpy-text">
+				<p class="left-tit">威程卡信息</p>
+			</div>
+			<div class="table-wrap">
+				<table class="table table-bordered">
+					<tbody>
+					
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="right-bar">
+			<div class="search contacts-text">注册历史</div>
+			<div class="contacts">
+				<ul>
+					<% if(reg[0]==null){%>
+						<p class="reg-list">暂无注册记录</p>
+					<% }else{ %>
+						<% for(var i=0;i<reg.length;i++){ %>
+							<li>
+								<span><%= reg[i].regDate %>: </span></br>
+								<span><%= reg[i].name %>（<%= reg[i].company %>）注册产品<%= reg[i].product %>，</span>
+								<% if(reg[i].validDate==0){ %>
+									<span>已永久注册。</span>
+								<% }else{ %>
+									<span>有效期至<%= reg[i].validDate %>。</span>
+								<% } %>
+								<span>注册码：<%= reg[i].regCode %>，授权操作码：<%= reg[i].authOperKey %></span>
+							</li>
+						<% } %>
+					<% } %>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="my-mask"></div>
+	<div class="modal-dialog my-dialog up-dialog qweqewqe">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="myModalLabel">批量更新</h5>
+			</div>
+			<div class="modal-body">
+				<div class="input-group g">
+					<div class="sns"></div>
+					<div class="input-item">
+						<label>
+							<input type="checkbox"/>
+							<span>中间商</span>
+						</label>
+						<div>
+							<input type="text" data-key="dealer" onclick="searchInput(this)" />
+						</div>
+					</div>
+					<div class="input-item">
+						<label>
+							<input type="checkbox" />
+							<span>业务经理</span>
+						</label>
+						<div>
+							<input type="text" data-key="salesman" onclick="searchInput(this)"/>
+						</div>
+					</div>
+					<div class="input-item"> 
+						<label>
+							<input type="checkbox" />
+							<span>生产者</span>
+						</label>
+						<div>
+							<input type="text" data-key="maker" onclick="searchInput(this)"/>
+						</div>
+					</div>
+					<div class="input-item">
+						<label>
+							<input type="checkbox" />
+							<span>终端用户</span>
+						</label>
+						<div>
+							<input type="text" data-key="endUser" onclick="searchInput(this)"/>
+						</div>
+					</div>
+					<div class="input-item"> 
+						<label>
+							<input type="checkbox" />
+							<span>测试者</span>
+						</label>
+						<div>
+							<input type="text" data-key="tester" onclick="searchInput(this)"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="tempCancel()">重置</button>
+				<button type="button" class="btn btn-primary" onclick="subTemp()">提交</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../js/vir8.js" type="text/javascript"></script>
+<script>
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	$('#wrap').height(height-50);
+	$('body').height(height-50);
+	$('.bar-bottom').height(height-270);
+	$('.table-wrap').height(height-320);
+	$('.contacts').height(height-100);
+	var _data = JSON.parse('<%- JSON.stringify(info)%>');
+</script>
+</html>

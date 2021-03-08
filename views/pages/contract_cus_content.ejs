@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>基本信息</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/slider.css" rel="stylesheet" />
+	<link href="../styles/step.css" rel="stylesheet" />
+	<style>
+		.aui-slide-node {
+			background: url('../../../img/card_bg.jpg');
+			background-repeat: round;
+		}
+		.k-grid td {
+			word-break:break-all;
+		}
+		#grid {
+			min-height: 1rem;
+		}
+	</style>
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		<div class="img" id="aui-slide" style="background:none">
+			<div class="aui-slide-wrap">
+				<div class="aui-slide-node">
+					<img src="../img/controller_system.png" height="100%">
+				</div>
+			</div>
+			<div class="aui-slide-page-wrap"></div>
+		</div>
+		<div class="steps">
+			<div class="step-item">
+				<div class="step-item-dot"></div>
+				<div class="step-item-text">审核中</div>
+			</div>
+			<div class="step-line"></div>
+			<div class="step-item">
+				<div class="step-item-dot"></div>
+				<div class="step-item-text">待发货</div>
+			</div>
+			<div class="step-line"></div>
+			<div class="step-item">
+				<div class="step-item-dot"></div>
+				<div class="step-item-text">发货中</div>
+			</div>
+			<div class="step-line"></div>
+			<div class="step-item">
+				<div class="step-item-dot"></div>
+				<div class="step-item-text">已发货</div>
+			</div>
+			<div class="step-line"></div>
+			<div class="step-item">
+				<div class="step-item-dot"></div>
+				<div class="step-item-text">已收货</div>
+			</div>
+		</div>
+		<div id="loading" style="text-align:center;">
+			<i class="weui-loading weui-icon_toast"></i>
+		</div>
+		<div id="grid" data-role="grid" data-bind="source: products"></div>
+		<div class="btn-groups">
+			<button class="k-primary" onclick="more()" style="display:none;margin-left: 6px;">详情</button>
+			<button onclick="deliveryInfo();" style="display:none;margin-left: 6px;">发货信息</button>
+		</div>
+	</div>
+</div>
+<!-- 提示框 -->
+<div class="weui-mask" style="display:none" onclick="cancel();"></div>
+<div class="weui-dialog" style="display:none" onclick="cancel();">
+    <div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>
+    <div class="weui-dialog__bd">已收到物品？</div>
+    <div class="weui-dialog__ft">
+        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="comfirm();">是</a>
+        <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">否</a>
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script src="../js/slider.js" type="text/javascript"></script>
+<script src="../js/contract_cus_content.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var table_height, img_height;
+	var data = JSON.parse('<%- JSON.stringify(result)%>');
+	
+	renderStepActive();
+
+	function renderStepActive() {
+		var state = data.data.delivery_state;
+		$('.step-item-text').each(function(i){
+			if ($(this).text() == state) {
+				$('.step-item-dot:lt('+(i+1)+')').addClass('step-active');
+				$('.step-item-text:lt('+(i+1)+')').addClass('step-text-active');
+				$('.step-line:lt('+i+')').addClass('step-active');
+			}
+		});
+	}
+
+	function deliveryInfo() {
+		window.location.href = route('contract/packingPage/' + data.data.id);
+	}
+</script>
+</html>

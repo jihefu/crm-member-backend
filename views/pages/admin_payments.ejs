@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>杭州朗杰测控技术开发有限公司</title>
+	<!-- <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" /> -->
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link href="../styles/admin.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<style type="text/css">
+		html {
+			height: 100%;
+		}
+		body {
+			overflow: hidden;
+		}
+		header {
+		    background: #5f6f8d;
+		    font-size: 20px;
+		}
+		header p {
+		    padding-top: 11px;
+		}
+		.content {
+			display: flex;
+			height: 100%;
+		}
+		.left_bar {
+			/*width: 18%;*/
+			width: 300px;
+			height: 100%;
+			/*float: left;*/
+		}
+		.right_bar {
+			/*width: 82%;*/
+			flex: 5;
+			height: 100%;
+			/*float: left;*/
+		}
+		.right_bar iframe {
+			border: none;
+			width: 100%;
+			height: 100%;
+		}
+		.left_bar ul {
+			padding-left: 0px;
+		}
+		.active {
+			background: #d2d2dd!important;
+		}
+		.left_bar ul li {
+			/*background: #d2d2dd;*/
+			background: #f1f1f1;
+			height: 50px;
+			padding-left: 20px;
+			/*text-align: center;*/
+			padding-top: 12px;
+			cursor: pointer;
+		}
+		.left_bar li .iconfont {
+			font-size: 22px;
+    		color: #5e6e8c;
+		}
+		.text {
+			font-size: 16px;
+			position: relative;
+			top: -2px;
+			margin-left: 14px
+		}
+		.link {
+			font-size: 20px!important;
+    		color: #5e6e8c!important;
+    		margin-left: 85px;
+		}
+		.left_bar ul li:hover {
+			background: #d2d2dd;
+		}
+		.sideBar {
+			width: 18px;
+		    height: 200px;
+		    position: absolute;
+		    background: #5f6f8d;
+		    color: #fff;
+		    top: 245px;
+		    border-radius: 9px;
+		    padding-top: 38px;
+		    opacity: 0.9;
+		}
+		.left_bar ul li span {
+			display: block;
+			float: left;
+		}
+		.left_bar ul li span:nth-child(2) {
+			margin-top: 5px;
+		}
+		.left_bar ul li span:nth-child(3) {
+			float: right;
+			margin-right: 20px;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<p ondblclick="dblclick();">销售图表</p>
+	</header>
+	<div class="content">
+		<div class="left_bar">
+			<ul>
+				<li class="active" onclick="check(this)" data-iframe="trend_analysis">
+					<span class="iconfont icon-menu"></span>
+					<span class="text">销售图表</span>
+					<span class="link iconfont icon-link"></span>
+				</li>
+				<li onclick="check(this)" data-iframe="contracts_view">
+					<span class="iconfont icon-fukuansvg"></span>
+					<span class="text">合同总览</span>
+					<span class="link iconfont icon-link"></span>
+				</li>
+				<li  onclick="check(this)" data-iframe="admin_payments">
+					<span class="iconfont icon-fukuansvg"></span>
+					<span class="text">到款记录</span>
+					<span class="link iconfont icon-link"></span>
+				</li>
+				<!-- <li onclick="check(this)" data-iframe="credit_records">
+					<span class="iconfont icon-shouxin"></span>
+					<span class="text">授信记录</span>
+					<span class="link iconfont icon-link"></span>
+				</li> -->
+				<li onclick="check(this)" data-iframe="over_view">
+					<span class="iconfont icon-menu"></span>
+					<span class="text">信用总览</span>
+					<span class="link iconfont icon-link"></span>
+				</li>
+				<li onclick="check(this)" data-iframe="new_customer">
+					<span class="iconfont icon-menu"></span>
+					<span class="text">新客户管理</span>
+					<span class="link iconfont icon-link"></span>
+				</li>
+				<li onclick="check(this)" data-iframe="type_d_list">
+					<span class="iconfont icon-menu"></span>
+					<span class="text">D类客户管理</span>
+					<span class="link iconfont icon-link"></span>
+				</li>
+			</ul>
+		</div>
+		<div class="right_bar">
+			<iframe name="grid" src="../html/trend_analysis.html"></iframe>
+		</div>
+	</div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<!-- <script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script> -->
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	listenRoute();
+	$('html,body').height($('html').height()-50);
+	function listenRoute(){
+		var href = window.location.href.split('#')[1];
+		var route_arr = ['trend_analysis','contracts_view','admin_payments','credit_records','over_view','new_customer','type_d_list'];
+		for (var i = 0; i < route_arr.length; i++) {
+			if(href==route_arr[i]){
+				$('.left_bar li[data-iframe='+href+']').trigger('click');
+				break;
+			}else if(i==route_arr.length-1&&href!=route_arr[i]){
+				$('.left_bar li[data-iframe=trend_analysis]').trigger('click');
+			}
+		}
+	}
+	function check(obj){
+		$('header').find('span').remove();
+		$('.left_bar .active').removeClass('active');
+		$(obj).addClass('active');
+		var iframe_name = $(obj).attr('data-iframe');
+		window.location.href = route('admin/finance') + '#' + iframe_name;
+		$('iframe[name=grid]').attr('src','../html/'+iframe_name+'.html');
+		$('header p').text($(obj).find('.text').text());
+		sessionStorage.clear();
+	}
+	function dblclick(){
+		window.location.href = route('admin/finance');
+	}
+	//隐藏侧边栏
+	hideLeftBar();
+	$('.left_bar').mouseout(function(){
+		hideLeftBar();
+	});
+	$(document).on('mouseover','.sideBar',function(){
+		disShow();
+		if(/mobile/ig.test(navigator.userAgent)){
+			hideLeftBar();
+		}
+	});
+	function disShow(){
+		$('.left_bar').animate({
+			"left": "0px"
+		});
+		$('.left_bar').css('position','static');
+		$('.sideBar').remove();
+	}
+	var t;
+	function hideLeftBar(){
+		// return;
+		if($('.sideBar').length==0){
+			clearTimeout(t);
+			t = setTimeout(function(){
+				var height = $('.left_bar').height()/2-80;
+				var str = '<div class="sideBar" onclick="" style="top: '+height+'px">显示侧边栏</div>';
+				// $('.left_bar').hide();
+				$('.left_bar').css('position','absolute');
+				$('.left_bar').animate({
+					"left": "-300px"
+				});
+				setTimeout(function(){
+					$('.content').prepend(str);
+				},200);
+				if(window.location.href.split('#')[1]=="trend_analysis"){
+					try{
+						window.frames['grid'].refresh();
+						window.frames['grid'].refresh2();
+					}catch(e){}
+				}
+			},2000);
+		}
+	}
+
+	function removeIframe(){
+		$('header p').text('信用总览');
+	    $('header').find('span').remove();
+	    window.frames['grid'].$('iframe[name=in_frame]').remove();
+	    window.frames['grid'].$('#grid').show();
+	}
+
+</script>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link href="../styles/kendo/kendo.common.min.css" rel="stylesheet">
+    <link href="../styles/kendo/kendo.rtl.min.css" rel="stylesheet">
+    <link href="../styles/kendo/kendo.default.min.css" rel="stylesheet">
+    <link href="../styles/kendo/kendo.default.mobile.min.css" rel="stylesheet">
+    <script src="../js/kendo/jquery.min.js"></script>
+    <script src="../js/kendo/jszip.min.js"></script>
+    <script src="../js/kendo/kendo.all.min.js"></script>
+</head>
+
+<body>
+    <div class="demo-section content-wrapper wide">
+
+    </div>
+</body>
+<script>
+    // Import DejaVu Sans font for embedding
+
+    // NOTE: Only required if the Kendo UI stylesheets are loaded
+    // from a different origin, e.g. cdn.kendostatic.com
+    kendo.pdf.defineFont({
+        "DejaVu Sans": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans.ttf",
+        "DejaVu Sans|Bold": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf",
+        "DejaVu Sans|Bold|Italic": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+        "DejaVu Sans|Italic": "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf"
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var str = window.parent.$('iframe[name=createPdf]').attr('data-str');
+        $('.content-wrapper').append(str);
+        setTimeout(function () {
+            // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+            kendo.drawing.drawDOM($(".content-wrapper"))
+                .then(function (group) {
+                    // Render the result as a PDF file
+                    return kendo.drawing.exportPDF(group, {
+                        paperSize: "auto",
+                        margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+                    });
+                })
+                .done(function (data) {
+                    // Save the PDF file
+                    kendo.saveAs({
+                        dataURI: data,
+                        fileName: "HR-Dashboard.pdf",
+                        proxyURL: "https://demos.telerik.com/kendo-ui/service/export"
+                    });
+                });
+        }, 1000);
+
+    });
+</script>
+
+</html>

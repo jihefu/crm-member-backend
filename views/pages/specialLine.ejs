@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title><%= title %></title>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <link rel="stylesheet" href="../styles/aui/aui.css">
+    <link rel="stylesheet" type="text/css" href="../styles/aui/aui-pull-refresh.css" />
+    <style>
+        .bottom-bar {
+            width: 100%;
+            position: fixed;
+            bottom: 0px;
+        }
+        .chat-bar {
+            height: 3.1rem;
+            padding: 0.3125rem;
+            display: -webkit-flex;
+            display: flex;
+            background: #efeeee;
+            padding-bottom: 12px;
+        }
+        .tool-bar {
+            width: 100%;
+            height: 4rem;
+            background: #efeeee;
+            display: none;
+            padding-right: 1rem;
+            padding-left: 1rem;
+        }
+        .tool-menu {
+            width: 100%;
+        }
+        .tool-menu>div {
+            width: 25%;
+            display: inline-block;
+        }
+        .menu-item {
+            text-align: center;
+            border: 1px solid #999;
+            color: #999;
+            padding: 0px;
+            margin: 0 0.8rem;
+            border-radius: 0.3rem;
+        }
+        .bar {
+            width: 100%;
+            /* height: 60px; */
+            /* height: 2.6rem; */
+            height: 3.1rem;
+            position: fixed;
+            bottom: 0px;
+            padding: 0.3125rem;
+            display: -webkit-flex;
+            display: flex;
+            background: #efeeee;
+            padding-bottom: 12px;
+        }
+        .file {
+            width: 1.6rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+        }
+        .send {
+            width: 4.17rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1890ff;
+            color: #ffffff;
+            border-radius: 0.208rem;
+            margin-left: 0.208rem;
+        }
+        .msgContent {
+            flex: 0.052rem;
+            border: 0.052rem solid #999!important;
+            border-radius: 0.208rem;
+        }
+        .msgContent textarea {
+            height: 100%;
+        }
+        .weui-navbar {
+            position: fixed;
+        }
+        .memberGroup {
+            display: none;
+        }
+        .manage {
+            width: 100%;
+        }
+        .sub,.cancel {
+            margin-top: 0px!important;
+            display: none;
+            width: 40%;
+        }
+        .weui-cell__bd p {
+            font-size: 0.8rem;
+            color: #333;
+        }
+        .wxtip{background: rgba(0,0,0,0.8); text-align: center; position: fixed; left:0; top: 0; width: 100%; height: 100%; z-index: 998; display: none;}
+        .wxtip-icon{width: 3.25rem; height: 4.1875rem; background: url(../img/weixin-tip.png) no-repeat; display: block; position: absolute; right: 1.875rem; top: 1.25rem;}
+        .wxtip-txt{padding-top: 6.6875rem; color: #fff; font-size: 1rem; line-height: 1.5;}
+    </style>
+</head>
+<body style="background-color: #efeeee">
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <div onclick="tabClick(this);" class="weui-navbar__item">
+                管理
+            </div>
+            <div onclick="tabClick(this);" class="weui-navbar__item weui-bar__item_on">
+                会议室
+            </div>
+            <div onclick="tabClick(this);" class="weui-navbar__item">
+                私信
+            </div>
+        </div>
+        <div class="weui-tab__panel">
+            <div class="aui-chat aui-refresh-content">
+    
+            </div>
+            <div class="memberGroup">
+                <a class="weui-cell weui-cell_access" id="downloadApp" style="background: #fff;" href="https://itunes.apple.com/cn/app/id1453465067">
+                    <div class="weui-cell__bd">
+                        <p>安装考勤通</p>
+                    </div>
+                    <div class="weui-cell__ft" style="font-size: 0.8rem;color: #333;">前往下载</div>
+                </a>
+                <div class="weui-cell weui-cell_switch" style="background: #fff;">
+                    <div class="weui-cell__bd">接受服务号消息提醒</div>
+                    <div class="weui-cell__ft">
+                        <label for="switchCP" class="weui-switch-cp">
+                            <% if(isSub==1){ %>
+                                <input id="switchCP" class="weui-switch-cp__input" onChange="msgSubChange(this)" type="checkbox" checked="checked">
+                            <% }else{ %>
+                                <input id="switchCP" class="weui-switch-cp__input" onChange="msgSubChange(this)" type="checkbox">
+                            <% } %>
+                            <div class="weui-switch-cp__box"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="memberList">
+
+                </div>
+            </div>
+        </div>
+        <div class="bottom-bar">
+                <div class="chat-bar">
+                    <div class="file iconfont icon-add" onclick="toolBarShow();">
+        
+                    </div>
+                    <div class="msgContent">
+                        <textarea placeholder="请输入..."></textarea>
+                    </div>
+                    <div class="send" onclick="send();">发送</div>
+                </div>
+                <div class="tool-bar">
+                    <div class="tool-menu">
+                        <div>
+                            <div class="menu-item">
+                                <span class="iconfont icon-xiangce"></span>
+                                <div>
+                                    <input type="file" accept="image/*" onchange="uploadImg(this);" style="width: 100%;opacity: 0;font-size: 0px;position: absolute;">
+                                    相册
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="menu-item">
+                                <span class="iconfont icon-photo"></span>
+                                <div>
+                                    <input type="file" id="uploaderInput" accept="image/*" onchange="uploadImgCanvas(this);" capture="camera" style="width: 100%;opacity: 0;font-size: 0px;position: absolute;">
+                                    拍摄
+                                </div>
+                            </div>
+                        </div>
+                        <div class="file-icon-menu">
+                            <div class="menu-item">
+                                <span class="iconfont icon-file"></span>
+                                <div>
+                                    <input type="file" accept="*.doc,*.xlsx,*.xls,*.dot,*.docx,*.pdf,*.txt,*.zip,*.rar,*.ppt" onchange="uploadFile(this);" style="width: 100%;opacity: 0;font-size: 0px;position: absolute;">
+                                    文件
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- <div class="bar">
+            <div class="file iconfont icon-photo">
+                <input type="file" id="uploadImg" onchange="uploadImg(this);" style="height:1.6rem;width:1.6rem;z-index: 1;opacity: 0; position: absolute;left: 0;top:0.6875rem" accept="image/*">
+            </div>
+            <div class="file iconfont icon-file">
+                <input accept="*.doc,*.xlsx,*.xls,*.dot,*.docx,*.pdf,*.txt,*.zip,*.rar,*.ppt" type="file" id="uploadFile" onchange="uploadFile(this);" style="height:1.6rem;width:1.6rem;z-index: 1;opacity: 0; position: absolute;left: 1.8rem;top:0.6875rem">
+            </div>
+            <div class="msgContent">
+                <textarea placeholder="请输入..."></textarea>
+            </div>
+            <div class="send" onclick="send();">发送</div>
+        </div> -->
+    </div>
+    <div class="wxtip" id="JweixinTip">
+        <span class="wxtip-icon"></span>
+        <p class="wxtip-txt">点击右上角<br>选择在浏览器中打开</p>
+    </div>
+ </body>
+ <script>
+     var selfOpenId = '<%= open_id %>';
+     var album = '<%= album %>';
+     album = album?'../img/member/'+album:'../img/default_member2.jpg';
+     var TITLE = '<%= title %>';
+ </script>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/aui/aui-pull-refresh.js"></script>
+<script src="../js/chatMoreTenp.js"></script>
+<script src="../js/specialLine.js"></script>
+<script src="../js/ljRotateImg.js"></script>
+</html>

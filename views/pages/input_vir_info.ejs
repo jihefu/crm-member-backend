@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>信息批量录入</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<style>
+		.weui-cells_form {
+			height: 100%;
+		}
+		.weui-actionsheet__menu {
+			background: #fff;
+			z-index: 9999;
+		}
+		.weui-btn {
+			width: 100%;
+			/*position: absolute;
+			bottom: 5px;*/
+		}
+		.weui-cells_checkbox {
+			overflow: auto;
+		}
+		#showTooltips {
+			width: 80%;
+			max-width: 200px;
+			cursor: pointer;
+			margin-bottom: 20px;
+			margin-top: 20px;
+		}
+		.weui-cell_select .weui-cell__bd:after {
+			display: none;
+		}
+		.weui-select {
+			width: 105px;
+		}
+		.add {
+			transform: rotate(90deg);
+		}
+		.del {
+			transform: rotate(270deg);
+		}
+		.add,.del {
+			display: inline-block;
+			margin-left: 20px;
+			font-size: 26px;
+		}
+	</style>
+</head>
+<body>
+<div class="weui-cells__title">表单</div>
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+        	<label class="weui-label">中间商</label>
+        </div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="dealer" type="text" placeholder="请输入中间商" data-key="dealer" data-value="" onclick="searchInput(this)">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+        	<label class="weui-label">业务经理</label>
+        </div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="salesman" type="text" placeholder="请输入业务经理" data-key="salesman" data-value="" onclick="searchInput(this)">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+        	<label class="weui-label">终端用户</label>
+        </div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="endUser" type="text" placeholder="请输入终端用户" data-key="endUser" data-value="" onclick="searchInput(this)">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+        	<label class="weui-label">生产者</label>
+        </div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="maker" type="text" placeholder="请输入生产者" value="王圣金" data-key="maker" data-value="401" onclick="searchInput(this)">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd">
+        	<label class="weui-label">测试者</label>
+        </div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="tester" type="text" placeholder="请输入测试者" value="戴圣立" data-value="1605" data-key="tester" onclick="searchInput(this)">
+        </div>
+    </div>
+	
+	<div class="weui-cells__title">选择页码</div>
+	<div class="weui-cells">
+        <div class="weui-cell weui-cell_select">
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="select1" onchange="getSN()">
+                    <option selected="" value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+                <span class="add">></span>
+                <span class="del">></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-cells__title">序列号</div>
+    <div class="weui-cells weui-cells_checkbox">
+    	<% for(var i=0;i<result.length;i++){ %>
+	        <label class="weui-cell weui-check__label" for="s<%= result[i].serialNo %>">
+	            <div class="weui-cell__hd">
+	                <input type="checkbox" class="weui-check" name="checkbox1" id="s<%= result[i].serialNo %>">
+	                <i class="weui-icon-checked"></i>
+	            </div>
+	            <div class="weui-cell__bd">
+	                <p><%= result[i].serialNo %></p>
+	            </div>
+	        </label>
+        <% } %>
+    </div>
+    <a class="weui-btn weui-btn_primary" id="showTooltips" onclick="sub()">提交</a>
+</div>
+	
+</body>
+<script>
+</script>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/vir8_info_producer.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var height = window.innerHeight;
+	// var checkbox_height = height-450;
+	// $('.weui-cells_form').height(height-30);
+	// $('body').height(height-30);
+	// $('body').css('margin-top','-7px');
+	// $('.weui-cells_checkbox').height(checkbox_height);
+	var width = $('#showTooltips').width();
+	$('#showTooltips').css({
+		'left': '47%',
+		'margin-left': -width/2
+	});
+	$('.add').click(function(){
+		var page = $('.weui-select').val();
+		if(page==7) return;
+		page++;
+		$('.weui-select').val(page);
+		getSN();
+	});
+	$('.del').click(function(){
+		var page = $('.weui-select').val();
+		if(page==1) return;
+		page--;
+		$('.weui-select').val(page);
+		getSN();
+	});
+	function getSN(){
+		var page = $('.weui-select').val();
+		wxLoadToast('正在获取序列号列表');
+		$.ajax({
+			url:route('inputInfo_ajax/vir8/getSN'),
+			type:'get',
+			dataType:'json',
+			timeout:30000,
+			data:{
+				"page":page
+			},
+			success:function(res){
+				$('#loadingToast').remove();
+				if(res.code==-100){
+					wxToast(res.msg);
+					setTimeout(function(){
+						window.location.reload();
+					},2000);
+					return;
+				}
+				var str = '';
+				for (var i = 0; i < res.data.length; i++) {
+					str += '<label class="weui-cell weui-check__label" for="s'+res.data[i].serialNo+'">'+
+					            '<div class="weui-cell__hd">'+
+					                '<input type="checkbox" class="weui-check" name="checkbox1" id="s'+res.data[i].serialNo+'">'+
+					                '<i class="weui-icon-checked"></i>'+
+					            '</div>'+
+					            '<div class="weui-cell__bd">'+
+					                '<p>'+res.data[i].serialNo+'</p>'+
+					            '</div>'+
+					        '</label>';
+				};
+				$('.weui-cells_checkbox').html(str);
+			}
+		});
+	}
+	function sub(){
+		if($('input[name=dealer]').val()==''){
+			var dealer = '';
+		}else{
+			var dealer = $('input[name=dealer]').attr('data-value');
+		}
+		if($('input[name=salesman]').val()==''){
+			var salesman = '';
+		}else{
+			var salesman = $('input[name=salesman]').attr('data-value');
+		}
+		if($('input[name=endUser]').val()==''){
+			var endUser = '';
+		}else{
+			var endUser = $('input[name=endUser]').attr('data-value');
+		}
+		if($('input[name=maker]').val()==''){
+			var maker = '';
+		}else{
+			var maker = $('input[name=maker]').attr('data-value');
+		}
+		if($('input[name=tester]').val()==''){
+			var tester = '';
+		}else{
+			var tester = $('input[name=tester]').attr('data-value');
+		}
+		var form_check = $('.weui-cells_checkbox label input[type=checkbox]:checked');
+		var arr = [];
+		$(form_check).each(function(i){
+			var sn = $(this).parent().next().find('p').html();
+			arr.push(sn);
+		});
+		var _arr = JSON.stringify(arr);
+		if(arr.length==0){
+			alertToast('请勾选序列号');
+			return;
+		}
+		if(dealer==''&&salesman==''&&endUser==''&&maker==''&&tester==''){
+			alertToast('请至少选择其中一项');
+			return;
+		}
+		wxLoadToast('正在提交');
+		$.ajax({
+			url:route('inputInfo_ajax/vir8/putInfo'),
+			type:'post',
+			dataType:'json',
+			timeout:30000,
+			data:{
+				"dealer":dealer,
+				"salesman":salesman,
+				"endUser":endUser,
+				"maker":maker,
+				"tester":tester,
+				"arr":_arr
+			},
+			success:function(res){
+				$('#loadingToast').remove();
+				wxToast(res.msg);
+				if(res.code==-100){
+					setTimeout(function(){
+						window.location.reload();
+					},2000);
+				}
+			}
+		});
+	}
+</script>
+</html>

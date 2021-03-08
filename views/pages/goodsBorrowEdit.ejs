@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>编辑</title>
+	<%- include("../includes/styles.ejs") %>
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <style>
+        .weui-select {
+            line-height: initial;
+            height: auto;
+            padding-left: 0px;
+        }
+        .btn-groups {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .btn-groups>button {
+            width: 5rem;
+        }
+        #iosDialog1 {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">责任人</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" disabled value="<%= data.borrower %>">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">接手时间</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" disabled value="<%= data.borrowStartTime %>">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">责任类型</label></div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="type">
+                    <option value="库存">库存</option>
+                    <option value="公共维护">公共维护</option>
+                    <option value="借用">借用</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">存放点</label></div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="location">
+                    <option value="杭州办">杭州办</option>
+                    <option value="济南办">济南办</option>
+                    <option value="长春办">长春办</option>
+                    <option value="广州办">广州办</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">借用截止期</label></div>
+            <div class="weui-cell__bd">
+                <div id="showDatePicker" style="height: 24px;" class="borrowExpectTime"><%= data.borrowExpectTime %></div>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">从属于</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="mainArr" disabled value="">
+            </div>
+            <div class="weui-cell__fd">
+                <button style="margin-left: 1rem;" class="" onclick="breakDown()" style="display:none">拆卸</button>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">下属物品</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="followArr" disabled value="">
+            </div>
+            <div class="weui-cell__fd">
+                <button style="margin-left: 1rem;" class="" onclick="make()" style="display:none">组装</button>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">备注</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="rem" value="<%= data.rem %>">
+            </div>
+        </div>
+    </div>
+    <div class="btn-groups">
+        <button class="k-primary sub" onclick="sub()" style="display:none">提交</button>
+        <!-- <button style="margin-left: 1rem;" class="" onclick="make()" style="display:none">组装</button>
+        <button style="margin-left: 1rem;" class="" onclick="breakDown()" style="display:none">拆卸</button> -->
+    </div>
+    <div class="js_dialog" id="iosDialog1" style="opacity: 1;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script type="text/javascript">
+    var data = JSON.parse('<%- JSON.stringify(data)%>');
+    var numbering = '<%- numbering %>';
+    var subFollowArr = [];
+    $('input[name=mainArr]').val(data.mainArr.join());
+    $('input[name=followArr]').val(data.followArr.join());
+    if (data.mainArr.length===0) $('input[name=mainArr]').parents('.weui-cell').hide();
+    $('button').kendoButton().show();
+    $('select[name=type] option').each(function(items){
+        if($(this).html()==data.type){
+            $(this).prop('selected','selected');
+        }
+    });
+    $('select[name=location] option').each(function(items){
+        if($(this).html()==data.location){
+            $(this).prop('selected','selected');
+        }
+    });
+    $('#showDatePicker').on('click', function () {
+        var that = this;
+        var text = $(this).html();
+        if(text!=''){
+            var y = text.split('-')[0];
+            var m = text.split('-')[1];
+            var d = text.split('-')[2];
+            var defaultValue = [y,m,d];
+        }else{
+            var defaultValue = [new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate()];
+        }
+        weui.datePicker({
+            start: 1950,
+            end: new Date().getFullYear(),
+            defaultValue: defaultValue,
+            onConfirm: function (result) {
+                var yy = result[0];
+                var mm = result[1]<10?'0'+result[1]:result[1];
+                var dd = result[2]<10?'0'+result[2]:result[2];
+                var m_str = yy+'-'+mm+'-'+dd;
+                $(that).html(m_str);
+            }
+        });
+    });
+
+    function sub() {
+        var borrowExpectTime = $('.borrowExpectTime').text();
+        if(!borrowExpectTime) borrowExpectTime = null;
+        var params = {
+            id: data.id,
+            type: $('select[name=type] option:selected').val(),
+            location: $('select[name=location] option:selected').val(),
+            borrowExpectTime: borrowExpectTime,
+            rem: $('input[name=rem]').val(),
+            good_id: data.ownerId,
+        };
+        if ($('input[name=mainArr]').val()=='') params.needRemove = true;
+        if ($('input[name=followArr]').val()!='') params.subFollowArr = subFollowArr.join();
+        $.ajax({
+            url: route('gc/updateEditBorrow'),
+            type: 'put',
+            data: params,
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.href = route('g/'+numbering);
+                },2000);
+            }
+        });
+    }
+
+    function make(){
+        scan(function(numbering){
+            $.ajax({
+                url: route('gc/addMainId'),
+                type: 'put',
+                data: {
+                    mainId: data.ownerId,
+                    goodsNumbering: numbering
+                },
+                dataType:"json",
+                success: function(res) {
+                    if (res.code === 200) {
+                        if (subFollowArr.indexOf(res.data.id) !== -1) return;
+                        subFollowArr.push(res.data.id);
+                        var v = $('input[name=followArr]').val();
+                        var arr = [], idArr = [];
+                        try {
+                            arr = v.split(',');
+                        } catch (e) {
+                            arr = [];
+                        }
+                        arr.forEach(function(items, index){
+                            if (items) idArr.push(items);
+                        });
+                        idArr.push(res.data.goodsName);
+                        $('input[name=followArr]').val(idArr.join());
+                    } else {
+                        wxToast(res.msg);
+                    }
+                }
+            });
+        });
+    }
+
+    function breakDown(){
+        $('input[name=mainArr]').val('');
+        // $('#iosDialog1').show();
+        // var str = '<div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>'+
+        //             '<div class="weui-dialog__bd">确认拆卸？</div>'+
+        //             '<div class="weui-dialog__ft">'+
+        //                     '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="subBreak();">是</a>'+
+        //                     '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="cancel();">否</a>'+
+        //                     '</div>';
+        // $('.weui-dialog').html(str);
+    }
+
+    function subBreak(){
+        $.ajax({
+            url: route('gc/removeMainId'),
+            type: 'put',
+            data: {
+                id: data.good_id
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                cancel();
+            }
+        });
+    }
+
+    function cancel(){
+        $('#iosDialog1').hide();
+    }
+
+    function scan(cb){
+        var page = window.location.href;
+        var timestamp = Date.now();
+        $.ajax({
+            url: route('common/proxyScan'),
+            type: 'get',
+            data: {
+                page: page,
+                timestamp: timestamp
+            },
+            dataType:"json",
+            success: function(res) {
+                var config = {};
+                config.appId = res.data.appId;
+                config.signature = res.data.signature;
+                config.nonceStr = res.data.nonceStr;
+                config.timestamp = timestamp;
+                config.jsApiList = ['scanQRCode'];
+                wx.config(config);
+                wx.ready(function(){
+                    wx.scanQRCode({
+                        desc: 'scanQRCode desc',
+                        needResult: 1, 
+                        scanType: ["qrCode",'barCode'],
+                        success: function (res) {
+                            try{
+                                var resultStr = res.resultStr;
+                                var numbering = resultStr.split('/')[resultStr.split('/').length-1];
+                                cb(numbering);
+                            }catch(e){
+                                wxToast('非法二维码');
+                            }
+                        },
+                        error: function(err){
+                            if(err.errMsg.indexOf('function_not_exist') > 0){
+                                alert('版本过低请升级');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+</script>
+</html>

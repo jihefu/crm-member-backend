@@ -1,0 +1,81 @@
+.my-dialog {
+    margin-left: -325px;
+}
+.form-group label {
+	width: 10%;
+    vertical-align: top;
+    padding-left: 12px;
+}
+.form-control {
+    width: 88%;
+    display: inline-block;
+    resize: none;
+}
+.tags,.doc,.resources {
+	width: 88%;
+	height: 200px;
+	border: 1px dashed #999;
+	border-radius: 4px;
+	display: inline-block;
+	overflow: auto;
+}
+.add-tag {
+	width: 80px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 3px;
+    padding: 10px;
+    background: #fff;
+    color: #999;
+    border: 1px dashed;
+}
+.add-tag:hover {
+	cursor: pointer;
+}
+.input-group li {
+	display: inline-block;
+	margin-right: 25px;
+}
+input[type=checkbox] {
+	margin-right: 5px;
+}
+::-webkit-input-placeholder {
+	font-size: 12px;
+}
+::-ms-input-placeholder {
+	font-size: 12px;
+}
+::-moz-input-placeholder {
+	font-size: 12px;
+}
+.my_tag {
+	width: 80px;
+	border-radius: 3px;
+    border: 1px solid #999;
+}
+.item {
+	width: auto;
+	/*max-width: 120px;*/
+}
+.doc a {
+	text-decoration: none;
+	color: #fff;
+}
+.modal-content input[type=file] {
+    display: inline-block;
+    width: 90px;
+    opacity: 0;
+    position: absolute;
+    right: 142px;
+    z-index: 2;
+}
+.upload {
+	position: absolute;
+    right: 142px;
+}
+.modal-body {
+    max-height: 190px;
+    overflow: auto;
+}

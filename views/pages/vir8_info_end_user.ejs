@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title><%= pageTitle %></title>
+	<%- include("../includes/styles.ejs") %>
+	<!-- <link href="../styles/mobiscroll.2.13.2.css" rel="stylesheet" /> -->
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<style>
+		#grid {
+			min-height: 1rem;
+		}
+	</style>
+</head>
+<body data-sn="<%= result.serialNo %>">
+<div id="wrap">
+	<div id="main">
+		<a href="<%=pageHref%>">
+			<div class="img">
+				<img src="<%=imgSrc%>" height="100%" alt="">
+			</div>
+		</a>
+		<div id="loading" style="text-align:center;">
+			<i class="weui-loading weui-icon_toast"></i>
+		</div>
+		<div id="grid" data-role="grid" data-bind="source: products"></div>
+		<div class="btn-groups">
+			
+		</div>
+	</div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<!-- <script src="../js/vir8_info_end_user.js" type="text/javascript"></script> -->
+<script type="text/javascript">
+	var data = JSON.parse('<%- JSON.stringify(result)%>');
+	checkSnAccess(data.data.serialNo);
+	setTimeout(function(){
+		$('#loading').remove();
+		var height = window.innerHeight;
+		var width = window.innerWidth;
+		var img_height = width/2.68;
+		img_height = img_height > 320 ? 320 : img_height;
+		var btnHeight = height > 900 ? 160 : 80;
+		$('.img,.img img').height(img_height);
+		var table_height = height-img_height-btnHeight;
+
+		mid = data.data.machineNo;
+		sn = data.data.serialNo;
+		// 传导航的href和name
+		var con_arr = [];
+		var con_obj = {};
+		con_obj.path = route('service/products');
+		con_obj.name = '产品服务中心';
+		con_arr.push(con_obj);
+		nav(con_arr);
+
+		var arr = [];
+		for (var key in data.label) {
+			var o = {
+				key: key,
+				name: data.label[key].name,
+				readonly: 'readonly',
+				type: 'input',
+				arr: '',
+				val: data.label[key].val
+			};
+			arr.push(o);
+		}
+		$("#grid").kendoGrid({
+			height: table_height,
+			columns:[
+				{
+				field: "name",
+				title: "产品项目"
+				},
+				{
+				field: "val",
+				title: "产品参数",
+				}
+			],
+			dataSource: {
+				data: arr
+			}
+		});
+	}, 300);
+	function checkSnAccess(sn) {
+		$.ajax({
+			url:route('service/burnDisk/checkSnAccess'),
+			type:'get',
+			dataType:'json',
+			timeout:30000,
+			data:{
+				sn: sn
+			},
+			success:function(res){
+				if (res.code == 200) {
+					$('#wrap').prepend('<div id="downloadInstallDisk" class="iconfont icon-Addtodownload-copy" onclick="downloadInstallDisk();" style="width: 2rem; height: 2rem;position: fixed;left: 0.8rem;top: 0.6rem;z-index: 99;color: #3385ff;font-size: 1.4rem;"></div>');
+				}
+			}
+		});
+	}
+
+	function downloadInstallDisk() {
+		var sn = data.data.serialNo;
+		wxLoadToast('打包中...</br>大约需要2分钟');
+		$.ajax({
+			url:route('service/cloudDisk/download/' + sn),
+			type:'get',
+			dataType:'json',
+			timeout:30000,
+			success:function(res){
+				$('#loadingToast').remove();
+				if (res.code == 200) {
+					window.open(route('open/burnDisk/download/' + res.data));
+				} else {
+					wxToast(res.msg);
+				}
+			}
+		});
+	}
+</script>
+</html>

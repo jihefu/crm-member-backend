@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>员工管理</title>
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style>
+		.weui-cell__ft:after {
+		    content: " ";
+		    display: inline-block;
+		    height: 0.375rem;
+		    width: 0.375rem;
+		    border-width: 0.125rem 0.125rem 0 0;
+		    border-color: #C8C8CD;
+		    border-style: solid;
+		    -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+		    transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+		    position: relative;
+		    top: -0.125rem;
+		    position: absolute;
+		    top: 50%;
+		    margin-top: -0.25rem;
+		    right: 1.5rem;
+		}
+    </style>
+</head>
+<body>
+	<div class="weui-panel weui-panel_access">
+        <div class="weui-panel__hd">员工列表</div>
+        <div class="weui-panel__bd">
+        	<% for(let i = 0;i < result.length;i++ ){ %>
+	            <span class="weui-media-box weui-media-box_appmsg" onclick="dynamic(this);" data-openid="<%= result[i].open_id %>" data-phone="<%= result[i].phone %>">
+	                <div class="weui-media-box__hd">
+	                	<% if(result[i].portrait){ %>
+	                    	<img class="weui-media-box__thumb" src="../img/member/<%= result[i].portrait %>" alt="">
+	                    <% }else{ %>
+							<img class="weui-media-box__thumb" src="../img/default_member2.jpg" alt="">
+	                    <% } %>
+	                </div>
+	                <div class="weui-media-box__bd">
+						<h4 class="weui-media-box__title"><%= result[i].name %></h4>
+						<p class="weui-media-box__desc">手机: 
+							<span>
+								<a href="tel:<%= result[i].phone %>"><%= result[i].phone %></a>
+							</span>
+						</p>
+	                    <p class="weui-media-box__desc">职位：<%= result[i].job %>
+	                    <% if(!result[i].checked){ %>
+							<span>（未认证）</span>
+	                    <% } %>
+	                    </p>
+	                </div>
+	                <div class="weui-cell__ft"></div>
+	            </span>
+            <% } %>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+	function dynamic(obj){
+		var openid = $(obj).attr('data-openid');
+		window.location.href = route('member/dynamic/'+openid);
+	}
+</script>
+</html>

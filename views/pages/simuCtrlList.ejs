@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>e仿真</title>
+    <%- include("../includes/styles.ejs") %>
+    <link href="../styles/index.css" rel="stylesheet" />
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+    <style>
+        .content li {
+            border-top-color: #eee;
+        }
+
+        .content li .weui-cell__hd img {
+            width: 5.5rem;
+            height: 6.625rem;
+            margin-right: 0.3125rem;
+            display: block;
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <% if (list.length === 0) { %>
+        <div class="loadmore">
+            <div class="weui-loadmore weui-loadmore_line">
+                <span class="weui-loadmore__tips">暂无可用控制器</span>
+            </div>
+        </div>
+        <% } else { %>
+        <ul style="border-top: 1px solid #eee; border-bottom: 1px solid #eee;"></ul>
+        <% for (var i = 0; i < list.length; i++) { %>
+        <li class="weui-cell weui-cell_access" style="padding-left:0px;"
+            onclick="handleSimuCtrlClick('<%= list[i].spaUrl %>', '<%= list[i].serialNo %>', '<%= list[i].machineModel %>')">
+            <div class="weui-cell__hd">
+                <img src="<%= list[i].album%>" alt="">
+            </div>
+            <div class="weui-cell__bd">
+                <p>机型：<%= list[i].machineModel %></p>
+                <p>序列号：<%= list[i].serialNo %></p>
+                <% if (list[i].workState == 1) { %>
+                <p>状态：<span style="color: rgb(76, 175, 80);">空闲</span></p>
+                <% } else { %>
+                <p>状态：<span style="color: #1890ff;">使用中</span></p>
+                <p>操作者：<%= list[i].nickname %></p>
+                <% } %>
+            </div>
+            <div class="weui-cell__ft">
+            </div>
+        </li>
+        <% } %>
+        </ul>
+        <% } %>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.3.0.js"></script>
+<script>
+    var unionid = '<%= unionid %>';
+    function handleSimuCtrlClick(spaUrl, serialNo, machineModel) {
+        window.location.href = spaUrl + '?unionid=' + unionid + '&sn=' + serialNo + '&machineModel=' + machineModel;
+    }
+
+    $(function() {
+        // 监听返回刷新
+        var state = {
+            title: "",
+            url: "#"
+        };
+        window.history.pushState(state, state.title, state.url);
+        window.addEventListener("popstate", function (e) {
+            window.location.reload();
+        }, false);
+    });
+</script>
+
+</html>

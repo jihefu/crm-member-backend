@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title><%= title %></title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        #wrap {
+            width: 100%;
+            overflow: auto;
+            flex: 1;
+        }
+        #btn {
+            height: 3rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        #btn .weui-btn_warn {
+            width: 90%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap"></div>
+    <div id="btn">
+        <a href="javascript:;" class="weui-btn weui-btn_warn" onclick="delFile();">删除</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var jsonStr = JSON.parse('<%- JSON.stringify(result) %>');
+    var delUrl = '<%- delUrl %>';
+    var unionid = '<%- unionid %>';
+    $('#wrap').html('<pre>'+JSON.stringify(jsonStr, null, 4)+'</pre>');
+
+    function delFile() {
+        var r = window.confirm('删除后不可恢复，确认继续？');
+        if (!r) {
+            return;
+        }
+        $.ajax({
+            url: delUrl,
+            type: 'delete',
+            dataType:"json",
+            headers: {
+                primaryunionid: unionid,
+            },
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function() {
+                    window.location.href = route('member/mySource');
+                }, 1000);
+            },
+            error: function(e) {
+                wxToast(e.responseJSON.msg);
+            }
+        });
+    }
+</script>
+
+</html>

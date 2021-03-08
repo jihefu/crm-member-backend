@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>签到</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/responsive.css">
+	<link rel="stylesheet" href="../styles/member_sign.css">	 
+</head>
+<body>
+	<div class="checkin">
+		
+	</div>
+	<!-- <p>注：每天只能签到1次，每次签到获得积分1分。</p> -->
+</body>
+<script>
+	var dateArray = JSON.parse('<%- JSON.stringify(m_sign_arr)%>');
+</script>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/member_sign.js"></script>
+</html>

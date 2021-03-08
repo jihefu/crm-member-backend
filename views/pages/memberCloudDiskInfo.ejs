@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title><%= info.fileName %></title>
+    <%- include("../includes/styles.ejs") %>
+    <link href="../styles/index.css" rel="stylesheet" />
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+    <style>
+        .weui-cell__bd {
+            min-width: 9rem;
+        }
+        .weui-footer__text {
+            color: #999;
+            text-align: center;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells__title">详情</div>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>类型</p>
+            </div>
+            <div class="weui-cell__ft"><%= info.type %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>文件名</p>
+            </div>
+            <div class="weui-cell__ft"><%= info.fileName %></div>
+        </div>
+        <% if (info.version) { %>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>版本号</p>
+                </div>
+                <div class="weui-cell__ft"><%= info.version %></div>
+            </div>
+        <% } %>
+        <% if (info.type != '安装盘') { %>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>尺寸</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <% if (info.size < 1024 * 1024) { %>
+                        <%= (info.size / 1024).toFixed(2) %> KB
+                    <% } else { %>
+                        <%= (info.size / 1024 / 1024).toFixed(2) %> MB
+                    <% } %>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>定制</p>
+                </div>
+                <div class="weui-cell__ft"><%= info.remark %></div>
+            </div>
+        <% } %>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>上传人</p>
+            </div>
+            <div class="weui-cell__ft"><%= info.uploadPerson %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>更新时间</p>
+            </div>
+            <div class="weui-cell__ft"><%= info.uploadTime %></div>
+        </div>
+        <% if (info.type != '安装盘') { %>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>附言</p>
+                </div>
+                <div class="weui-cell__ft"><%= info.remark %></div>
+            </div>
+        <% } %>
+    </div>
+    <% if (info.suffixName === '.installDisk') { %>
+        <div class="weui-cells__title">补丁表</div>
+            <div class="weui-cells">
+                <% for (var i = 0; i < info.installDiskInfo.dependencies.length; i++ ) { %>
+                    <div onclick="downloadDependency('<%= info.installDiskInfo._id %>', '<%= info.installDiskInfo.dependencies[i].id %>', '<%= info.installDiskInfo.dependencies[i].type %>');" class="weui-cell weui-cell_access">
+                        <div class="weui-cell__bd">
+                            <p><%= info.installDiskInfo.dependencies[i].name %></p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <span style="margin-right: 0.5rem;"><%= info.installDiskInfo.dependencies[i].version %></span>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    <% } %>
+    <% if (info.suffixName === '.gallery') { %>
+        <div style="margin-top: 2rem;">
+            <% for (var i = 0; i < info.picList.length; i++) { %>
+                <div title="下载" style="width: 10rem; cursor: pointer; float: left; padding: 0.6rem;">
+                    <% if (info.picList[i].album.indexOf('.mp4') === -1) { %>
+                        <img style="width: 100%" onclick="downloadFile('<%= info.type %>', '<%= info._id %>', '<%= info.picList[i].id %>')" src="<%= httpSrc %>/img/gallery/list_<%= info.picList[i].album %>" />
+                    <% } else { %>
+                        <video style="width: 100%" onclick="downloadFile('<%= info.type %>', '<%= info._id %>', '<%= info.picList[i].id %>')" controls="controls" src="<%= httpSrc %>/img/gallery/<%= info.picList[i].album %>"></video>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div style="width: 80%; margin: 2rem auto;">
+            <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="downloadFile('<%= info.type %>', '<%= info._id %>')">下载</a>
+            <p class="weui-footer__text">提示：请使用电脑版微信下载</p>
+        </div>
+    <% } %>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.3.0.js"></script>
+<script>
+    function downloadFile(type, _id, picId) {
+        var src = 'service/cloudDisk/download/' + _id;
+        if (picId) {
+            src += '/' + picId;
+        }
+        src = route(src);
+        if (type == '安装盘') {
+            wxLoadToast('打包中...</br>大约需要2分钟');
+        }
+        $.ajax({
+            url: src,
+            type: 'get',
+            dataType: 'json',
+            timeout: 120000,
+            success: function(res) {
+                $('#loadingToast').remove();
+                if (res.code == 200) {
+                    window.open(route('open/burnDisk/download/' + res.data));
+                } else {
+                    wxToast(res.msg);
+                }
+            },
+        });
+    }
+
+    function downloadDependency(_id, id, type) {
+        $.ajax({
+            url: route('service/burnDisk/buildDependency/' + _id),
+            type: 'post',
+            dataType: 'json',
+            timeout: 3000,
+            data: {
+                fileId: id,
+                type: type,
+            },
+            success: function(res) {
+                if (res.code == 200) {
+                    window.open(route('open/burnDisk/download/' + res.data));
+                } else {
+                    wxToast(res.msg);
+                }
+            },
+        });
+    }
+</script>
+
+</html>

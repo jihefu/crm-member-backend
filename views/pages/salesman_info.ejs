@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>业务负责人</title>
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <style type="text/css">
+        .cd_portrait img {
+            position: static;
+        }
+        .cd_portrait {
+            float: none;
+            overflow: hidden;
+        }    
+        .weui-media-box__bd {
+            padding-left: 1rem;
+        }
+        #main {
+            background: #fff;
+            padding-bottom: 0.8rem;
+        }
+        .weui-media-box__desc {
+            margin-top: 0.3125rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div class="weui-media-box weui-media-box_appmsg">
+            <div class="weui-media-box__hd">
+                <div class="cd_portrait">
+                    <% if(result.album==''||result.album=='null'||result.album==null){ %>
+                        <img src="../img/default_member2.jpg" alt="default">
+                    <% }else{ %>
+                        <img src="../img/<%= result.album %>" alt="<%= result.album %>">
+                    <% } %>
+                </div>
+            </div>
+            <div class="weui-media-box__bd">
+                <!--这里换字体颜色和文字-->
+                <h4 class="weui-media-box__title"><%= result.user_name %></h4>
+                <p class="weui-media-box__desc"><%= result.work_phone %></p>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells" style="margin-top:20 ">
+        <a class="weui-cell weui-cell_access" href="tel:<%= result.work_phone %>">
+            <div class="weui-cell__hd">
+                <i class="iconfont icon-phone" style="color:#4fc3f7"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p>拨打电话</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </a>
+        <a class="weui-cell weui-cell_access" href="javascript:;" onclick="sendSMS();">
+            <div class="weui-cell__hd">
+                <i class="iconfont icon-weibiaoti1" style="color:#4fc3f7;position: relative;top: -2px;"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p>免费发送短信</p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </a>
+    </div>
+ </body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function sendSMS(){
+        var phone = $('.weui-media-box__desc').text();
+        window.location.href = route('member/sendSMS?phone='+phone);
+    }
+</script>
+</html>

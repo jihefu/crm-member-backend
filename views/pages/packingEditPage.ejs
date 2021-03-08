@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>装箱单</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+    <style type="text/css">
+        .weui-btn_mini {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells__title">
+        <div>
+            <span>控制器数量：</span>
+            <span class="presentLen"></span>
+        </div>
+    </div>
+    <div class="snList">
+
+    </div>
+    <div class="weui-cells__title">
+        <div>
+            <span>其它序列号数量：</span>
+            <span class="otherPresentLen"></span>
+        </div>
+    </div>
+    <div class="otherSnList">
+
+    </div>
+    <div style="text-align: center;">
+        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" onclick="updatePack();">提交</a>
+        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_warn" onclick="removePack();">删除</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script>
+    var id = '<%-id%>';
+    var snArr = [];
+    var otherSnArr = [];
+
+    getItem();
+
+    function getItem() {
+        $.ajax({
+            url: route('contract/showPacking'),
+            type: 'get',
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (res) {
+                try {
+                    snArr = res.data.sn.split(',').filter(items => items);
+                } catch (e) {
+                    snArr = [];
+                }
+                try {
+                    otherSnArr = res.data.otherSn.split(',').filter(items => items);
+                } catch (e) {
+                    otherSnArr = [];
+                }
+                renderList();
+                renderOtherList();
+            }
+        });
+    }
+
+    function renderList() {
+        $('.presentLen').html(snArr.length);
+        var str = '';
+        for (var i = 0; i < snArr.length; i++) {
+            str += '<div class="weui-cell weui-cell_swiped">' +
+                '<div class="weui-cell__bd" style="transform: translateX(0px)">' +
+                '<div class="weui-cell">' +
+                '<div class="weui-cell__bd" style="height: 2rem;">' +
+                '<p>'+snArr[i]+'</p>' +
+                '</div>' +
+                '<div class="weui-cell__ft">' +
+                '<p class="iconfont icon-form-del" onclick="del(\''+snArr[i]+'\')"></p>' +
+                '</div>' +  
+                '</div>' +
+                '</div>' +
+                '<div class="weui-cell__ft">' +
+                '<a class="weui-swiped-btn weui-swiped-btn_warn" href="javascript:">删除</a>' +
+                '</div>' +
+                '</div>';
+        }
+        if (str) {
+            $('.snList').html(str);
+        } else {
+            $('.snList').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+        }
+    }
+
+    function renderOtherList() {
+        $('.otherPresentLen').html(otherSnArr.length);
+        var str = '';
+        for (var i = 0; i < otherSnArr.length; i++) {
+            str += '<div class="weui-cell weui-cell_swiped">' +
+                '<div class="weui-cell__bd" style="transform: translateX(0px)">' +
+                '<div class="weui-cell">' +
+                '<div class="weui-cell__bd" style="height: 2rem;">' +
+                '<p>'+otherSnArr[i]+'</p>' +
+                '</div>' +
+                '<div class="weui-cell__ft">' +
+                '<p class="iconfont icon-form-del" onclick="otherDel(\''+otherSnArr[i]+'\')"></p>' +
+                '</div>' +  
+                '</div>' +
+                '</div>' +
+                '<div class="weui-cell__ft">' +
+                '<a class="weui-swiped-btn weui-swiped-btn_warn" href="javascript:">删除</a>' +
+                '</div>' +
+                '</div>';
+        }
+        if (str) {
+            $('.otherSnList').html(str);
+        } else {
+            $('.otherSnList').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+        }
+    }
+
+    function removePack() {
+        var r = window.confirm('确定删除？');
+        if (!r) {
+            return;
+        }
+        $.ajax({
+            url: route('contract/delPacking'),
+            type: 'delete',
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    var contractId = GetRequest('contractId');
+                    window.location.href = route('contract/packingPage/' + contractId);
+                }, 1000);
+            }
+        });
+    }
+
+    function updatePack() {
+        $.ajax({
+            url: route('contract/updatePacking'),
+            type: 'put',
+            dataType: 'json',
+            data: {
+                id: id,
+                snArr: JSON.stringify(snArr),
+                otherSnArr: JSON.stringify(otherSnArr),
+            },
+            success: function (res) {
+                wxToast(res.msg);
+                if (res.code == 200) {
+                    setTimeout(function(){
+                        var contractId = GetRequest('contractId');
+                        window.location.href = route('contract/packingPage/' + contractId);
+                    }, 1000);
+                }
+            }
+        });
+    }
+
+    function del(sn) {
+        var newArr = [];
+        for (var i = 0; i < snArr.length; i++) {
+            if (snArr[i] != sn) {
+                newArr.push(snArr[i]);
+            }
+        }
+        snArr = newArr;
+        renderList();
+    }
+
+    function otherDel(sn) {
+        var newArr = [];
+        for (var i = 0; i < otherSnArr.length; i++) {
+            if (otherSnArr[i] != sn) {
+                newArr.push(otherSnArr[i]);
+            }
+        }
+        otherSnArr = newArr;
+        renderOtherList();
+    }
+
+</script>
+
+</html>

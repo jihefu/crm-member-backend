@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>对话记录</title>
+    <%- include("../includes/styles.ejs") %>
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .layui-timeline {
+            margin-top: 1rem;
+            margin-left: 0.6rem;
+        }
+        .weui-btn_primary {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="layui-timeline">
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">已收件</h3>
+            </div>
+        </li>
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">已发件</h3>
+            </div>
+        </li>
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">待发件</h3>
+            </div>
+        </li>
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">维修检验中</h3>
+            </div>
+        </li>
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">维修中</h3>
+            </div>
+        </li>
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">送修检验中</h3>
+            </div>
+        </li>
+        <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis"></i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title">已登记</h3>
+            </div>
+        </li>
+        <!-- <% for (var i = 0; i < list.length; i++) { %>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis"></i>
+                <div class="layui-timeline-content layui-text">
+                    <p><%= list[i].send_time %></p>
+                    <p><%= list[i].name %>：<%= list[i].content %></p>
+                </div>
+            </li>
+        <% } %> -->
+    </ul>
+    <div style="padding: 1rem;">
+        <textarea id='content' placeholder="请输入内容" class="layui-textarea"></textarea>
+        <a class="weui-btn weui-btn_primary" href="javascript:" onclick="sendMsg();">确定</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var sn = '<%= sn %>';
+    var repair_no = '<%= repair_no %>';
+    var deliver_state = '<%= deliver_state %>';
+    var list = JSON.parse('<%- JSON.stringify(list)%>');
+    var stateArr = ['送修检验中', '维修中', '维修检验中', '待发件', '已发件', '已收件'];
+
+    $('ul li').each(function(i) {
+        if ($(this).find('.layui-timeline-title').html() === deliver_state) {
+            $('ul li:lt('+(i)+')').hide();
+        }
+    });
+
+    $(function() {
+        for (var i = 0; i < list.length; i++) {
+            var repair_state = list[i].repair_state;
+            var send_time = list[i].send_time;
+            var name = list[i].name;
+            var content = list[i].content;
+            var index = stateArr.indexOf(repair_state);
+            $('li').eq(5-index).find('.layui-timeline-content').append(`<p>【${send_time}】${name}：${content}</p>`);
+        }
+    });
+
+    function sendMsg() {
+        var content = $('#content').val();
+        if (!content) {
+            return;
+        }
+        $.ajax({
+            url: route('repair/addRepairMsg'),
+            type: 'post',
+            data: {
+                sn: sn,
+                content: content,
+                repair_no: repair_no,
+            },
+            dataType:"json",
+            success: function(res) {
+                window.location.reload();
+            }
+        });
+    }
+</script>
+</html>

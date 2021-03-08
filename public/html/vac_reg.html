@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>产品注册</title>
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<link href="../styles/mobiscroll.2.13.2.css" rel="stylesheet" />
+	<link href="../styles/weui.min.css" rel="stylesheet" />
+	<!-- <link href="../styles/bootstrap.min.css" rel="stylesheet" /> -->
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link href="../styles/common2.css" rel="stylesheet" />
+	<link href="../styles/vac_reg.css" rel="stylesheet" />
+</head>
+<body>
+<div id="wrap">
+	<!-- <header>
+		<div class="navbar">
+			<p class="header-title">产品注册</p>
+			<a href="javascript:void(0);" onclick="back();" class="iconfont icon-back header-back"></a>
+		</div>
+	</header> -->
+	<div id="main">
+		<!-- <div class="bar-line">
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+		</div> -->
+		<div id="dialog"></div>
+		<div class="form">
+			<p>
+				<label>序列号</label>
+				<input type="text" name="sn" oninput="searchSN();">
+			</p>
+			<p>
+				<label>机器号</label>
+				<input type="text" name="mid">
+			</p>
+			<p>
+				<label>
+					<input type="radio" name="reg" value="0" checked>
+					<span>永久注册</span>
+				</label>
+				<label>
+					<input type="radio" name="reg" value="1">
+					<span>有限注册</span>
+				</label>
+			</p>
+			<p class="reg_time">
+				<label>
+					<span>有效期至</span>
+					<input type="text" name="time" id="useDate">
+				</label>
+			</p>
+			<p>
+				<button class="k-primary" onclick="sub()" style="display:none">提交</button>
+			</p>
+		</div>
+		<div class="event">
+			<p style="text-align:center">暂无注册记录</p>
+		</div>
+	</div>
+</div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/mobiscroll.2.13.2.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<!-- <script src="../js/bootstrap.min.js" type="text/javascript"></script> -->
+<!-- <script src="../js/doT.min" type="text/javascript"></script> -->
+<script src="../js/vac_reg.js" type="text/javascript"></script>
+</html>

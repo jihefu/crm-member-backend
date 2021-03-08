@@ -1,0 +1,19 @@
+ .msg {
+    margin-top: 0.625rem;
+    text-indent: 1.625rem;
+}
+.weui-media-box__desc {
+    margin-top: 0.5rem;
+}
+.no-history {
+    text-align: center;
+}
+.weui-media-box_text {
+	font-size: 1rem;
+}
+.weui-media-box__title {
+    font-size: 1.0625rem;
+}
+.weui-media-box__desc {
+    font-size: 0.8125rem;
+}

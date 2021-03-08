@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= model %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+    <style>
+        .weui-footer {
+            width: 100%;
+            position: fixed;
+            bottom: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>序列号</p>
+            </div>
+            <div class="weui-cell__ft"><%= sn %></div>
+        </div>
+        <!-- <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>机器号</p>
+            </div>
+            <div class="weui-cell__ft"><%= machineNo %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>有效期</p>
+            </div>
+            <div class="weui-cell__ft"><%= validTime %></div>
+        </div> -->
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>合同号</p>
+            </div>
+            <div class="weui-cell__ft"><%= contract_no %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>购买日期</p>
+            </div>
+            <div class="weui-cell__ft"><%= purchase_time %></div>
+        </div>
+        <% if (bind_unionid) { %>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>保修至</p>
+                </div>
+                <div class="weui-cell__ft"><%= valid_date %></div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>用户</p>
+                </div>
+                <div class="weui-cell__ft"><%= name %></div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>手机</p>
+                </div>
+                <div class="weui-cell__ft"><%= phone %></div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>安装地址</p>
+                </div>
+                <div class="weui-cell__ft"><%= addr %></div>
+            </div>
+        <% } %>
+    </div>
+    <% if (!bind_unionid) { %>
+        <div class="weui-btn-area">
+            <a class="weui-btn weui-btn_primary" onclick="bind('<%= sn %>');">填写电子保修卡</a>
+        </div>
+    <% } %>
+    <% if (bind_unionid) { %>
+        <div class="weui-footer">
+            <p class="weui-footer__text">已被他人绑定？<a href="javascript:void(0);" onclick="appeal('<%= sn %>');">点击这里申诉</a></p>
+        </div>
+    <% } %>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var reg_unionid = '<%= bind_unionid %>';
+
+    function bind(sn) {
+        window.location.href = route('retail/vir/fill/' + sn);
+    }
+
+    function appeal(sn) {
+        window.location.href = route('retail/vir/appeal/' + sn);
+    }
+</script>
+</html>

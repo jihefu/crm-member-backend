@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>群发消息</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" type="text/css" href="../styles/member_select.css">
+</head>
+<body>
+<div class="weui-cells">
+    <div class="weui-cell weui-cell_select">
+        <div class="weui-cell__bd">
+            <select class="weui-select" name="select1">
+                <option selected="" value="">--选择--</option>
+                <option value="allMember">所有人</option>
+                <option value="info">信息不完善的用户</option>
+                <option value="portrait">缺头像的用户</option>
+                <!-- <option value="">有消息未读的用户</option> -->
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <input class="weui-input" name="search" type="text" placeholder="请输姓名，电话，公司">
+        </div>
+    </div>
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary"  id="showTooltips" onclick="cd_modal()">搜索</a>
+    </div>
+</div>
+
+    <!--选中的用户-->
+<div class="weui-cells cd_select_box" >
+
+</div>
+
+
+<div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltipes" onclick="sub();">确定</a>
+</div>
+
+    <!--添加框-->
+<div id="cd_modal" class="modal cd_hide">
+    <div class="weui-cells weui-cells_checkbox cd_box cd_margin" id="cd_xian">
+        
+    </div>
+
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary cd_modal_confim" href="javascript:" onclick="cd_select()" id="showTooltip1">确定</a>
+        <a class="weui-btn weui-btn_primary cd_modal_all" href="javascript:" onclick="cd_all()" id="showTooltip2">全选</a>
+    </div>
+</div>
+
+
+
+
+<%- include("../includes/scripts.ejs") %>
+<script type="text/javascript" src="../js/member_select.js"></script>
+</body>
+</html>

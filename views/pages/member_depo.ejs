@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>服务保证金</title>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/responsive.css">
+</head>
+<body>
+    <% if (WalletDepos.length === 0) { %>
+        <div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>
+    <% } else { %>
+        <div class="weui-tab__panel">
+            <div class="weui-form-preview">
+                <div class="weui-form-preview__hd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">保证金总金额</label>
+                        <em class="weui-form-preview__value"><%= amount %></em>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">保证金总数量</label>
+                        <em class="weui-form-preview__value"><%= WalletDepos.length %></em>
+                    </div>
+                </div>
+            </div>
+            <div id="wrap">
+                <div class="weui-cells__title">保证金编号</div>
+                <div class="weui-cells">
+                    <% for (let i = 0; i < WalletDepos.length; i++) { %>
+                        <a class="weui-cell weui-cell_access" href="<%- url %>member/depo/<%= WalletDepos[i].contract_no %>">
+                            <div class="weui-cell__bd">
+                                <p><%= WalletDepos[i].contract_no %></p>
+                            </div>
+                            <div class="weui-cell__ft"><%= WalletDepos[i].amount %>元</div>
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</body>
+<%- include("../includes/scripts.ejs") %>
+</html>

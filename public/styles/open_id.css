@@ -1,0 +1,9 @@
+.weui-cells {
+	font-size: 1.0625rem;
+}
+.weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
+    font-size: 1rem;
+}
+.weui-btn {
+	font-size: 1.125rem;
+}

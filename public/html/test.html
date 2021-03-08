@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script>
+    const iceServer = {
+        iceServers: [
+            {
+                url: 'stun:stun.l.google.com:19302'
+            },
+            {
+                url: 'turn:116.62.14.243:3478',
+                username: 'u1',
+                credential: 'p1'
+            }
+        ]
+    };
+    const PeerConnection = (window.PeerConnection || window.webkitPeerConnection00 || window.webkitRTCPeerConnection || window.mozRTCPeerConnection);
+    
+    try {
+        const peerConnection = new PeerConnection(iceServer);
+    } catch (e) {
+        console.log(e);
+    }
+    
+    const onicecandidate = handleIceCandidate;
+    const onaddstream = handleRemoteStreamAdded;
+    const onremovestream = handleRemoteStreamRemoved;
+
+    function handleIceCandidate(msg) {
+        console.log(msg);
+    }
+
+    function handleRemoteStreamAdded() {
+
+    }
+
+    function handleRemoteStreamRemoved() {
+
+    }
+</script>
+
+</html>

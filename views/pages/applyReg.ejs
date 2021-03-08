@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title><%= title%></title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/applyReg.css" rel="stylesheet" />
+</head>
+<body>
+	<div id="wrap">
+	<header>
+		<div class="navbar">
+			<p class="header-title">申请注册</p>
+			<a href="javascript:void(0);" onclick="back();" class="iconfont icon-back header-back"></a>
+		</div>
+	</header>
+	<div id="main">
+		<div class="form">
+			<p>
+				<label>申请人</label>
+				<input type="text" style="margin-left:15px">
+			</p>
+			<p>
+				<label>单位名称</label>
+				<input type="text">
+			</p>
+			<p>
+				<label>手机号码</label>
+				<input type="text" name="phone">
+			</p>
+			<p>
+				<button class="k-primary" onclick="sub()" style="display:none">提交</button>
+			</p>
+		</div>
+	</div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/applyReg.js"></script>
+</html>

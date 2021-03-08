@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>责任记录</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/responsive.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="page preview js_show">
+    <!-- <% if(data.length!=0){ %>
+        <% for(var i = 0; i < data.length; i++){ %>
+            <div class="page__bd">
+                <div class="weui-form-preview">
+                    <div class="weui-form-preview__bd">
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">执行人</label>
+                            <span class="weui-form-preview__value"><%= data[i].borrower %></span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">执行日期</label>
+                            <span class="weui-form-preview__value"><%= data[i].borrowStartTime %></span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">事件类型</label>
+                            <span class="weui-form-preview__value"><%= data[i].type %></span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">存放地点</label>
+                            <span class="weui-form-preview__value"><%= data[i].location %></span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">借用截止期</label>
+                            <span class="weui-form-preview__value"><%= data[i].borrowExpectTime %></span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">转手日期</label>
+                            <span class="weui-form-preview__value"><%= data[i].borrowEndTime %></span>
+                        </div>
+                        <div class="weui-form-preview__item">
+                            <label class="weui-form-preview__label">转手人</label>
+                            <span class="weui-form-preview__value"><%= data[i].taker %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %> -->
+    <!-- <% }else{ %>
+        <div class="weui-loadmore weui-loadmore_line">
+            <span class="weui-loadmore__tips">暂无数据</span>
+        </div>
+    <% } %> -->
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script type="text/javascript">
+    var data = JSON.parse('<%- JSON.stringify(data)%>');
+    var str = '';
+    for (var i = 0; i < data.length; i++) {
+        const items = data[i];
+        var rem = items.content.rem ? items.content.rem : '';
+        var commonStr = '<div class="page__bd">'+
+                '<div class="weui-form-preview">'+
+                    '<div class="weui-form-preview__bd">'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">执行人</label>'+
+                            '<span class="weui-form-preview__value">'+items.person+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">执行日期</label>'+
+                            '<span class="weui-form-preview__value">'+items.time+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">事件类型</label>'+
+                            '<span class="weui-form-preview__value">'+items.type+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">责任类型</label>'+
+                            '<span class="weui-form-preview__value">'+items.content.borrowType+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">存放地点</label>'+
+                            '<span class="weui-form-preview__value">'+items.content.borrowLocation+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">备注</label>'+
+                            '<span class="weui-form-preview__value">'+rem+'</span>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        if (items.type == '入库') {
+            str += commonStr;
+        } else if (items.type == '转手') {
+            var borrowExpectTime = items.content.borrowExpectTime ? dateTime(items.content.borrowExpectTime) : '';
+            str += '<div class="page__bd">'+
+                '<div class="weui-form-preview">'+
+                    '<div class="weui-form-preview__bd">'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">执行人</label>'+
+                            '<span class="weui-form-preview__value">'+items.person+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">执行日期</label>'+
+                            '<span class="weui-form-preview__value">'+items.time+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">事件类型</label>'+
+                            '<span class="weui-form-preview__value">'+items.type+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">责任类型</label>'+
+                            '<span class="weui-form-preview__value">'+items.content.borrowType+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">存放地点</label>'+
+                            '<span class="weui-form-preview__value">'+items.content.borrowLocation+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">预计借用截止期</label>'+
+                            '<span class="weui-form-preview__value">'+borrowExpectTime+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">备注</label>'+
+                            '<span class="weui-form-preview__value">'+rem+'</span>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        } else if (items.type == '出库') {
+            str += '<div class="page__bd">'+
+                '<div class="weui-form-preview">'+
+                    '<div class="weui-form-preview__bd">'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">执行人</label>'+
+                            '<span class="weui-form-preview__value">'+items.person+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">执行日期</label>'+
+                            '<span class="weui-form-preview__value">'+items.time+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">事件类型</label>'+
+                            '<span class="weui-form-preview__value">'+items.type+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">去向</label>'+
+                            '<span class="weui-form-preview__value">'+items.delRem+'</span>'+
+                        '</div>'+
+                        '<div class="weui-form-preview__item">'+
+                            '<label class="weui-form-preview__label">备注</label>'+
+                            '<span class="weui-form-preview__value">'+rem+'</span>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        }
+    }
+    $('.js_show').append(str);
+</script>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>信用走势</title>
+	<%- include("../includes/styles.ejs") %>
+	<style type="text/css">
+		html,body {
+			height: 100%;
+		}
+        /* #content {
+            margin-top: 30px;
+            margin-left: 40px;
+        } */
+	</style>
+</head>
+<body>
+    <div id="content">
+        <div class="demo-section k-content wide">
+            <div id="chart">
+                <div class="weui-loadmore">
+                    <i class="weui-loading"></i>
+                    <span class="weui-loadmore__tips">正在加载</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="weui-footer" style="margin-top: 6px;">
+        <p class="weui-footer__text">以上数据仅供参考，实际以财务对账情况为准。</p>
+    </div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo.all.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="../js/member_credit_trend.js"></script>
+</html>

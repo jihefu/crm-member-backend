@@ -1,0 +1,15 @@
+.icon-close {
+    color: #fff;
+    position: relative;
+    top: 6px;
+    font-weight: bolder;
+    font-size: 12px;
+}
+.aui-text-info {
+    color: #6ab494!important;
+}
+.fix {
+    width: 100%;
+    position: fixed;
+    top: 0;
+}

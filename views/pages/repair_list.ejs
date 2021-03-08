@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>维修查询中心</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/n_index.css" rel="stylesheet" />
+	<style>
+		.content li .weui-cell__hd img {
+			margin-left: 1rem;
+		}
+		.content li p {
+			padding: 2px;
+   			padding-left: 18px;
+		}
+		.weui-cell {
+			padding: 15px 15px;
+		}
+		.goods {
+			margin-right: 20px;
+		}	
+		.weui-cell__bd {
+			position: relative;
+		}
+		.icon-deliver {
+		    font-size: 4rem;
+			color: #EAB4B4;
+			position: absolute;
+			right: 11px;
+			top: -19px;
+			transform: rotate(58deg);
+		}
+		.content li .weui-cell__hd img {
+    		width: 6.5rem;
+    	}
+    	.select {
+		    width: 90%;
+		    margin: 0 auto;
+		    text-align: left;
+		}
+		#select {
+		    width: 140px;
+		    height: 30px;
+		    font-size: 14px;
+		    border: 1px solid #999;
+		    border-radius: 4px;
+		    margin-top: 10px;
+		    position: relative;
+		    left: 10px;
+		}
+		.search {
+		    height: 8.25rem;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div class="search">
+			<div class="form">
+				<input type="text" placeholder="序列号">
+				<span class="iconfont icon-form-del" onclick="cl()" style="display: none;"></span>
+				<% if (code==10001) { %>
+					<div class="search2">
+						<span style="left: 0.1875rem;" onclick="search()">搜索</span>
+						<span class="iconfont icon-scan" onclick="scan();"></span>
+					</div>
+				<% } else { %>
+					<div class="search2" onclick="search()">
+						<span>搜索</span>
+					</div>
+				<% } %>
+			</div>
+			<div class="select">
+				<select id="select" onchange="sort(this)">
+					<option value="全部">全部</option>
+					<option value="送修检验中">送修检验中</option>
+					<option value="维修中">维修中</option>
+					<option value="维修检验中">维修检验中</option>
+					<option value="待发件">待发件</option>
+					<option value="已发件">已发件</option>
+					<option value="已收件">已收件</option>
+				</select>
+			</div>
+		</div>
+		<div id="main">
+			<div class="content">
+				<ul>
+					<% for(let i = 0; i < result.length; i++){ %>
+					<li class="weui-cell weui-cell_access" style="padding-left:0px;" onclick="check(this)" data-no="<%= result[i].repair_contractno %>">
+						<div class="weui-cell__hd">
+							<div class="default_member">
+								<% if(arr[i]==''){ %>
+									<img class="assign_member" src="../img/no_img.png">
+								<% }else{ %>
+									<img class="assign_member" src="../img<%= arr[i] %>">
+								<% } %>
+							</div>
+						</div>
+		                <div class="weui-cell__bd">
+							<p>序列号：<%= result[i].serial_no %></p>
+							<p class="content-cpy">当前状态：<%= result[i].deliver_state %></p>
+							<p class="content-cpy">送修单位：<%= result[i].cust_name %></p>
+		                </div>
+		                <div class="weui-cell__ft"></div>
+		            </li>
+		            <% } %>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../js/repair.js" type="text/javascript"></script>
+<script>
+	var input_width = $('.form input[type=text]').width()+5;
+	$('.search-list').width(input_width);
+</script>
+</html>

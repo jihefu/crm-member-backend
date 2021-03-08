@@ -1,0 +1,78 @@
+::-webkit-input-placeholder {
+	font-size: 14px;
+}
+::-ms-input-placeholder {
+	font-size: 14px;
+}
+::-moz-input-placeholder {
+	font-size: 14px;
+}
+.bar-bottom ul li p span {
+	/*margin-right: 30px;*/
+    display: inline-block;
+    width: 30%;
+}
+.my-mask {
+	left: 0px;
+}
+.carousel-inner .item {
+    background: none;
+    color: #fff;
+    /*width: auto;*/
+    text-align: center;
+    /*display: inline-block;*/
+    margin-left: 0;
+    margin-top: 0;
+    border-radius: 0;
+    padding: 0;
+}
+.doc_search {
+	float:right;
+	border: 1px solid #999;
+	border-radius: 4px;
+	padding-left: 5px;
+	padding-right: 30px;
+}
+.icon-search {
+	position: absolute;
+    right: 22px;
+    top: 16px;
+    z-index: 3;
+    cursor: pointer;
+}
+.contacts ul li p:nth-child(1){
+	float:none;
+}
+.contacts ul li p:nth-child(2){
+	float: none;
+    margin-right: 0px;
+    font-size: 13px;
+}
+.contacts ul li p:nth-child(2):hover {
+	color: #333;
+}
+.c textarea {
+	border: none;
+	resize: none;
+	width: 100%;
+}
+input[name=tag]:hover {
+	cursor:pointer;
+}
+.table {
+	margin-bottom: 30px;
+}
+.filter {
+	position: relative;
+    top: 11px;
+}
+.add-dialog input[type=radio] {
+	margin-right: 5px;
+}
+.addTemplate {
+	width: 80px;
+	margin-top: -20px;
+	margin-bottom: 30px;
+    margin-left: 20px;
+    cursor: pointer;
+}

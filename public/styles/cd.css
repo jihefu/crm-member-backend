@@ -1,0 +1,84 @@
+.cd-img-box{
+    width:500px;
+    height:500px;
+    border:1px solid #000;
+	background-color:#eee;
+    position:relative;
+    margin: 20px auto;
+    box-shadow: 0 0 10px;
+	border-radius:5px;
+}
+.cd-img{
+    width: 100%;
+    height:80%;
+    border-bottom:2px solid #000;
+}
+.cd-play{
+    width:100%;
+    height:20%;
+
+}
+.cd-modal .cd-img-box .cd-img input{
+    width:100px;
+    height:100px;
+    opacity: 0;
+}
+
+.cd-modal{
+    position: fixed;
+	z-index:100;
+	top:0;
+    width:100%;
+    height:100%;
+    background-color: rgba(155,155,155,0.5);
+	display:none;
+}
+
+.cd-input{
+    float:left;
+    width:100px;
+    height:100px;
+    margin:10px 10px;
+    border:1px solid #ddd;
+    background: url(../img/a11.png) -98px -74px;
+}
+.cd-modal .cd-img-box i:hover{
+	cursor:pointer;
+}
+.cd-modal .cd-img-box i{
+    position: absolute;
+    right: 0;
+    top:0;
+	font-size:23px;
+}
+.cd-button{
+    width:100px;
+    height:30px;
+    font-size: 16px;
+    border: 0;
+    background-color: #00b230;
+    padding:0;
+    margin:30px 74px;
+	border-radius:5px;
+	color:#fff;
+}
+.cd-img-box .cd-img div{
+    float:left;
+    width:100px;
+    height:100px;
+    margin:10px 10px;
+    border:1px solid #ddd;
+    position: relative;
+}
+.cd-img-box .cd-img div span{
+    position: absolute;
+    top:0;
+    right: 0;
+}
+/*¶îÍâµÄ*/
+div#wrap div.main div#myCarousel div.carousel-inner div.item.active img{
+	height:100%;
+}
+div#wrap div.main div#myCarousel div.carousel-inner div.item.active{
+	height:200px;
+}

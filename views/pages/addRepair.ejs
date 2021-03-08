@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>新建维修单</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+    <style>
+        .weui-select {
+            height: 20px;
+            line-height: 20px;
+            padding-left: 0px;
+        }
+        .sub {
+            margin: 1rem;
+        }
+        .weui-search-bar {
+            padding: 0;
+        }
+        .weui-search-bar:after, .weui-search-bar:before {
+            border: none;
+        }
+        .weui-search-bar__form:after {
+            border: none;
+        }
+        .weui-search-bar__label {
+            border-radius: 0px;
+        }
+        .weui-search-bar__form {
+            background: #fff;
+        }
+        #searchText {
+            text-align: left;
+        }
+        #searchCancel {
+            display: none;
+        }
+        #searchCancel,#searchBar {
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells__title">维修单信息</div>
+	<div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">序列号</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="serial_no" type="text" placeholder="请输入序列号" value="<%= sn %>">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">送修单位</label></div>
+            <div class="weui-cell__bd cust_name">
+                <!-- <input class="weui-input" name="cust_name" type="text" placeholder="请输入单位名称"> -->
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">收件单号</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="receive_no" type="text" placeholder="请输入收件单号">
+            </div>
+            <div class="weui-cell__ft">
+                <i class="iconfont icon-scan" onclick="inputReceiveNo();"></i>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">接收时间</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="receive_time" type="datetime-local" placeholder="请输入接收时间">
+            </div>
+        </div>
+        <!-- <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">产品</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="goods" type="text" placeholder="请输入产品">
+            </div>
+        </div> -->
+        <!-- <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">规格</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="standrd" type="text" placeholder="请输入规格">
+            </div>
+        </div> -->
+        <!-- <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">数量</label></div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="number">
+                    <option selected="" value="1">1</option>
+                    <% for (var i = 2; i < 20; i++) { %>
+                        <option value="<%= i %>"><%= i %></option>
+                    <% } %>
+                </select>
+            </div>
+        </div> -->
+        <!-- <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">问题</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="problems" type="text" placeholder="请输入问题">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">保修</label></div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="guarantee_repair">
+                    <option selected="" value="否">否</option>
+                    <option value="是">是</option>
+                </select>
+            </div>
+        </div> -->
+        <!-- <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">联系人</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="contact" type="text" placeholder="请输入联系人">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">联系方式</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="contact_type" type="text" placeholder="请输入联系方式">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">备注</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="rem" type="text" placeholder="请输入备注">
+            </div>
+        </div> -->
+        <a href="javascript:;" class="weui-btn weui-btn_primary sub" onclick="sub();">提交</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../js/utilRemoteSearch.js"></script>
+<script>
+    var cust_name;
+    $(function() {
+        var hh = String(new Date().getHours()).padStart(2, '0');
+        var mm = String(new Date().getMinutes()).padStart(2, '0');
+        var now = dateTime() + 'T' + hh + ':' + mm + ':00.000';
+        $('input[name=receive_time]').val(now);
+
+        var select = new Select({
+            domId: '.cust_name',
+            url:  route('repair/searchCnAbb'),
+            formData: {},
+            placeholder: '请输入送修单位'
+        });
+        select.mount();
+        select.onSelect(function(result) {
+            cust_name = result.value;
+        });
+    });
+
+    function inputReceiveNo() {
+        scan(function(no) {
+            $('input[name=receive_no]').val(no);
+        });
+    }
+
+    function scan(cb) {
+        var page = window.location.href;
+        var timestamp = Date.now();
+        $.ajax({
+            url: route('common/proxyScan'),
+            type: 'get',
+            data: {
+                page: page,
+                timestamp: timestamp
+            },
+            dataType:"json",
+            success: function(res) {
+                var config = {};
+                config.appId = res.data.appId;
+                config.signature = res.data.signature;
+                config.nonceStr = res.data.nonceStr;
+                config.timestamp = timestamp;
+                config.jsApiList = ['scanQRCode'];
+                wx.config(config);
+                wx.ready(function(){
+                    wx.scanQRCode({
+                        desc: 'scanQRCode desc',
+                        needResult: 1, 
+                        scanType: ["qrCode","barCode"],
+                        success: function (res) {
+                            try{
+                                var no = res.resultStr.split(',')[1];
+                                cb(no);
+                            }catch(e){
+                                wxToast('非法条形码');
+                            }
+                        },
+                        error: function(err){
+                            if(err.errMsg.indexOf('function_not_exist') > 0){
+                            alert('版本过低请升级');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    function sub() {
+        var formData = {};
+        $('input,select').each(function(){
+            var name = $(this).attr('name');
+            var val = $(this).val();
+            formData[name]= val;
+        });
+        formData.cust_name = cust_name;
+        if (!formData.cust_name) {
+            wxToast('送修单位不能为空');
+            return;
+        }
+        if (!formData.receive_time) {
+            wxToast('接收不能为空');
+            return;
+        }
+        wxLoadToast('正在提交');
+        $.ajax({
+            url: route('repair/createRepairNo'),
+            type: 'post',
+            timeout: 30000,
+            data: formData,
+            success: function(res) {
+                $('#loadingToast').remove();
+                if (res.code == 200) {
+                    var repair_contractno = res.data.repair_contractno;
+                    window.location.href = route('repair/info/' + repair_contractno);
+                } else {
+                    wxToast(res.msg);
+                }
+            }
+        });
+    }
+</script>
+</html>

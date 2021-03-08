@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>新建发货单</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+    <style>
+        .weui-select {
+            height: 20px;
+            line-height: 20px;
+            padding-left: 0px;
+        }
+        .sub {
+            margin: 1rem;
+        }
+        .weui-search-bar {
+            padding: 0;
+        }
+        .weui-search-bar:after, .weui-search-bar:before {
+            border: none;
+        }
+        .weui-search-bar__form:after {
+            border: none;
+        }
+        .weui-search-bar__label {
+            border-radius: 0px;
+        }
+        .weui-search-bar__form {
+            background: #fff;
+        }
+        #searchText {
+            text-align: left;
+        }
+        #searchCancel {
+            display: none;
+        }
+        #searchCancel,#searchBar {
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells__title">发货单信息</div>
+	<div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">收件单位</label></div>
+            <div class="weui-cell__bd cust_name">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">维修单号</label></div>
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" name="contract_no" rows="3" readonly></textarea>
+                <!-- <input class="weui-input" type="text" name="contract_no" disabled value=""> -->
+            </div>
+            <div class="weui-cell__ft">
+                <i class="iconfont icon-scan" onclick="scanSn();"></i>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">联系人</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="contacts" type="text" placeholder="联系人" value="" oninput="searchContract();">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">电话</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" name="contacts_tel" type="text" placeholder="电话" value="">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">快递单号</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" name="express_no" value="">
+            </div>
+            <div class="weui-cell__ft">
+                <i class="iconfont icon-scan" onclick="scanExpressNo();"></i>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">类型</label></div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="express_type">
+                    <option value="顺丰">顺丰</option>
+                    <option value="德邦">德邦</option>
+                    <option value="天天">天天</option>
+                    <option value="其它">其它</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">物品</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" name="goods">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">发件时间</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="datetime-local" name="delivery_time">
+            </div>
+        </div>
+        <a href="javascript:;" class="weui-btn weui-btn_primary sub" onclick="sub();">提交</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../js/utilRemoteSearch.js"></script>
+<script>
+    var cust_name = '';
+
+    $(function(){
+        var hh = String(new Date().getHours()).padStart(2, '0');
+        var mm = String(new Date().getMinutes()).padStart(2, '0');
+        var now = dateTime() + 'T' + hh + ':' + mm + ':00.000';
+        $('input[name=delivery_time]').val(now);
+
+        var select = new Select({
+            domId: '.cust_name',
+            url:  route('repair/searchFullCpy'),
+            formData: {},
+            placeholder: '请输入收件单位'
+        });
+        select.mount();
+        select.onSelect(function(result) {
+            cust_name = result.value;
+        });
+    });
+
+    function searchContract() {
+        var keywords = $('input[name=contacts]').val();
+        $.ajax({
+            url: route('repair/searchContactsInfoByKeywords'),
+            data: {
+                keywords: keywords,
+            },
+            dataType:"json",
+            success: function(res) {
+                if (res.data.length !== 0) {
+                    $('input[name=contacts_tel]').val(res.data[0].data.phone);
+                }
+            }
+        });
+    }
+
+    function scanSn() {
+        scan(function(sn) {
+            getNotDeliveryNoBySn(sn);
+        });
+
+        function getNotDeliveryNoBySn(sn) {
+            $.ajax({
+				url: route('repair/getNotDeliveryNoBySn'),
+				data: {
+                    sn: sn,
+                    type: 'json',
+                },
+				dataType:"json",
+				success: function(res) {
+                    if (res.code == 200) {
+                        var v = $('textarea[name=contract_no]').val();
+                        var arr;
+                        try {
+                            arr = v.split(',').filter(items => items);
+                        } catch (e) {
+                            arr = [];
+                        }
+                        if (arr.indexOf(res.data.repair_contractno) === -1) {
+                            arr.push(res.data.repair_contractno);
+                        }
+                        $('textarea[name=contract_no]').val(arr.join());
+                    } else {
+                        wxToast(res.msg);
+                    }
+                }
+            });
+        }
+    }
+
+    function scanExpressNo() {
+        scan(function(no) {
+            $('input[name=express_no]').val(no);
+            if (no.indexOf('SF') !== -1) {
+                $('select[name=express_type]').val('顺丰');
+            } else if (no.indexOf('DPK') !== -1) {
+                $('select[name=express_type]').val('德邦');
+            } else {
+                $('select[name=express_type]').val('其它');
+            }
+        });
+    }
+
+    function sub() {
+        var contacts = $('input[name=contacts]').val();
+        var contacts_tel = $('input[name=contacts_tel]').val();
+        var contract_no = $('textarea[name=contract_no]').val();
+        var delivery_time = $('input[name=delivery_time]').val();
+        var express_no = $('input[name=express_no]').val();
+        var express_type = $('select[name=express_type]').val();
+        var goods = $('input[name=goods]').val();
+        if (!contacts) {
+            wxToast('联系人不能为空');
+            return;
+        }
+        if (!contacts_tel) {
+            wxToast('电话不能为空');
+            return;
+        }
+        if (!express_no) {
+            wxToast('快递单号不能为空');
+            return;
+        }
+        if (!goods) {
+            wxToast('物品不能为空');
+            return;
+        }
+        if (!delivery_time) {
+            wxToast('发件时间不能为空');
+            return;
+        }
+        var formData = {
+            all_shipments: 1,
+            contacts: contacts,
+            contacts_tel: contacts_tel,
+            contract_no: contract_no,
+            cus_cn_abb: cust_name,
+            delivery_time: delivery_time,
+            express_no: express_no,
+            express_type: express_type,
+            goods: goods,
+        };
+        $.ajax({
+            url: route('repair/addDeliveryNo'),
+            type: 'post',
+            data: {
+                form_data: JSON.stringify(formData)
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                if (res.code == 200) {
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                }
+            }
+        });
+    }
+
+    function scan(cb) {
+        var page = window.location.href;
+        var timestamp = Date.now();
+        $.ajax({
+            url: route('common/proxyScan'),
+            type: 'get',
+            data: {
+                page: page,
+                timestamp: timestamp
+            },
+            dataType:"json",
+            success: function(res) {
+                var config = {};
+                config.appId = res.data.appId;
+                config.signature = res.data.signature;
+                config.nonceStr = res.data.nonceStr;
+                config.timestamp = timestamp;
+                config.jsApiList = ['scanQRCode'];
+                wx.config(config);
+                wx.ready(function(){
+                    wx.scanQRCode({
+                        desc: 'scanQRCode desc',
+                        needResult: 1, 
+                        scanType: ["qrCode","barCode"],
+                        success: function (res) {
+                            try{
+                                var no = res.resultStr.split(',')[1];
+                                setTimeout(function(){
+                                    cb(no);
+                                }, 1000);
+                            }catch(e){
+                                wxToast('非法条形码');
+                            }
+                        },
+                        error: function(err){
+                            if(err.errMsg.indexOf('function_not_exist') > 0){
+                            alert('版本过低请升级');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
+</script>
+</html>

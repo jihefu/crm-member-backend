@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>创建公司名片</title>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo_edit.css">
+    <style>
+        .weui-cell__ft input,.weui-cell__ft select {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <div class="page__bd">
+        <div class="weui-cells" style="margin-top:10px">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>公司名称</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="company" pattern="^[0-9a-z_\u4e00-\u9fa5()]{1,20}$" value="" placeholder="请输入公司全称">
+                </div>
+            </div>
+            <div class="weui-cells__title">职位列表</div>
+            <div class="weui-cells weui-cells_checkbox">
+                <% for(var i = 0; i < position.length; i++) { %>
+                    <label class="weui-cell weui-check__label">
+                        <div class="weui-cell__hd">
+                            <input type="checkbox" class="weui-check _job" name="<%= position[i] %>">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p><%= position[i] %></p>
+                        </div>
+                    </label>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <div class="btn-groups">
+        <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="sub(this);">提交</a>
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    $(function(){
+        $('input[name=其它]').prop('checked', true);
+    });
+
+    function sub() {
+        if ($('input[name=company]').val() == '') {
+            wxToast('公司名不能为空');
+            return;
+        }
+        var job = [];
+        $('.weui-cells_checkbox input[type=checkbox]').each(function(){
+            if ($(this).prop('checked')) {
+                job.push($(this).attr('name'));
+            }
+        });
+        if (job.length === 0) {
+            wxToast('至少选择一个职位');
+            return;
+        }
+        $.ajax({
+            url: route('member/addMuilCompany'),
+            type: 'post',
+            data: {
+                company: $('input[name=company]').val(),
+                job: job.join()
+            },
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.href = route('member/changeCompany?fromCreate=1');
+                }, 2000);
+            }
+        });
+    }
+</script>
+</html>

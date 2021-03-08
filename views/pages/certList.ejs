@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>培训证书</title>
+    <%- include("../includes/styles.ejs") %>
+    <link href="../styles/index.css" rel="stylesheet" />
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="weui-panel weui-panel_access">
+        <div class="weui-panel__hd">我的证书</div>
+        <div class="weui-panel__bd">
+            <% for (var i = 0; i < data.length; i++ ) { %>
+                <a href="../img/memberCertImg/<%= data[i].album %>" class="weui-media-box weui-media-box_appmsg">
+                    <div class="weui-media-box__hd" style="height: auto; line-height: 0;">
+                        <img class="weui-media-box__thumb"
+                            src="../img/memberCertImg/<%= data[i].album %>"
+                            alt="">
+                    </div>
+                    <div class="weui-media-box__bd">
+                        <h4 class="weui-media-box__title"><%= data[i].title %></h4>
+                        <p class="weui-media-box__desc">颁发时间：<%= data[i].award_time %></p>
+                    </div>
+                </a>
+            <% } %>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+
+</html>

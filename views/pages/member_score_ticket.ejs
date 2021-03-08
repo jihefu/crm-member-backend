@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>元宝券详情</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="weui-form-preview__bd">
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">编号</label>
+            <span class="weui-form-preview__value"><%= result.ticket_no %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">分值</label>
+            <span class="weui-form-preview__value"><%= result.score %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">失效日期</label>
+            <span class="weui-form-preview__value">永久有效</span>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+</html>

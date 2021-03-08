@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>客户往来管理</title>
+	<%- include("../includes/styles.ejs") %>
+    <link href="../styles/slider.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style>
+        .page__bd input, .page__bd select, .page__bd button {
+            width: 11.875rem;
+            height: 1.25rem;
+            background: #fff;
+            font-size: 1rem;
+            text-align: right;
+            border: none;
+            border-radius: 0.1875rem;
+            padding-right: 0.3125rem;
+            /*direction: rtl;*/
+            -webkit-appearance: none;
+        }
+        select[name=channel],select[name=director_evaluate],select[name=cus_evaluate] {
+            direction: rtl;
+        }
+        textarea {
+            border: none;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .btn-groups {
+            margin: 2rem auto;
+            width: 90%;
+        }
+        .add {
+            margin-top: 1rem;
+            margin-left: 1rem;
+            display: none;
+        }
+        .text {
+            display: inline-block;
+            width: 46%;
+        }
+    </style>
+</head>
+<body>
+    <div class="page__bd">
+        <div class="weui-cells__title">头部信息</div>
+        <div class="weui-cells head" style="margin-top:10px">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>客户名称</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="cus_abb" onchange="getRes(this);" data-value="<%= head[0].cus_abb %>" placeholder="客户名称" value="<%= head[0].cus_abb %>">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>业务经理</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="cus_manager" onchange="getRes(this);" data-value="<%= head[0].cus_manager %>" placeholder="业务经理" value="<%= head[0].cus_manager %>">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>联系人</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="cus_person" placeholder="联系人" value="<%= head[0].cus_person %>">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>参与人</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="join_person" placeholder="参与人" value="<%= head[0].join_person %>">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>渠道</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <select name="channel">
+                        <option>电话</option>
+                        <option>电子邮件</option>
+                        <option>见面</option>
+                        <option>QQ</option>
+                        <option>微信</option>
+                        <option>站内信</option>
+                    </select>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p class="channel-key">渠道内容</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="channel_content" onclick="contactsPhone(this);" placeholder="渠道内容" value="<%= head[0].channel_content %>">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>开始时间</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <button onclick="wxDatePicker(this);" name="start_time" value=""><%= head[0].start_time %></button>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells__title" style="margin-top:2rem;">具体内容</div>
+        <div class="action_content"></div>
+        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary add" onclick="uploadImg()" >上传图片</a>
+        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary add" onclick="add()" >新增</a>
+        <div class="weui-cells__title" style="margin-top:3rem">尾部信息</div>
+        <div class="weui-cells foot">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>结束时间</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= head[0].finish_time %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>部门主管</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="director" readonly placeholder="部门主管" value="<%= head[0].director %>">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>主管评分</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <select name="director_evaluate" onchange="star(this);">
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                    </select>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>客户评分</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <select name="cus_evaluate">
+                        <option>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                    </select>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>客户评价</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="cus_comment" readonly placeholder="客户评价" value="<%= head[0].cus_comment %>">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>录入人</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= head[0].insert_person %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>录入时间</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= head[0].insert_time %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>更新人</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= head[0].update_person %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>更新时间</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= head[0].update_time %>
+                </div>
+            </div>
+        </div>
+        <div class="btn-groups">
+            <a href="javascript:;" class="weui-btn weui-btn_primary text btn" onclick="sub();">提交</a>
+            <a href="javascript:;" class="weui-btn weui-btn_default text btn" onclick="relate();">关联</a>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script src="../js/slider.js" type="text/javascript"></script>
+<script type="text/javascript" src="../js/m_inter_action.js" ></script>
+<script type="text/javascript" src="../js/m_action_template.js" ></script>
+<script>
+    var channel = '<%=head[0].channel%>';
+    var director_evaluate = '<%=head[0].director_evaluate%>';
+    var cus_evaluate = '<%=head[0].cus_evaluate%>';
+</script>
+</html>

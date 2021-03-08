@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>产品注册</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/mobiscroll.2.13.2.css" rel="stylesheet" />
+	<link href="../styles/vac_reg.css" rel="stylesheet" />
+	<style>
+		.event button {
+			margin-left: 1rem;
+		    border: none;
+		    color: #2B1EDC;
+		    font-size: 0.9rem;
+		    background: none;
+		    display: none;
+		}
+		.form {
+			font-size: 1.1rem;
+		}
+		.tag {
+			border: 0.0625rem solid #999;
+			border-radius: 0.25rem;
+			font-size: 1.125rem;
+			padding: 0.375rem;
+			color: #999;
+		}
+		.bar {
+			display: flex;
+			padding: 1rem;
+		}
+		.labelRem {
+			width: 6rem;
+		}
+		.labelContent {
+			flex: 1;
+		}
+		.targetApp, .targetFun {
+			display: none;
+		}
+		.appRadio, .funRadio {
+			margin-left: 1rem;
+		}
+		.appSelect select {
+			font-size: 1rem;
+			/* border: none; */
+			background: transparent;
+		}
+		.k-input {
+			padding: 0.5rem;
+			border-radius: 5px;
+		}
+		.icon-triangledown {
+			position: relative;
+			left: -1.1rem;
+		}
+		.event {
+			-webkit-overflow-scrolling: touch;
+		}
+	</style>
+</head>
+<body>
+	<div id="main">
+		<div id="dialog"></div>
+		<div class="form">
+			<div class="bar">
+				<div class="labelRem">注册目标：</div>
+				<div class="labelContent">
+					<label>
+						<input type="radio" name="target" value="0" checked>
+						<span>控制器</span>
+					</label>
+					<label class="funRadio">
+						<input type="radio" name="target" value="2">
+						<span>功能码</span>
+					</label>
+					<label class="appRadio">
+						<input type="radio" name="target" value="1">
+						<span>自费App</span>
+					</label>
+				</div>
+			</div>
+			<div class="bar targetMid" style="padding-top: 0px;">
+				<div class="labelRem"></div>
+				<div class="labelContent">
+					<input class="k-input" type="text" name="mid" readonly value="<%= mid%>">
+				</div>
+			</div>
+			<div class="bar targetFun" style="padding-top: 0px;">
+				<div class="labelRem"></div>
+				<div class="labelContent">
+					<input class="k-input" type="text" name="fun" placeholder="请输入功能码" value="">
+				</div>
+			</div>
+			<div class="bar targetApp" style="padding-top: 0px;">
+				<div class="labelRem"></div>
+				<div class="labelContent appSelect">
+					
+				</div>
+			</div>
+			<div class="bar">
+				<div class="labelRem">注册时间：</div>
+				<div class="labelContent">
+					<label>
+						<input type="radio" name="reg" value="0" checked>
+						<span>永久注册</span>
+					</label>
+					<label style="margin-left: 1rem;">
+						<input type="radio" name="reg" value="1">
+						<span>有限注册</span>
+					</label>
+				</div>
+			</div>
+			<div class="bar reg_time" style="display: none;padding-top: 0px;">
+				<div class="labelRem"></div>
+				<div class="labelContent">
+					<input class="k-input" type="text" name="time" id="useDate">
+				</div>
+			</div>
+			<p>
+				<button class="k-primary" onclick="sub()" style="display:none">提交</button>
+			</p>
+			<!-- <p>
+				<label>
+					<select class="sn">
+						<option value="sn">序列号</option>
+					</select>
+				</label>
+				<input type="text" name="sn" oninput="searchSN();" value="<%= sn%>">
+			</p> -->
+			<!-- <p>
+				<label>
+					<select class="mid">
+						<% if(appName){ %>
+							<option value="app">软件名</option>
+							<option value="mid">机器号</option>
+						<% }else{ %>
+							<option value="mid">机器号</option>
+							<option value="app">软件名</option>
+						<% } %>
+					</select>
+				</label>
+				<% if(appName){ %>
+					<input type="text" name="app" value="<%= appName %>">
+					<span class="tag iconfont icon-menu" onclick="picker()"></span>
+					<input type="text" style="display:none;" name="mid" value="<%= mid%>">
+				<% }else{ %>
+					<input type="text" name="app" style="display:none;" value="<%= appName %>">
+					<span class="tag iconfont icon-menu" onclick="picker()" style="display:none;"></span>
+					<input type="text" name="mid" value="<%= mid%>">
+				<% } %>
+			</p> -->
+			<!-- <p>
+				<label>
+					<input type="radio" name="reg" value="0" checked>
+					<span>永久注册</span>
+				</label>
+				<label>
+					<input type="radio" name="reg" value="1">
+					<span>有限注册</span>
+				</label>
+			</p>
+			<p class="reg_time">
+				<label>
+					<span>有效期至</span>
+					<input type="text" name="time" id="useDate">
+				</label>
+			</p>
+			<p>
+				<button class="k-primary" onclick="sub()" style="display:none">提交</button>
+			</p> -->
+		</div>
+		<div class="event">
+			<p style="text-align:center">正在搜索...</p>
+		</div>
+	</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo_btn.ejs") %>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script src="../js/mobiscroll.2.13.2.js" type="text/javascript"></script>
+<script src="../js/copy.js"></script>
+<script src="../js/vac_reg.js" type="text/javascript"></script>
+<script type="text/javascript">
+	// 传导航的href和name
+	var sn = <%-sn%>;
+	var mid = <%-mid%>;
+	var productInfo = JSON.parse('<%- JSON.stringify(productInfo)%>');
+	$('title').html(sn);
+    var con_arr = [];
+    var con_arr_path = [route('service/products'),route('service/product/vir8/'+sn)];
+    var con_arr_name = ['产品服务中心','产品介绍'];
+    for (var i = 0; i < con_arr_path.length; i++) {
+    	var con_obj = {};
+    	con_obj.path = con_arr_path[i];
+    	con_obj.name = con_arr_name[i];
+    	con_arr.push(con_obj);
+    };
+    nav(con_arr);
+</script>
+</html>

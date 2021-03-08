@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>会员中心</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+            font-size: 16px;
+        }
+
+        #basic-info-card {
+            width: 100%;
+            height: 10rem;
+            position: relative;
+        }
+
+        .member-info {
+            width: 90%;
+            height: 9rem;
+            border: 1px solid #eee;
+            border-radius: 0.5rem;
+            margin: 0.4rem auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 1px 1px 8px #666;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .head-img {
+            width: 4.6rem;
+            height: 4.6rem;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .member-info-block {
+            width: 100%;
+            height: 6.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .member-info-block-top {
+            display: flex;
+        }
+
+        .nickname {
+            color: #000!important;
+        }
+
+        .name-info {
+            margin-top: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        .icon-manage {
+            font-size: 1.5rem;
+            color: #333;
+            margin-right: 0.5rem;
+            height: 3rem;
+        }
+
+        .bottom-items {
+            display: flex;
+            margin-left: 1rem;
+        }
+
+        .bottom-items-it {
+            margin-left: 2rem;
+        }
+
+        .weui-media-box__title {
+            color: #333;
+        }
+
+        .icon-icon_voice-- {
+            position: absolute;
+            left: 1rem;
+            top: 0.4rem;
+            color: #4fc3f7;
+        }
+
+        #msgTip {
+            background: rgb(255, 255, 255);
+            position: relative;
+            top: 0.5rem;
+        }
+        #msgTip .msg-item {
+            width: 100%;
+            padding-top: 0.4rem;
+            color: rgb(153, 153, 153);
+            background: rgb(255, 255, 255);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-left: 2.3rem;
+        }
+    </style>
+</head>
+
+<body style="background-color: #efeeee">
+    <div id="wrap">
+        <div id="basic-info-card">
+            <div class="member-info">
+                <div class="member-info-block">
+                    <div class="member-info-block-top">
+                        <img class="head-img" src="<%= headimgurl %>" />
+                        <div class="name-info">
+                            <h4 class="nickname weui-media-box__title"><%= result.name %></h4>
+                            <div class="member-type">银卡会员</div>
+                        </div>
+                    </div>
+                    <div class="setting iconfont icon-manage" onclick="basicInfo();"></div>
+                </div>
+                <div class="bottom-items">
+                    <div onclick="certificate();">
+                        <span>证书</span>
+                        <!-- <span>|</span> -->
+                        <span><%= certLen %></span>
+                    </div>
+                    <div onclick="score();" class="bottom-items-it">
+                        <span>等级分</span>
+                        <!-- <span>|</span> -->
+                        <span><%= score.scoreEntity.total %></span>
+                    </div>
+                    <div onclick="sign();" class="bottom-items-it">
+                        <span>签到</span>
+                        <!-- <span>|</span> -->
+                        <!-- <span><%= score.scoreEntity.activity %></span> -->
+                    </div>
+                </div>
+            </div>
+            <div class="layui-carousel" id="msgTip">
+                <div carousel-item="">
+                    <% for (var i = 0; i < result.msgRows.length; i++) { %>
+                        <div onclick="message();" class="msg-item"><%= result.msgRows[i].message %></div>
+                    <% } %>
+                    <% if (result.msgRows.length === 1) { %>
+                        <div onclick="message();" class="msg-item"><%= result.msgRows[0].message %></div>
+                    <% } %>
+                </div>
+                <div class="iconfont icon-icon_voice--"></div>
+            </div>
+        </div>
+        <div id="company-info-card">
+            <div class="weui-cells" style="margin-top: 0rem;">
+                <% if (result.isUser == 1) { %>
+                    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="changeCompany();">
+                <% } else { %>
+                    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="businessInfo();">
+                <% } %>
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-icon31" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                    </div>
+                    <% if (result.isUser == 1) { %>
+                        <div class="weui-cell__bd">
+                            <p>个人会员</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            
+                        </div>
+                    <% } else { %>
+                        <div class="weui-cell__bd">
+                            <p><%= result.company %></p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <%= result.job %>
+                        </div>
+                    <% } %>
+                </a>
+                <% if (legal_person || hasPower) { %>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="report();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-tongji" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>信用管理</p>
+                    </div>
+                    <div class="weui-cell__ft over_time">
+                        <i class="weui-loading"></i>
+                        <!-- <%= over_time %>天 -->
+                    </div>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="coupon();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-qiankuan" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>抵价券</p>
+                    </div>
+                    <div class="weui-cell__ft coupsCount">
+                        <i class="weui-loading"></i>
+                        <!-- <%= coupsCount %> -->
+                    </div>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="depo();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-fukuansvg" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>服务保证金</p>
+                    </div>
+                    <span style="color: #999;" class="weui-cell__ft deposCount">
+                        <i class="weui-loading"></i>
+                    </span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="historyStar();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-update" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>评级</p>
+                    </div>
+                    <span style="color: rgb(255, 193, 7);" class="weui-cell__ft level">
+                        
+                    </span>
+                </a>
+                <% } %>
+            </div>
+
+            <div class="weui-cells" style="margin-top: 1rem;">
+                <% if (legal_person) { %>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="manage();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-manager-o" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>员工管理</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <%= staffCount %>人
+                    </div>
+                </a>
+                <% } %>
+                <% if (userCardLen != 0) { %>
+                    <!-- <a class="weui-cell weui-cell_access" href="javascript:;" onclick="userCardList();">
+                        <div class="weui-cell__hd" style="margin-top: -4px;">
+                            <i class="iconfont icon-card" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p>我的保修卡</p>
+                        </div>
+                        <div class="weui-cell__ft"><%= userCardLen %></div>
+                    </a> -->
+                <% } %>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="myWallet();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-Wallet" style="color:#4fc3f7;position: relative;top: 4px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>钱包</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                       
+                    </div>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="mySource();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-source" style="color:#4fc3f7;position: relative;top: 4px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>我的资源</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        
+                    </div>
+                </a>
+                <% if (result.isUser == 1) { %>
+                    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="myProducts();">
+                        <div class="weui-cell__hd" style="margin-top: -4px;">
+                            <i class="iconfont icon-cards" style="color:#4fc3f7;position: relative;top: 4px;"></i>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p>我的产品</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            
+                        </div>
+                    </a>
+                <% } %>
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="message();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-weibiaoti1" style="color:#4fc3f7;position: relative;top: 2px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>消息</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <% if(result.count!=0){ %>
+                        <%= result.count %>
+                        <% } %>
+                    </div>
+                </a>
+                <!-- <a class="weui-cell weui-cell_access" href="javascript:;" onclick="regHistory();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-historyrecord" style="color:#4fc3f7;position: relative;top: 1px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>注册历史</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                    </div>
+                </a> -->
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="activityRecord();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-history" style="color:#4fc3f7;position: relative;top: 4px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>活动记录</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                    </div>
+                </a>
+            </div>
+            <div class="weui-cells" style="margin-top: 1rem;">
+                <a class="weui-cell weui-cell_access" href="javascript:;" onclick="safeSet();">
+                    <div class="weui-cell__hd" style="margin-top: -4px;">
+                        <i class="iconfont icon-manage2" style="color:#4fc3f7;position: relative;top: 4px;"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p>设置</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="weui-footer weui-footer_fixed-bottom" style="position: fixed; background: #efeeee;">
+        <p class="weui-footer__links">
+            <a href="tel:0571-6995800" class="weui-footer__link">客服热线:0571-69958000</a>
+        </p>
+    </div> -->
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../layui/layui.all.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.3.0.js"></script>
+<script>
+    // var height = $('html').height();
+    // $('#wrap').css({
+    //     height: height-50,
+    //     overflow: 'auto'
+    // });
+    $(function() {
+        // 监听返回刷新
+        var state = {
+            title: "",
+            url: "#"
+        };
+        window.history.pushState(state, state.title, state.url);
+        window.addEventListener("popstate", function (e) {
+            window.location.reload();
+        }, false);
+
+        initMsgBar();
+    });
+    var star = '<%= star %>';
+    var needHalf = false;
+    if (Number(star) % 2 === 1) {
+        needHalf = true;
+    }
+    var levelStr = '';
+    for (let i = 0; i < parseInt(Number(star) / 2); i++) {
+        levelStr += '<i style="margin-right: 2px;" class="iconfont icon-all-star"></i>';
+    }
+    if (needHalf) {
+        levelStr += '<i class="iconfont icon-half-star"></i>';
+    }
+    $('.level').html(levelStr);
+    function userCardList() {
+        window.location.href = route('member/userCardList');
+    }
+    function basicInfo() {
+        window.location.href = route('member/basicInfo');
+    }
+    function businessInfo() {
+        window.location.href = route('member/businessInfo');
+    }
+    function sign() {
+        window.location.href = route('member/sign');
+    }
+    function certificate() {
+        window.location.href = route('member/certList');
+    }
+    function report() {
+        window.location.href = route('member/report');
+    }
+    function coupon() {
+        window.location.href = route('member/coupon');
+    }
+    function depo() {
+        window.location.href = route('member/depo');
+    }
+    function manage() {
+        window.location.href = route('member/manage');
+    }
+    function myWallet() {
+        window.location.href = route('member/personalWallet');
+    }
+    function mySource () {
+        window.location.href = route('member/mySource');
+    }
+    function myProducts() {
+        window.location.href = route('member/myProducts');
+    }
+    function message() {
+        window.location.href = route('member/message');
+    }
+    function regHistory() {
+        window.location.href = route('member/reg_history');
+    }
+    function safeSet() {
+        window.location.href = route('member/safeSet');
+    }
+    function score() {
+        window.location.href = route('member/score');
+    }
+    function activityRecord() {
+        window.location.href = route('member/activityRecord');
+    }
+    function historyStar() {
+        window.location.href = route('member/historyStar');
+    }
+    
+    function changeCompany() {
+        window.location.href = route('member/changeCompany');
+    }
+
+    function initMsgBar() {
+        if ($('#msgTip .msg-item').length === 0) {
+            return;
+        }
+        layui.use(['carousel'], function(){
+            $('#msgTip .msg-item').css({
+                'width': window.innerWidth - 50,
+            });
+            var carousel = layui.carousel;
+            carousel.render({
+                elem: '#msgTip',
+                width: '100%',
+                height: '2.6rem',
+                anim: 'updown',
+                indicator: 'none',
+                arrow: 'none',
+                interval: 2000
+            });
+            $('#basic-info-card').css('transition', 'height 1s');
+            $('#basic-info-card').height('12.5rem');
+        });
+    }
+
+    var memberData = JSON.parse('<%- JSON.stringify(result)%>');
+    var hasPower = '<%- hasPower%>';
+    if (memberData.total < 300) {
+        $('.member-type').text('银卡会员');
+        $('.member-info').css('background-image', 'url('+route('/img/银卡.png')+')');
+    } else if (memberData.total >= 300 && memberData.total < 400) {
+        $('.member-type').text('金卡会员');
+        $('.member-info').css('background-image', 'url('+route('/img/金卡.png')+')');
+    } else if (memberData.total >= 400 && memberData.total < 500) {
+        $('.member-type').text('铂金会员');
+        $('.member-info').css('background-image', 'url('+route('/img/铂金2.png')+')');
+    } else {
+        $('.member-type').text('钻石会员');
+        $('.member-info').css('background-image', 'url('+route('/img/钻石卡.png')+')');
+        $('.member-info, .nickname, .icon-manage').css('color', '#fff');
+        document.getElementsByClassName('nickname')[0].style.setProperty("color", "#fff", "important");
+    }
+    fetchWalletInfo();
+    var needRefresh = sessionStorage.getItem("need-refresh");
+    if (needRefresh) {
+        sessionStorage.removeItem("need-refresh");
+        location.reload();
+    }
+    
+    // if (window.__wxjs_environment === 'miniprogram' || GetRequest('from') === 'app') {
+    if (GetRequest('from') === 'app') {
+        reLaunch();
+    }
+
+    setTimeout(() => {
+        tipToast();
+    }, 2000);
+    
+    function tipToast() {
+        var tip = localStorage.getItem("tip");
+        if (!tip) {
+            localStorage.setItem('tip', 1);
+            var r = window.confirm('是否立即添加商务名片，获得更多积分，同时参与公司与朗杰的合作业务');
+            if (r) {
+                changeCompany();
+            } else {
+                wxToast('随时可以添加商务名片');
+            }
+        }
+    }
+
+    function reLaunch() {
+        var page = window.location.href;
+        var timestamp = Date.now();
+        $.ajax({
+            url: route('common/proxyScan'),
+            type: 'get',
+            data: {
+                page: page,
+                timestamp: timestamp
+            },
+            dataType: "json",
+            success: function (res) {
+                var config = {};
+                config.appId = res.data.appId;
+                config.signature = res.data.signature;
+                config.nonceStr = res.data.nonceStr;
+                config.timestamp = timestamp;
+                config.jsApiList = ['invokeMiniProgramApi'];
+                wx.config(config);
+                $.ajax({
+                    url: route('deleteSuperAuth'),
+                    type: 'put',
+                    dataType: 'json',
+                    timeout: 30000,
+                    success: function (res) { }
+                });
+                wx.ready(function () {
+                    wx.miniProgram.reLaunch({
+                        url: '/pages/index/index',
+                        success: function (result) {
+                            console.log('success' + JSON.stringify(result));
+                        },
+                        fail: function (result) {
+                            console.log('fail' + JSON.stringify(result));
+                        },
+                        complete: function (result) {
+                            console.log('complete' + JSON.stringify(result));
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    function fetchWalletInfo() {
+        hasPower = hasPower == 'true' ? 1 : 0;
+        if (hasPower == 0) return;
+        $.ajax({
+            url: route('member/walletInfo'),
+            type: 'get',
+            dataType:'json',
+            timeout: 30000,
+            data: {
+                company: memberData.company,
+                hasPower: hasPower,
+            },
+            success: function(res) {
+                $('.over_time').text(res.data.creditInfo.over_price + '元');
+                $('.coupsCount').text(res.data.coupsCount + '元');
+                $('.deposCount').text(res.data.deposCount + '元');
+                if (res.data.creditInfo.over_price < 0 || res.data.creditInfo.over_time < 0) {
+                    $('.over_time').css('color', '#f60');
+                }
+            }
+        });
+    }
+</script>
+
+</html>

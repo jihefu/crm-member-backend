@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>物品详情</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<style>
+		.weui-form-preview__label,.weui-form-preview__value {
+			color: #000;
+		}
+		.weui-form-preview__item {
+			font-size: 1rem;
+		}
+	</style>
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		<div class="page preview js_show">
+			<% for(var i = 0; i < result.length; i++){ %>
+			    <div class="page__bd">
+			        <div class="weui-form-preview">
+						<div class="weui-form-preview__bd">
+			                <div class="weui-form-preview__item">
+			                    <label class="weui-form-preview__label">名称</label>
+			                    <span class="weui-form-preview__value"><%= result[i].goods_name %></span>
+			                </div>
+			                <div class="weui-form-preview__item">
+			                    <label class="weui-form-preview__label">规格型号</label>
+			                    <span class="weui-form-preview__value"><%= result[i].goods_spec %></span>
+			                </div>
+			                <div class="weui-form-preview__item">
+			                    <label class="weui-form-preview__label">数量</label>
+			                    <span class="weui-form-preview__value"><%= result[i].goods_num %></span>
+			                </div>
+			                <div class="weui-form-preview__item">
+			                    <label class="weui-form-preview__label">单价</label>
+			                    <span class="weui-form-preview__value"><%= result[i].goods_price %></span>
+			                </div>
+			                <div class="weui-form-preview__item">
+			                    <label class="weui-form-preview__label">备注</label>
+			                    <span class="weui-form-preview__value"><%= result[i].rem %></span>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			<% } %>
+		</div>
+	</div>
+</div>
+</body>
+</html>

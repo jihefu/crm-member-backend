@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>授信记录</title>
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<style type="text/css">
+		html,body {
+			height: 100%;
+		}
+		.search {
+            float: right;
+            width: 250px;
+        }
+        .k-i-zoom {
+            margin-left: -30px;
+            cursor: pointer;
+        }
+        #search {
+            padding-right: 33px;
+            display: inline-block; 
+            width: 180px;
+        }
+	</style>
+</head>
+<body>
+	<div id="grid"></div>
+    <input type="file" id="f" name="img" style="display:none;" onchange="uploadImg(this);" accept="image/png, image/jpeg, image/jpg">
+</body>
+<script type="text/x-kendo-template" id="template">
+    <div class="search" style="display: none">
+        <input id="search" class="k-textbox" placeholder="请输入关键字">
+        <span class="k-icon k-i-zoom" onclick="search()"></span>
+    </div>
+</script>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="../js/credit_records.js"></script>
+</html>

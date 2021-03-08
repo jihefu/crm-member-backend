@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>抵价券转手</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="weui-form-preview__bd">
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">编号</label>
+            <span class="weui-form-preview__value"><%= info.coupon_no %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">类型</label>
+            <span class="weui-form-preview__value">通用</span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">面值</label>
+            <span class="weui-form-preview__value"><%= info.amount %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">可用值</label>
+            <span class="weui-form-preview__value"><%= info.amount %></span>
+        </div>
+        <div class="weui-form-preview__item">
+            <label class="weui-form-preview__label">失效日期</label>
+            <span class="weui-form-preview__value"><%= info.endTime %></span>
+        </div>
+    </div>
+    <div id="resaleSearch"></div>
+    <div style="display: flex;justify-content: center;" class="resale">
+        <a href="javascript:;" style="margin: 1rem 1rem 0 1rem; font-size: 14px; width: 5rem;" class="weui-btn weui-btn_primary" onclick="showSearch()">转手</a>
+        <!-- <a href="javascript:;" style="margin: 1rem 1rem 0 1rem; font-size: 14px;" class="weui-btn weui-btn_primary" onclick="showSearch('会员')">转手给会员</a> -->
+    </div>
+    <div style="display: flex;justify-content: center; display: none;" class="resaleAction">
+        <a href="javascript:;" style="margin: 1rem 1rem 0 1rem; font-size: 14px;" class="weui-btn weui-btn_primary" onclick="sub()">确定</a>
+        <a href="javascript:;" style="margin: 1rem 1rem 0 1rem; font-size: 14px;" class="weui-btn weui-btn_default" onclick="cancel()">取消</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/utilRemoteSearch.js"></script>
+<script>
+    var info = JSON.parse('<%- JSON.stringify(info)%>');
+    var selectItem;
+    // if (info.original_price != info.amount) {
+    //     $('.resale').remove();
+    // }
+
+    function showSearch() {
+        selectItem = null;
+        $('.resale').hide();
+        $('.resaleAction').css('display', 'flex');
+        var params = {
+            domId: '#resaleSearch',
+            url:  route('member/remoteSearchUserId'),
+            formData: {},
+            placeholder: '请输入姓名或公司名'
+        };
+        var select = new Select(params);
+        select.mount();
+        select.onSelect(function(result) {
+            selectItem = result;
+        });
+    }
+
+    function cancel() {
+        $('#resaleSearch').html('');
+        $('.resaleAction').hide();
+        $('.resale').show();
+        selectItem = null;
+    }
+
+    function sub() {
+        if (!selectItem) {
+            wxToast('未选择转手对象');
+            return;
+        }
+        var r = window.confirm('确定转手给' + selectItem.text + '？');
+        if (!r) {
+            return;
+        }
+        var user_id = selectItem.value;
+        $.ajax({
+            url: route('member/resaleCoup'),
+            type: 'put',
+            data: {
+                buyer: user_id,
+                no: info.coupon_no,
+            },
+            success: function (res) {
+                wxToast(res.msg);
+                if (res.code == 200) {
+                    setTimeout(function(){
+                        window.location.href = route('member/personalWallet');
+                    }, 2000);
+                }
+            }
+        });
+    }
+</script>
+</html>

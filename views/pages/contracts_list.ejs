@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>合同列表</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+    <style type="text/css">
+        .weui-footer {
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .weui-badge {
+            margin-right: 5px;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cells__title">合同列表</div>
+        <% for(var i = 0;i<result.length;i++){ %>
+            <a class="weui-cell weui-cell_access over" href="<%= route %>/contract/head/<%= result[i].contract_no %>">
+                <div class="weui-cell__hd"></div>
+                <div class="weui-cell__bd">
+                    <p><%= result[i].contract_no %></p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+        <% } %>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+</html>

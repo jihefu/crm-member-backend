@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>发货信息</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+    <style type="text/css">
+        .addPacking {
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+        .total {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells__title total">
+        <div>
+            <span>控制器序列号总数量：</span>
+            <span class="hasPackedNum">0</span>
+            <span>/</span>
+            <span class="totalSnNum"></span>
+        </div>
+        <div>
+            <!-- <span>新增装箱单</span> -->
+            <span class="iconfont icon-add" onclick="addPacking();"></span>
+        </div>
+    </div>
+    <div class="weui-cells__title" style="margin-top: 1px;">
+        <span>其它序列号总数量：</span>
+        <span class="otherHasPackedNum">0</span>
+        <span>/</span>
+        <span class="otherTotalSnNum"></span>
+    </div>
+    <div class="weui-cells__title" style="margin-top: 1px;">
+        <span>装箱单数量：</span>
+        <span class="packNum">1</span>
+    </div>
+    <div class="page__bd list">
+        
+    </div>
+    <!-- <div class="addPacking">
+        <a href="javascript:;" onclick="triggerSelect();" class="weui-btn weui-btn_primary">装箱</a>
+    </div> -->
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script>
+    var contractId = '<%-contractId%>';
+    var isStaff = '<%-isStaff%>';
+
+    getPackingList();
+    getContractInfo();
+
+    if (isStaff == 0) {
+        $('.addPacking,.total').remove();
+    }
+
+    function getContractInfo() {
+        $.ajax({
+            url: route('contract/info/' + contractId),
+            type: 'get',
+            dataType: 'json',
+            success: function (res) {
+                $('.totalSnNum').html(res.data.snNum);
+                $('.otherTotalSnNum').html(res.data.otherSnNum);
+            }
+        });
+    }
+
+    function getPackingList() {
+        $.ajax({
+            url: route('contract/getPackingList'),
+            type: 'get',
+            dataType: 'json',
+            data: {
+                contractId: contractId
+            },
+            success: function (res) {
+                renderList(res.data);
+                var hasPackedNum = 0, otherHasPackedNum = 0;
+                for (var i = 0; i < res.data.length; i++) {
+                    hasPackedNum += res.data[i].num;
+                    otherHasPackedNum += res.data[i].otherNum;
+                }
+                $('.hasPackedNum').html(hasPackedNum);
+                $('.otherHasPackedNum').html(otherHasPackedNum);
+                $('.packNum').html(res.data.length);
+            }
+        });
+
+        function renderHrefSn(snArr) {
+            var str = '';
+            var href = route('service/product/vir8/');
+            for (var i = 0; i < snArr.length; i++) {
+                str += '<a href="'+href+snArr[i]+'">'+snArr[i]+'</a>,';
+            }
+            str = str.slice(0, str.length - 1);
+            return str;
+        }
+
+        function renderList(data) {
+            var str = '';
+            for (var i = 0; i < data.length; i++) {
+                var snArr, otherSnArr, expressNo, actionBtn = '';
+                var isSend = data[i].isSend;
+                var id = data[i].id;
+                var sendType = data[i].sendType ? data[i].sendType : '';
+                try {
+                    snArr = data[i].sn.split(',');
+                } catch (e) {
+                    snArr = [];
+                }
+                try {
+                    otherSnArr = data[i].otherSn.split(',');
+                } catch (e) {
+                    otherSnArr = [];
+                }
+                if (data[i].expressNo) {
+                    expressNo = data[i].expressNo;
+                } else if (data[i].isSend == 1) {
+                    expressNo = '<span class="iconfont icon-scan" onclick="scanExpressAgain('+id+');"></span>';
+                } else {
+                    expressNo = '';
+                }
+                var display = isStaff == 0 ? 'none' : 'block';
+                var showScan = isSend == 0 ? 'block' : 'none';
+                if (!isSend) {
+                    actionBtn = '<a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:" style="display: '+display+'" onclick="subSendType('+data[i].id+', \'送货\');">送货</a>'+
+                    '<a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:" style="display: '+display+'" onclick="subSendType('+data[i].id+', \'自提\');">自提</a>'+
+                    '<a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:" style="display: '+display+'" onclick="scanExpress('+data[i].id+');">快递</a>';
+                } else {
+                    if (sendType == '快递') {
+                        actionBtn = '<a class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:" onclick="expressInfo(\''+data[i].expressNo+'\');">查询快递</a>';
+                    }
+                }
+                var no = data.length-i;
+                var editStr = '', scanStr = '', otherScanStr = '';
+                if (isStaff == 1) {
+                    editStr = '<span class="iconfont icon-sign" onclick="editPacking('+id+')"></span>';
+                    scanStr = '<span class="iconfont icon-scan" onclick="scanSn('+id+');" style="display:'+showScan+'"></span>';
+                    otherScanStr = '<span class="iconfont icon-scan" onclick="scanOtherSn('+id+');" style="display:'+showScan+'"></span>';
+                }
+                str += '<div class="weui-form-preview">' +
+                    '<div class="weui-form-preview__bd">' +
+                    '<div class="weui-form-preview__item">' +
+                    '<label class="weui-form-preview__label">#'+no+'</label>' +
+                    '<span class="weui-form-preview__value">'+editStr+'</span>' +
+                    '</div>' +
+                    '<div class="weui-form-preview__item">' +
+                    '<label class="weui-form-preview__label">控制器序列号数量</label>' +
+                    '<span class="weui-form-preview__value">'+data[i].num+'</span>' +
+                    '</div>' +
+                    '<div class="weui-form-preview__item">' +
+                    '<label class="weui-form-preview__label">控制器序列号</label>' +
+                    '<span class="weui-form-preview__value">'+
+                    renderHrefSn(snArr)+scanStr+
+                    // snArr.join()+scanStr+
+                    '</span>' +
+                    '</div>' +
+                    '<div class="weui-form-preview__item">' +
+                    '<label class="weui-form-preview__label">其它序列号</label>' +
+                    '<span class="weui-form-preview__value">'+
+                    otherSnArr.join()+otherScanStr+
+                    '</span>' +
+                    '</div>' +
+                    '<div class="weui-form-preview__item">' +
+                    '<label class="weui-form-preview__label">发货类型</label>' +
+                    '<span class="weui-form-preview__value">'+sendType+'</span>' +
+                    '</div>' +
+                    '<div class="weui-form-preview__item">' +
+                    '<label class="weui-form-preview__label">快递单号</label>' +
+                    '<span class="weui-form-preview__value">'+
+                    expressNo+
+                    '</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="weui-form-preview__ft">' +
+                    actionBtn +
+                    '</div>' +
+                    '</div>'
+            }
+            if (str) {
+                $('.list').html(str);
+            } else {
+                $('.list').html('<div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div>');
+            }
+        }
+    }
+
+    function addPacking() {
+        $.ajax({
+            url: route('contract/addPacking'),
+            type: 'post',
+            dataType: 'json',
+            data: {
+                num: 0,
+                contractId: contractId,
+            },
+            success: function (res) {
+                wxToast(res.msg);
+                getPackingList();
+            }
+        });
+    }
+
+    function editPacking(id) {
+        window.location.href = route('contract/packingEditPage/' + id + '?contractId=' + contractId);
+    }
+
+    function updateExpressNo(id, no, byExpress) {
+        var expressNo = '';
+        var sendType = '快递';
+        if (byExpress) {
+            expressNo = no;
+        } else {
+            sendType = no;
+        }
+        $.ajax({
+            url: route('contract/updateExpressNoInPacking'),
+            type: 'put',
+            dataType: 'json',
+            data: {
+                id: id,
+                expressNo: expressNo,
+                sendType: sendType,
+            },
+            success: function (res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                }, 1000);
+            }
+        });
+    }
+
+    function expressInfo(no) {
+        window.location.href = route('contract/queryPackingExpress/' + no);
+    }
+
+    function subSendType(id, type) {
+        var r = window.confirm('确定提交？');
+        if (!r) {
+            return;
+        }
+        updateExpressNo(id, type, false);
+    }
+
+    function scanExpress(id) {
+        scan(function(no) {
+            if (!no) {
+                wxToast('编号为空');
+                return;
+            }
+            setTimeout(function(){
+                var r = window.confirm('编号为' + no);
+                if (!r) return;
+                updateExpressNo(id, no, true);
+            }, 1000);
+        });
+    }
+
+    function scanSn(id) {
+        scan(function(no) {
+            no = no.replace(/\D/ig, '');
+            if (!no) {
+                wxToast('序列号为空');
+                return;
+            }
+            $.ajax({
+                url: route('contract/addSingleSn'),
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    id: id,
+                    sn: no,
+                },
+                success: function (res) {
+                    wxToast(res.msg);
+                    // if (res.code == 200) {
+                    //     toastScanDisk(no, function() {
+                    //         window.location.reload();
+                    //     });
+                    // } else {
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    // }
+                }
+            });
+        });
+    }
+
+    function scanOtherSn(id) {
+        scan(function(no) {
+            if (!no) {
+                wxToast('序列号为空');
+                return;
+            }
+            $.ajax({
+                url: route('contract/addSingleOtherSn'),
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    id: id,
+                    sn: no,
+                },
+                success: function (res) {
+                    wxToast(res.msg);
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                }
+            });
+        });
+    }
+
+    function toastScanDisk(sn, cb) {
+        var r = window.confirm('是否对' + sn + '进行装盘？');
+        if (!r) {
+            cb();
+            return;
+        }
+        scan(function(no) {
+            if (!no) {
+                wxToast('条形码为空');
+                cb();
+                return;
+            }
+            var r = window.confirm('编号为' + no + '，是否继续？');
+            if (!r) {
+                return;
+            }
+            createAssembleDisk(sn, no, cb);
+        });
+    }
+
+    function createAssembleDisk(sn, install_disk_id, cb) {
+        $.ajax({
+            url: route('contracts/createAssembleDisk'),
+            type: 'post',
+            dataType: 'json',
+            data: {
+                sn: sn,
+                install_disk_id: install_disk_id,
+                contract_id: contractId,
+            },
+            success: function (res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    cb();
+                }, 1000);
+            }
+        });
+    }
+
+    function scanExpressAgain(id) {
+        scan(function(no) {
+            if (!no) {
+                wxToast('单号为空');
+                return;
+            }
+            $.ajax({
+                url: route('contract/updateExpressTypeAndNo'),
+                type: 'put',
+                dataType: 'json',
+                data: {
+                    id: id,
+                    expressNo: no,
+                    sendType: '快递',
+                },
+                success: function (res) {
+                    wxToast(res.msg);
+                    setTimeout(function(){
+                        window.location.reload();
+                    }, 1000);
+                }
+            });
+        });
+    }
+
+    function scan(cb) {
+        var page = window.location.href;
+        var timestamp = Date.now();
+        $.ajax({
+            url: route('common/proxyScan'),
+            type: 'get',
+            data: {
+                page: page,
+                timestamp: timestamp
+            },
+            dataType: "json",
+            success: function (res) {
+                var config = {};
+                config.appId = res.data.appId;
+                config.signature = res.data.signature;
+                config.nonceStr = res.data.nonceStr;
+                config.timestamp = timestamp;
+                config.jsApiList = ['scanQRCode'];
+                wx.config(config);
+                wx.ready(function () {
+                    wx.scanQRCode({
+                        desc: 'scanQRCode desc',
+                        needResult: 1,
+                        scanType: ["qrCode", "barCode"],
+                        success: function (res) {
+                            try {
+                                var no = res.resultStr.split(',')[1];
+                                setTimeout(function() {
+                                    cb(no);
+                                }, 100);
+                            } catch (e) {
+                                wxToast('非法条形码');
+                            }
+                        },
+                        error: function (err) {
+                            if (err.errMsg.indexOf('function_not_exist') > 0) {
+                                alert('版本过低请升级');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+</script>
+
+</html>

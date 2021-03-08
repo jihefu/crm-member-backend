@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>产品服务中心</title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/index.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/n_index.css" rel="stylesheet" />
+</head>
+<body data-scroll=0>
+	<!-- <header>
+		<div class="navbar">
+			<p class="header-title"></p>
+		</div>
+	</header> -->
+	<div id="wrap">
+		<div class="search">
+			<div class="form">
+				<input type="text" placeholder="序列号，机器号">
+				<div class="search-list">
+					<ul>
+						<li>
+							<p>暂无搜索历史</p>
+						</li>
+					</ul>
+				</div>
+				<span class="iconfont icon-form-del" onclick="cl()" style="display: none;"></span>
+				<div class="search2">
+					<span style="left: 0.1875rem;" onclick="search()">搜索</span>
+					<span class="iconfont icon-scan" onclick="codeScan()"></span>
+				</div>
+			</div>
+		</div>
+		<div id="main">
+			<div class="content">
+				<ul>
+					<% for(var i=0;i<result.length;i++){ %>
+						<li class="weui-cell weui-cell_access" style="padding-left:0px;" onclick="check(this)" data-model="<%= result[i].model %>" data-sn="<%= result[i].serialNo%>">
+							<div class="weui-cell__hd">
+								<% if(result[i].model=='V802'){ %>
+									<img src="../img/small_802.png" alt="">
+								<% }else if(result[i].model=='V801'){ %>
+									<img src="../img/small_801.png" alt="">
+								<% }else if(result[i].model=='V800'){ %>
+									<img src="../img/small_800.png" alt="">
+								<% }else if(result[i].model=='V881'){ %>
+									<img src="../img/small_881.png" alt="">
+								<% }else if(result[i].model=='V884'){ %>
+									<img src="../img/small_884.png" alt="">
+								<% }else if(result[i].model=='V882'){ %>
+									<img src="../img/small_884.png" alt="">
+								<% }else if(result[i].model=='D700'){ %>
+									<img src="../img/small_700.png" alt="">
+								<% }else if(result[i].model=='D900'){ %>
+									<img src="../img/small_900.png" alt="">
+								<% }else if(result[i].model=='D910'){ %>
+									<img src="../img/small_910.png" alt="">
+								<% }else if(result[i].model=='D921'){ %>
+									<img src="../img/small_921.png" alt="">
+								<% }else{ %>
+									<img src="../img/small_ad800.png" alt="">
+								<% } %>
+							</div>
+			                <div class="weui-cell__bd">
+			                    <p>序列号：<%= result[i].serialNo%></p>
+								<p>型号：<%= result[i].model?result[i].model:'AD800'%></p>
+								<p>有效期：<%= (result[i].validTime=='0')?"永久注册":result[i].validTime %></p>
+			                </div>
+			                <div class="weui-cell__ft">
+			                </div>
+			            </li>
+					<% } %>
+					<li class="weui-cell weui-cell_access li-mark"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../js/index.js" type="text/javascript"></script>
+<script>
+	var input_width = $('.form input[type=text]').width()+5;
+	$('.search-list').width(input_width);
+</script>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>活动记录</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+
+        .no-history {
+            color: #000;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body style="background-color: #efeeee">
+    <% if (eventArr.length === 0) { %>
+    <!-- <div class="weui-panel"> -->
+        <div class="weui-loadmore weui-loadmore_line">
+            <span class="weui-loadmore__tips" style="background: #efeeee;">暂无活动记录</span>
+        </div>
+        <!-- <div class="weui-panel__bd">
+            <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title no-history">暂无活动记录</h4>
+            </div>
+        </div> -->
+    <!-- </div> -->
+    <% } else { %>
+        <% for ( var i = 0; i < eventArr.length; i++) { %>
+            <div class="weui-form-preview" style="margin-top: 1rem;">
+                <div class="weui-form-preview__hd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">活动标题</label>
+                        <em class="weui-form-preview__value"><%= eventArr[i].dataValues.content.memberActivityTitle %></em>
+                    </div>
+                </div>
+                <div class="weui-form-preview__bd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">活动时间</label>
+                        <span class="weui-form-preview__value"><%= moment(eventArr[i].dataValues.content.memberActivityDate).format('YYYY-MM-DD') %></span>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">活动内容</label>
+                        <span class="weui-form-preview__value"><%= eventArr[i].dataValues.content.memberActivityContent %></span>
+                    </div>
+                    <!-- <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">活动结果</label>
+                        <span class="weui-form-preview__value"><%= eventArr[i].dataValues.content.memberActivityResult %></span>
+                    </div> -->
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+</body>
+<%- include("../includes/scripts.ejs") %>
+</html>

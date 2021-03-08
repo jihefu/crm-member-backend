@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>试验机测试界面</title>
+	<%- include("../includes/styles.ejs") %>
+	<!-- <link rel="stylesheet" href="../styles/line_chart.css"> -->
+	<link rel="stylesheet" href="../styles/test_machine.css">
+	<style>
+	    body {
+	    	margin-top: 0px!important;
+	    }
+	</style>
+</head>
+<body>
+<div id="wrap" data-id="<%= id%>">
+	<div id="header">
+		<ul>
+			<li>
+				<div class="force">力</div>
+				<div class="force-num">0.0</div>
+			</li>
+			<li>
+				<div class="deformation">变形</div>
+				<div class="deformation-num">0.0</div>
+			</li>
+			<li>
+				<div class="displacement">位移</div>
+				<div class="displacement-num">0.0</div>
+			</li>
+		</ul>
+	</div>
+	<div id="main">
+		<canvas id="canvas"></canvas>
+	</div>
+	<div id="footer" style="display:none;">
+		<div class="data" onclick="">
+			<p>数据</p>
+		</div>
+		<div class="btn iconfont icon-start"></div>
+		<div class="ctrl" onclick="">
+			<p>程控</p>
+		</div>
+	</div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script type="text/javascript" src="../js/socket.io.js"></script>
+<script type="text/javascript" src="../js/test_machine.js"></script>
+<script>
+	$('#footer').show();
+	var header = $('#header').height();
+	var footer = $('#footer').height();
+	var height = window.innerHeight;
+	var main = height-header-footer-20;
+	$('#main').height(main);
+</script>
+<script type="text/javascript" src="../js/my_chart.js"></script>
+</html>

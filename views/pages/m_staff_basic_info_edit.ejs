@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>基本信息</title>
+    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <link rel="stylesheet" href="../styles/upload_portrait/page-common.css">
+    <link rel="stylesheet" href="../styles/upload_portrait/upload.css">
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo.css">
+    <style type="text/css">
+        .cd_portrait {
+            float: none;
+            overflow: hidden;
+        }
+        .date {
+            text-align: right;
+            text-shadow: none;
+            color: #999;
+            font-weight: inherit;
+            margin: 0px;
+            line-height: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <div class="page__bd">
+        <div class="weui-cells" style="margin-top:10px">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>头像</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <div class="cd_portrait cd_portrait_border">
+                        <p class="cd_text1 click1 cd_block">点击</p>
+                        <p class="cd_text2 click2 cd_block">上传</p>
+                        <input type="file" name="album" class="input_album upload-file" id="file" accept="image/*" data-model="<%= result.album.model %>">
+                    </div>
+                </div>
+            </div>
+            <% for(var i in result){ %>
+                <% if(result[i].visible){ %>
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <p><%= result[i].comment %></p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <% if(result[i].type=='select'){ %>
+                                <select data-model="<%= result[i].model %>" name="<%= i %>" onChange="modelChange(this);">
+                                    <% for(var index=0;index < result[i].option.length;index++ ){ %>
+                                        <% if(result[i].option[index]==result[i].value){ %>
+                                            <option selected><%= result[i].option[index] %></option>
+                                        <% }else{ %>
+                                            <option><%= result[i].option[index] %></option>
+                                        <% } %>
+                                    <% } %>
+                                </select>
+                            <% }else if(result[i].type=='button'){ %>
+                                <button class="date" data-model="<%= result[i].model %>" name="<%= i %>"><%= result[i].value %></button>
+                            <% }else{ %>
+                                <input onChange="modelChange(this);" type="text" data-model="<%= result[i].model %>" name="<%= i %>" <%= result[i].readonly %> value="<%= result[i].value %>">
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+    <div class="btn-groups">
+        <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="sub();">提交</a>
+    </div>
+</div>
+<div class="app" id="uploadPage" style="background: #000;">
+    <div class="upload-loading">
+        <span class="centerXY">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        </span>
+    </div>
+    <div class="bar">
+        <a class="back pull-left" id="closeCrop" onclick="close();">
+            取消
+        </a> 
+        <a id="getFile" class="pull-right">确定</a>
+    </div>
+    <div class="main">
+        <canvas class="upload-mask">
+
+        </canvas>
+        <div class="preview-box">
+            <img id="preview"/>
+        </div>
+        <canvas class="photo-canvas">
+
+        </canvas>
+        <a id="rotateBtn">
+            <i class="fa fa-rotate-right  fa-3x"></i>
+            <div>旋转照片</div>
+        </a>
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script type="text/javascript" src="../js/upload_portrait/require.js"></script>
+<script type="text/javascript" src="../js/upload_portrait/main.js"></script>
+<script src="../js/upload_portrait/canvas-toBlob.js"></script>
+<script type="text/javascript" src="../js/upload_portrait/m_staff.js"></script>
+<script>
+    function sub(){
+        var obj = {};
+        $('.weui-cell__ft input,select,button').each(function(){
+            obj[$(this).attr('name')] = $(this).attr('data-model');
+        });
+        $.ajax({
+            url:route('m/staff/basicInfoSub'),
+            type:"put",
+            data:{
+                formData: JSON.stringify(obj)
+            },
+            dataType:"json",
+            success:function(data){
+                wxToast(data.msg);
+                setTimeout(function(){
+                    window.location.href = route('m/staff');
+                },2000);
+            }
+        });
+    }
+    $('.date').on('click', function () {
+        var that = this;
+        var text = $(this).html();
+        if(text!=''){
+            var y = text.split('-')[0];
+            var m = text.split('-')[1];
+            var d = text.split('-')[2];
+            var defaultValue = [y,m,d];
+        }else{
+            var defaultValue = [new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate()];
+        }
+        weui.datePicker({
+            start: 1950,
+            end: new Date().getFullYear(),
+            defaultValue: defaultValue,
+            onConfirm: function (result) {
+                var yy = result[0];
+                var mm = result[1]<10?'0'+result[1]:result[1];
+                var dd = result[2]<10?'0'+result[2]:result[2];
+                var m_str = yy+'-'+mm+'-'+dd;
+                $(that).html(m_str);
+                $(that).attr('data-model',m_str);
+            }
+        });
+    });
+    function modelChange(obj){
+        $(obj).attr('data-model',$(obj).val());
+    }
+</script>
+</html>

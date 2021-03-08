@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>维修流程</title>
+    <%- include("../includes/styles.ejs") %>
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/step.css" rel="stylesheet" />
+    <style>
+        html, body {
+            height: auto;
+        }
+        .steps {
+            flex-direction: column;
+            height: auto;
+        }
+
+        .step-line {
+            width: 100%;
+            min-height: 4rem;
+            margin-left: 0.2rem;
+            margin-bottom: 0.5rem;
+            height: auto;
+            border-left: 3px solid #d6d6d6;
+            background: #fff;
+            border-radius: 0px;
+            padding-left: 0.5rem;
+            font-size: 0.8rem;
+            color: #999;
+            padding-bottom: 0.8rem;
+        }
+
+        .step-item {
+            display: flex;
+            width: 20rem;
+        }
+
+        .step-item-text {
+            position: initial;
+            flex: 1;
+            text-align: left;
+            padding-left: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .stage {
+            margin-left: 1rem;
+        }
+
+        .step-active {
+            border-left-color: #1890ff;
+        }
+
+        .step-line div {
+            display: none;
+        }
+
+        .form-label {
+            width: 70px;
+            text-align: left;
+        }
+
+        .form-input {
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="steps">
+        <div class="step-item">
+            <div class="step-item-dot"></div>
+            <div class="step-item-text">送修检验中<span class="stage stage0"></span></div>
+        </div>
+        <div class="step-line">
+            <div>维修测试结论：<%= data.conclusion %></div>
+            <div>处理方法：<%= data.treatement %></div>
+        </div>
+        <div class="step-item">
+            <div class="step-item-dot"></div>
+            <div class="step-item-text">维修中<span class="stage stage1"></span></div>
+        </div>
+        <div class="step-line">
+            
+        </div>
+        <div class="step-item">
+            <div class="step-item-dot"></div>
+            <div class="step-item-text">维修测试中<span class="stage stage2"></span></div>
+        </div>
+        <div class="step-line">
+            <div>维修测试结论：<%= data.again_conclusion %></div>
+            <div>维修合同：<%= data.related_contract %></div>
+        </div>
+        <div class="step-item">
+            <div class="step-item-dot"></div>
+            <div class="step-item-text">待发件<span class="stage stage3"></span></div>
+        </div>
+        <div class="step-line">
+            <div class="express">快递单号：<%= data.express %></div>
+            <div>发件时间：<%= data.deliver_time %></div>
+        </div>
+        <div class="step-item">
+            <div class="step-item-dot"></div>
+            <div class="step-item-text takeGoods">已发件<span class="stage stage4"></span></div>
+        </div>
+        <div class="step-line">
+            <div>收件确认人：<%= data.take_person %></div>
+            <div>收件确认时间：<%= data.take_time %></div>
+        </div>
+        <div class="step-item">
+            <div class="step-item-dot"></div>
+            <div class="step-item-text">已收件<span class="stage stage5"></span></div>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/repairStateDetail.js"></script>
+<script>
+    var data = JSON.parse('<%- JSON.stringify(data)%>');
+    var stateArr = ['送修检验中', '维修中', '维修测试中', '待发件', '已发件', '已收件'];
+    var i = stateArr.indexOf(data.deliver_state);
+    var formData = {};
+    var isStaff = false;
+</script>
+
+</html>

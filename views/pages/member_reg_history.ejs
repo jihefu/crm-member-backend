@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>注册历史</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_reg_history.css">
+</head>
+<body style="background-color: #efeeee;" data-scroll="0">
+<% if(result[0]==null){ %>
+    <div class="weui-panel">
+        <div class="weui-panel__bd">
+            <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title no-history">暂无注册记录</h4>
+            </div>
+        </div>
+    </div>
+<% }else{ %>
+    <% for(var i=0;i<result.length;i++){ %>
+        <div class="weui-panel">
+            <div class="weui-panel__bd">
+                <div class="weui-media-box weui-media-box_text">
+                    <h4 class="weui-media-box__title"><%= result[i].regDate %></h4>
+                    <p class="weui-media-box__desc">
+                        <p class="weui-media-box__desc">序列号：<%= result[i].sn %></p>
+                        <% if(result[i].product==''){ %>
+                            <p class="weui-media-box__desc">产品型号：AD800</p>
+                        <% }else{ %>
+                            <p class="weui-media-box__desc">产品型号：<%= result[i].product %></p>
+                        <% } %>
+                        <% if(result[i].validDate==0){ %>
+                            <p class="weui-media-box__desc">注册有效期：已永久注册</p>
+                        <% }else{ %>
+                            <p class="weui-media-box__desc">注册有效期：<%= result[i].validDate %></p>
+                        <% } %>
+                        <p class="weui-media-box__desc">注册码：<%= result[i].regCode %></p>
+                        <p class="weui-media-box__desc">授权操作码：<%= result[i].authOperKey %></p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    <% } %>
+<% } %>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script type="text/javascript" src="../js/member_reg_history.js"></script>
+</html>

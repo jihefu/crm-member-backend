@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>朗杰后台管理系统</title>
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link href="../styles/admin.css" rel="stylesheet" />
+	<link href="../styles/admin_nav.css" rel="stylesheet" />
+</head>
+<body>
+	<header>
+		<p>朗杰后台管理系统</p>
+	</header>
+	<div id="wrap">
+		<ul>
+			<li>
+				<a href="http://www.langjie.com:8090/admin/customers">
+					<p>客户维护系统</p>
+				</a>
+				<a href="http://www.langjie.com:8090/admin/users">
+					<p>用户维护系统</p>
+				</a>
+			</li>
+			<li>
+				<a href="http://www.langjie.com:8090/admin/contacts">
+					<p>联系人管理系统</p>
+				</a>
+				<a href="http://www.langjie.com:8090/admin/employees">
+					<p>员工管理系统</p>
+				</a>
+			</li>
+			<li>
+				<a href="http://www.langjie.com:8090/admin/members">
+					<p>会员管理系统</p>
+				</a>
+				<a href="http://www.langjie.com:8090/admin/vir8">
+					<p>威程产品管理系统</p>
+				</a>
+			</li>
+			<li>
+				<a href="http://www.langjie.com:8090/admin/contracts">
+					<p>合同管理系统</p>
+				</a>
+				<a href="http://www.langjie.com:8090/admin/repairs">
+					<p>维修服务系统</p>
+				</a>
+			</li>
+			<li>
+				<a href="http://www.langjie.com:8090/admin/knowledge">
+					<p>售后知识库</p>
+				</a>
+				<a href="http://www.langjie.com:8090/admin/intercourses">
+					<p>客户往来管理</p>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script type="text/javascript">
+	$('#wrap li p').mouseover(function(){
+		$(this).addClass('light-high');
+	});
+	$('#wrap li p').mouseout(function(){
+		$(this).removeClass('light-high');
+	});
+</script>
+</html>

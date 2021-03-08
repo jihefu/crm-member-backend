@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>奖品池</title>
+    <%- include("../includes/styles.ejs") %>
+    <!-- <link rel="stylesheet" href="../styles/aui/aui.css"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="../styles/aui/aui-pull-refresh.css" /> -->
+    <link rel="stylesheet" href="../styles/responsive.css">
+	<link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <style type="text/css">
+        html,body {
+            height: 100%;
+            font-size: 1rem;
+        }
+        p {
+            color: #333;
+            font-size: 1rem;
+        }
+        .aui-refresh-content {
+            padding: 0;
+        }
+        .cpyIntro {
+            display: none;
+        }
+        .member_no {
+            width: 100%;
+            height: 4.5rem;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            color: #455ede;
+            font-size: 1.5rem;
+            padding-top: 1.375rem;
+        }
+        .cpyIntro {
+            text-indent: 2rem;
+            padding: 0.2rem 1rem 1rem 1rem;
+            letter-spacing: 0.0625rem;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body style="background-color: #efeeee">
+<!-- <div class="aui-chat aui-refresh-content"> -->
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <div onclick="tabClick(this);" class="weui-navbar__item weui-bar__item_on">
+                第一轮
+            </div>
+            <div onclick="tabClick(this);" class="weui-navbar__item">
+                第二轮
+            </div>
+            <div onclick="tabClick(this);" class="weui-navbar__item">
+                第三轮
+            </div>
+        </div>
+        <!-- <div class="aui-chat aui-refresh-content"> -->
+            <div class="weui-tab__panel">
+                <div class="weui-panel weui-panel_access">
+                    <div class="weui-panel__bd">
+                        
+                    </div>
+                </div>
+            </div>
+        <!-- </div> -->
+    </div>
+<!-- </div> -->
+</body>
+<%- include("../includes/scripts.ejs") %>
+<!-- <script src="../js/aui/aui-pull-refresh.js"></script> -->
+<script>
+    var unionid = '<%- unionid %>';
+    var allGoodsPoll = [];
+    var targetPool = [];
+    getGoods();
+    function initRefresh(){
+        // var pullRefresh = new auiPullToRefresh({
+        //     container: document.querySelector('.aui-refresh-content'),
+        //     triggerDistance: 50
+        // },function(ret){
+        //     if(ret.status=="success"){
+        //         setTimeout(function(){
+        //             getGoods(function(){
+        //                 wxToast('刷新成功');
+        //                 pullRefresh.cancelLoading(); //刷新成功后调用此方法隐藏
+        //             });
+        //         },500);
+        //     }
+        // });
+    }
+    function filterGoods(targetRound){
+        for (var i = 0; i < allGoodsPoll.length; i++) {
+            if(allGoodsPoll[i].round==targetRound){
+                targetPool.push(allGoodsPoll[i]);
+            }
+        }
+        renderGoods();
+    }
+    function tabClick(obj){
+        $('.weui-navbar__item').removeClass('weui-bar__item_on');
+        $(obj).addClass('weui-bar__item_on');
+        targetPool = [];
+        if($(obj).html().trim()=='第一轮'){
+            filterGoods('第一轮');
+        }else if($(obj).html().trim()=='第二轮'){
+            filterGoods('第二轮');
+        }else{
+            filterGoods('第三轮');
+        }
+    }
+    function renderGoods(){
+        var str = '';
+        for (var i = 0; i < targetPool.length; i++) {
+            var signInStr = '';
+            if(targetPool[i].signIn_id){
+                signInStr = targetPool[i].signIn_id+'号抽走';
+            }
+            str += '<a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">'+
+                        '<div class="weui-media-box__hd">'+
+                            '<img class="weui-media-box__thumb" style="height: 100%;" src="'+targetPool[i].imgUrl+'" alt="">'+
+                        '</div>'+
+                        '<div class="weui-media-box__bd">'+
+                            '<h4 class="weui-media-box__title">'+targetPool[i].prize_name+'</h4>'+
+                            '<p class="weui-media-box__desc" style="margin-top: 0.5625rem;">价格：'+targetPool[i].price+'<span style="margin-left: 1.5rem;color: #f00;">'+signInStr+'</span></p>'+
+                        '</div>'+
+                    '</a>'
+        }
+        $('.weui-tab__panel .weui-panel__bd').html(str);
+        setTimeout(function(){
+            initRefresh();
+        },100);
+    }
+    function getGoods(cb){
+        wxLoadToast('正在加载');
+        $.ajax({
+            url:wxmpRoute('/prize/prizeView'),
+            type:'get',
+            dataType:'json',
+            timeout:30000,
+            success:function(res){
+                $('#loadingToast').remove();
+                allGoodsPoll = res;
+                var i = $('.weui-bar__item_on').index();
+                if(i==0){
+                    filterGoods('第一轮');
+                }else if(i==1){
+                    filterGoods('第二轮');
+                }else{
+                    filterGoods('第三轮');
+                }
+                if(cb) cb();
+            }
+        });
+    }
+</script>
+</html>

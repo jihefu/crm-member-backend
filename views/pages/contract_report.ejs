@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%- company %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+    <style type="text/css">
+        .weui-footer {
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .weui-badge {
+            margin-right: 5px;
+            margin-bottom: 4px;
+        }
+        .green {
+            background: #4cbe25;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cells__title">信用报告</div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>总信用额</p>
+            </div>
+            <div class="weui-cell__ft trans"><%= credit_line %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>信用期</p>
+            </div>
+            <div class="weui-cell__ft"><%= credit_period %>天</div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>信用余额</p>
+            </div>
+            <div class="weui-cell__ft trans"><%= over_price %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>信用余期</p>
+            </div>
+            <div class="weui-cell__ft"><%= over_time %>天</div>
+        </div>
+        <a class="weui-cell weui-cell_access" data-href="rec_list" href="javascript:;">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>期内待付</p>
+            </div>
+            <div class="weui-cell__ft recent_credit">
+                <% if(inside_count==0){ %>
+                    暂无
+                <% }else{ %>
+                    <span class="weui-badge green"><%= inside_count %></span>
+                <% } %>
+            </div>
+        </a>
+        <a class="weui-cell weui-cell_access" data-href="over_list" href="javascript:;">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>逾期待付</p>
+            </div>
+            <div class="weui-cell__ft over_credit">
+                <% if(outside_count==0){ %>
+                    暂无
+                <% }else{ %>
+                    <span class="weui-badge"><%= outside_count %></span>
+                <% } %>
+            </div>
+        </a>
+        <a class="weui-cell weui-cell_access" data-href="freeze_list" href="javascript:;">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>冻结合同</p>
+            </div>
+            <div class="weui-cell__ft over_credit">
+                <% if(freeze_count==0){ %>
+                    暂无
+                <% }else{ %>
+                    <span class="weui-badge"><%= freeze_count %></span>
+                <% } %>
+            </div>
+        </a>
+        <a class="weui-cell weui-cell_access" data-href="member_credit_trend" href="javascript:;">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>信用走势</p>
+            </div>
+            <div class="weui-cell__ft">
+                <span class="weui-badge" style="margin-left: 5px;">new</span>
+            </div>
+        </a>
+    </div>
+    <div class="weui-cells">
+        <div class="weui-cells__title">
+            合同统计报告
+        </div>
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                统计范围
+            </div>
+            <div class="weui-cell__ft">
+                <select class="weui-select" name="time" onchange="selectTime(this);">
+                    <option selected value="0">今年</option>
+                    <option value="1">近两年</option>
+                    <option value="2">近三年</option>
+                </select>
+            </div>
+        </div>
+        <a class="weui-cell weui-cell_access" data-href="contracts_list" href="javascript:;">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>生效合同数</p>
+            </div>
+            <div class="weui-cell__ft">
+                <span class="contract_num"></span>
+            </div>
+        </a>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>总金额</p>
+            </div>
+            <div class="weui-cell__ft total_amount trans sum"></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>优惠金额</p>
+            </div>
+            <div class="weui-cell__ft favo trans favo"></div>
+        </div>
+        <a class="weui-cell weui-cell_access" data-href="payments_list" href="javascript:;">
+            <div class="weui-cell__hd"></div>
+            <div class="weui-cell__bd">
+                <p>已支付货款</p>
+            </div>
+            <div class="weui-cell__ft">
+                <span class="payment_num trans"></span>笔
+            </div>
+        </a>
+    </div>
+    <!-- <div class="weui-cells">
+        <div class="weui-cells__title">
+            信用趋势
+        </div>
+    </div>
+    <iframe style="width: 100%;height: 500px;border: none" src="../html/credit_trend.html"></iframe> -->
+    <div class="weui-footer">
+        <p class="weui-footer__text">以上数据仅供参考，实际以财务对账情况为准。</p>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/kendo/kendo.all.min.js"></script>
+<script src="../js/credit_report.js"></script>
+<script type="text/javascript">
+    var company = '<%- company %>';
+    var injection = {
+        company: company
+    };
+    $(function(){
+        getData('<%- company %>');
+    });
+</script>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>超级权限</title>
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo.css">
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cell weui-cell_select weui-cell_select-before">
+            <div class="weui-cell__hd">
+                <select class="weui-select" onchange="searchType();" style="width: 115px; height: 28px;line-height: 28px;padding-left: 0px;" name="searchType">
+                    <option value="1" selected>列表中选择</option>
+                    <option value="2">搜索公司</option>
+                    <option value="3">个人会员</option>
+                </select>
+            </div>
+            <div class="weui-cell__bd" style="padding-left: 0px;">
+                <a class="weui-cell weui-cell_access cpyList" href="javascript:;" onclick="companyList();" style="padding-left: 0px;padding-right: 0px;">
+                    <div class="weui-cell__bd" style="padding-left: 0px;">
+                        <p class="company">请选择公司</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                    </div>
+                </a>
+                <input class="weui-input" onchange="searchCpy();" name="keywords" style="display: none;" type="text" placeholder="请输入公司名">
+                <input class="weui-input" onchange="searchMember();" name="member" style="display: none;" type="text" placeholder="请输入会员">
+            </div>
+            <div class="weui-cell__ft">
+            </div>
+        </div>
+        <a id="member_block" class="weui-cell weui-cell_access" href="javascript:;" onclick="memberList();">
+            <div class="weui-cell__bd">
+                <p class="member">请选择会员</p>
+            </div>
+            <div class="weui-cell__ft">
+            </div>
+        </a>
+        <a href="javascript:;" style="margin-top: 2rem;" onclick="sub();" class="weui-btn weui-btn_primary">提交</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script>
+    var company_arr = JSON.parse('<%- JSON.stringify(result)%>');
+    var company,member,open_id;
+
+    function searchType() {
+        const v = $('select[name=searchType]').val();
+        if (v == 0) return;
+        if (v == 1) {
+            $('.cpyList').show();
+            $('input[name=keywords]').hide();
+            $('input[name=member]').hide();
+            $('#member_block').show();
+        } else if (v == 2) {
+            $('.cpyList').hide();
+            $('input[name=keywords]').show();
+            $('input[name=member]').hide();
+            $('#member_block').show();
+        } else if (v == 3) {
+            $('.cpyList').hide();
+            $('input[name=keywords]').hide();
+            $('input[name=member]').show();
+            $('#member_block').hide();
+        }
+        $('.member').html('请选择会员');
+    }
+
+    function searchCpy() {
+        var keywords = $('input[name=keywords]').val();
+        var company_list_arr = [];
+        company_arr.forEach(function(items,index){
+            if (items.indexOf(keywords) !== -1) {
+                var obj = {};
+                obj.label = items;
+                obj.value = items;
+                company_list_arr.push(obj);
+            }
+        });
+        weui.picker(company_list_arr, {
+            onConfirm: function (result) {
+                company = result[0];
+                $('input[name=keywords]').val(company);
+            }
+        });
+    }
+
+    function searchMember() {
+        var keywords = $('input[name=member]').val();
+        if (!keywords) {
+            return;
+        }
+        $.ajax({
+            url:route('member/searchMemberByKeywords'),
+            type:'get',
+            dataType:'json',
+            timeout:30000,
+            data:{
+                keywords: keywords
+            },
+            success:function(res){
+                selectMember(res.data, function(result) {
+                    $('input[name=member]').val(result[0].name);
+                });
+            } 
+        });
+    }
+
+    function companyList(){
+        var company_list_arr = [];
+        company_arr.forEach(function(items,index){
+            var obj = {};
+            obj.label = items;
+            obj.value = items;
+            company_list_arr.push(obj);
+        });
+        weui.picker(company_list_arr, {
+            onConfirm: function (result) {
+                company = result[0];
+                $('.company').html(company);
+            }
+        });
+    }
+    function memberList(){
+        if(!company) return;
+        $.ajax({
+            url:route('getSuperAuthMember'),
+            type:'get',
+            dataType:'json',
+            timeout:30000,
+            data:{
+                "company":company
+            },
+            success:function(res){
+                selectMember(res.data, function(result) {
+                    var str = result[0].name;
+                    str += ' （'+result[0].job+'，';
+                    if(result[0].check_company){
+                        str += '公司审核通过，';
+                    }else{
+                        str += '公司未审核通过，';
+                    }
+                    if(result[0].check_job){
+                        str += '职位审核通过）';
+                    }else{
+                        str += '职位未审核通过）';
+                    }
+                    $('.member').html(str);
+                });
+            }
+        });
+    }
+    function selectMember(data, cb) {
+        var member_list_arr = [];
+        data.forEach(function(items,index){
+            var obj = {};
+            obj.label = items.name;
+            obj.value = items;
+            member_list_arr.push(obj);
+        });
+        if (member_list_arr.length === 0) {
+            wxToast('不存在');
+            return;
+        }
+        weui.picker(member_list_arr, {
+            onConfirm: function (result) {
+                member = result[0].name;
+                open_id = result[0].open_id;
+                cb(result);
+            }
+        });
+    }
+    function sub(){
+        if (!open_id) {
+            return;
+        }
+       $.ajax({
+            url:route('postSuperAuthMember'),
+            type:'post',
+            dataType:'json',
+            timeout:30000,
+            data:{
+                "open_id": open_id
+            },
+            success:function(res){
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.href = route('member/index');
+                },1000);
+            } 
+        });
+    }
+</script>
+</html>

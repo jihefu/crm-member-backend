@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>商务信息</title>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_basicInfo_edit.css">
+    <style>
+        .weui-cell__ft input,.weui-cell__ft select {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <div class="page__bd">
+        <div class="weui-cells" style="margin-top:10px">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>公司名称</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="text" name="company" pattern="^[0-9a-z_\u4e00-\u9fa5()]{1,20}$" value="<%= result.company %>" placeholder="请输入公司全称">
+                </div>
+            </div>
+            <!-- <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>职位</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <select name="job">
+                        <option><%= result.job %></option>
+                        <% for(var i=0;i<position.length;i++){ %>
+                            <option><%= position[i] %></option>
+                        <% } %>
+                    </select>
+                </div>
+            </div> -->
+            <div class="weui-cells__title">职位列表</div>
+            <div class="weui-cells weui-cells_checkbox">
+                <% for(var i = 0; i < position.length; i++) { %>
+                    <label class="weui-cell weui-check__label">
+                        <div class="weui-cell__hd">
+                            <input type="checkbox" class="weui-check _job" name="<%= position[i] %>">
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p><%= position[i] %></p>
+                        </div>
+                    </label>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <div class="btn-groups">
+        <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="sub(this);">提交</a>
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var jobStr = '<%= result.job %>';
+</script>
+<script type="text/javascript" src="../js/member_businessInfo.js"></script>
+</html>

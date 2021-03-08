@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>注册信息</title>
+    <%- include("../includes/styles.ejs") %>
+        <link rel="stylesheet" href="../styles/responsive.css">
+        <link rel="stylesheet" href="../styles/member_mainInfo.css">
+        <link rel="stylesheet" href="../styles/member_index.css">
+        <style type="text/css">
+            html,
+            body {
+                height: 100%;
+            }
+        </style>
+</head>
+
+<body style="background-color: #efeeee">
+    <div class="page__bd">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>序列号</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= data.sn %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>机器号</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= data.mid %>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells__title">硬件</div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>注册码</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= data.regCode %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>授权码</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= data.authOperKey %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>有效期</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <% if (data.validDate != '' && data.validDate == 0) { %>
+                        <%= '永久注册' %>
+                    <% } else { %>
+                        <%= data.validDate %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cells__title">软件</div>
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>注册码</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= data.appRegCode %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>授权码</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <%= data.appAuthOperKey %>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <p>有效期</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <% if (data.appValidDate != '' &&data.appValidDate == 0) { %>
+                        <%= '永久注册' %>
+                    <% } else { %>
+                        <%= data.appValidDate %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+
+</html>

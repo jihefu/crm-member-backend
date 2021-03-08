@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>走势分析</title>
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<style type="text/css">
+		html,body {
+			height: 100%;
+		}
+		#wrap,#content,#credit {
+            text-align: left;
+            margin-top: 30px;
+            margin-left: 40px;
+        }
+        #content {
+            margin-top: 10px;
+        }
+        .box {
+            margin-top: 10px;
+        }
+        #credit {
+            margin-top: 100px;
+            margin-bottom: 100px;
+        }
+	</style>
+</head>
+<body style="display: none;">
+    <div id="content">
+        <p>
+            <label>
+                <input checked name="customers" type="radio" value="1" />全部客户
+            </label>
+            <label style="margin-left: 30px;">
+                <input name="customers" type="radio" value="2" />一年新客户
+            </label>
+            <label style="margin-left: 30px;">
+                <input name="customers" type="radio" value="3" />二年新客户
+            </label>
+            <label style="margin-left: 30px;">
+                <input name="customers" type="radio" value="4" />指定客户
+                <input name="customer" readonly value="" />
+            </label>
+        </p>
+        <p>
+            <label>
+                <input checked name="sale_mans" type="radio" value="1" />业务部
+            </label>
+            <label style="margin-left: 30px;">
+                <input name="sale_mans" type="radio" value="2" />济南组
+            </label>
+            <label style="margin-left: 30px;">
+                <input name="sale_mans" type="radio" value="3" />杭州组
+            </label>
+            <label style="margin-left: 30px;">
+                <input name="sale_mans" type="radio" value="4" />业务员
+                <input name="sale_man" readonly value="" />
+            </label>
+        </p>
+        <p id="info-bar" style="font-size: 12px;position: absolute;top: 125px;z-index: 111;left: 47px;">
+            <span>
+                <span>递延发货：</span>
+                <span class="_last_year_d_price"></span>
+            </span>
+            <!-- <span>
+                <span>前年递延：</span>
+                <span class="_last_three_year_d_price"></span>
+            </span>
+            <span style="margin-left: 20px;">
+                <span>去年递延：</span>
+                <span class="_last_two_year_d_price"></span>
+            </span>
+            <span style="margin-left: 20px;">
+                <span>今年递延：</span>
+                <span class="_last_year_d_price"></span>
+            </span> -->
+            <span style="margin-left: 20px;">
+                <span>递延退货：</span>
+                <span class="closedAmount"></span>
+            </span>
+        </p>
+        <!-- <p>
+            <label>
+                <span class="_last_year"></span>
+                <span>年当年实际业绩：</span>
+                <span class="_last_year_price"></span>
+            </label>
+            <label style="margin-left: 30px;">
+                <span class="_last_last_year_d"></span>
+                <span>年递延业绩：</span>
+                <span class="_last_last_year_d_price"></span>
+            </label>
+            <label style="margin-left: 30px;">
+                <span class="_last_year_d"></span>
+                <span>年递延业绩：</span>
+                <span class="_last_year_d_price"></span>
+            </label>
+        </p> -->
+        <div class="demo-section k-content wide">
+            <div id="chart"></div>
+        </div>
+        <div class="demo-section k-content wide">
+            <div id="chart2"></div>
+        </div>
+    </div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="../js/achievement.js"></script>
+</html>

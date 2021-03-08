@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title></title>
+	<%- include("../includes/styles.ejs") %>
+    <link href="../styles/responsive.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <h4 style="text-align: center;margin: 8px;">
+            <span>拍摄于</span>
+            <span><%= data.birthtime %></span>
+        </h4>
+    </div>
+    <div>
+        <a href="">
+            <img width='100%' src="" alt="">
+        </a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script type="text/javascript">
+    var title = decodeURIComponent(GetRequest('title'));
+    var fileName = GetRequest('fileName');
+    $('title').html(title);
+    $('img').attr('src','../img/goods/'+fileName);
+    $('a').attr('href','../img/goods/'+fileName);
+</script>
+</html>

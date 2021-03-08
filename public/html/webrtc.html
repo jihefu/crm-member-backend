@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title></title>
+	<link href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+	<style>
+		body {
+			font-family: sans-serif;
+		}
+
+		video {
+			max-width: 100%;
+			width: 320px;
+		}
+
+		#remoteVideoBlock {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.videoItem {
+			display: flex;
+			width: 320px;
+			flex-direction: column;
+			align-items: center;
+			margin: 10px;
+			border-radius: 7px;
+			box-shadow: 3px 3px 5px #888888;
+		}
+
+		video {
+			border-radius: 8px;
+		}
+
+		text {
+			margin: 10px;
+			font-weight: bold;
+		}
+	</style>
+
+</head>
+
+
+<body>
+
+	<div id="remoteVideoBlock">
+		<div class="videoItem">
+			<video id="localVideo" controls="controls" autoplay></video>
+			<text id="_self">本地视频:</text>
+		</div>
+	</div>
+
+	<!-- <div id="oper" style="padding-left: 10px;"> -->
+		<!-- <form class="form-inline">
+			<div class="form-group">
+				<input class="form-control" id="remoteNameText" placeholder="请输入对方姓名">
+			</div>
+			<button id="callButton" onclick="call()" class="btn btn-default">Call</button>
+		</form> -->
+		<!-- <div>
+			<div>请输入对方ID:</div>
+			<input type="text" id="remoteNameText"></input>
+		</div>
+		<div>
+			<button id="callButton" onclick="call()">Call</button>
+		</div> -->
+	<!-- </div> -->
+
+
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="../js/socket.io.js"></script>
+	<script src="../js/adapter.js"></script>
+	<script src="../js/Screen-Capturing.js"></script>
+	<script src="../js/webrtc.js"></script>
+
+</body>
+
+</html>

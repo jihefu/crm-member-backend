@@ -1,0 +1,14 @@
+/node_modules
+/downloads
+/logs
+/public/audio
+/public/img
+/public/live
+/public/bootstrap
+/.svn
+/build
+/web
+/wxAppletManage
+/react_project
+/proto
+/CA

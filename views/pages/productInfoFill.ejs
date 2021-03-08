@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>电子保修卡</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>序列号</p>
+            </div>
+            <div class="weui-cell__ft"><%= sn %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>合同号</p>
+            </div>
+            <div class="weui-cell__ft"><%= contract_no %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>购买日期</p>
+            </div>
+            <div class="weui-cell__ft"><%= purchase_time %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>保修至</p>
+            </div>
+            <div class="weui-cell__ft repairTo"></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>用户</p>
+            </div>
+            <div class="weui-cell__ft"><%= name %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>手机</p>
+            </div>
+            <div class="weui-cell__ft"><%= phone %></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <p>安装地址</p>
+            </div>
+            <div class="weui-cell__ft">
+                <input class="weui-input" style="text-align: right;" type="text" name="addr" value='<%= addr %>'>
+            </div>
+        </div>
+    </div>
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" onclick="bind('<%= sn %>');">提交</a>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var purchase_time = '<%= purchase_time %>';
+    $(function(){
+        var validTimeFromContract = Date.parse(purchase_time) + 60 * 60 * 24 * 1000 * 365 * 1.5;
+        var validTimeFromNow = Date.now() + 60 * 60 * 24 * 1000 * 365;
+        var validTime = validTimeFromContract < validTimeFromNow ? dateTime(validTimeFromContract) : dateTime(validTimeFromNow);
+        $('.repairTo').text(validTime);
+    });
+    function bind(sn) {
+        var addr = $('input[name=addr]').val();
+        if (!addr) {
+            wxToast('安装地址不能为空');
+            return;
+        }
+        $.ajax({
+            url: route('retail/vir/bind/' + sn),
+            type: "post",
+            dataType: "JSON",
+            data: {
+                addr: addr,
+            },
+            success: function (res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.href = route('retail/vir/' + sn);
+                }, 1000);
+            },
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>售后知识库</title>
+    <link href="../styles/slider.css" rel="stylesheet" />
+    <link href="../styles/icon/iconfont.css" rel="stylesheet" />
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/common.css" rel="stylesheet" />
+    <link href="../styles/main.css" rel="stylesheet" />
+    <link href="../styles/weicheng1802.css" rel="stylesheet" />
+    <style>
+		.con {
+		    width: 92%;
+		}
+		.img {
+			text-align: center;
+			height: 10rem;
+		}
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="main">
+			<div class="img" id="aui-slide" style="background:none">
+				<div class="aui-slide-wrap">
+					<% for(let i = 0;i<album.length;i++){ %>
+						<% if(album[0]==''){ %>
+							<div class="aui-slide-node">
+								<img src="../img/controller_system.png" height="100%">
+							</div>
+						<% }else{ %>
+							<div class="aui-slide-node">
+								<img src="../img/<%= album[i] %>" height="100%">
+							</div>
+						<% } %>
+					<% } %>
+				</div>
+				<div class="aui-slide-page-wrap"></div>
+			</div>
+			<div class="config">
+				<div class="config-title lj-second-title">问题标签</div>
+				<div class="mark"></div>
+				<div class="config-content">
+					<ul>
+						<% for(let i = 0;i<question_tags.length;i++){ %>
+							<% if(question_tags[0]==''){ %>
+								<li>
+									<p class="iconfont icon-square"></p>
+									<p class="con">暂无</p>
+								</li>
+							<% }else{ %>
+								<li>
+									<p class="iconfont icon-square"></p>
+									<p class="con"><%= question_tags[i] %></p>
+								</li>
+							<% } %>
+						<% } %>
+					</ul>
+				</div>
+			</div>
+			<div class="config">
+				<div class="config-title lj-second-title">产品标签</div>
+				<div class="mark"></div>
+				<div class="config-content">
+					<ul>
+						<% for(let i = 0;i<products_tags.length;i++){ %>
+							<% if(products_tags[0]==''){ %>
+								<li>
+									<p class="iconfont icon-square"></p>
+									<p class="con">暂无</p>
+								</li>
+							<% }else{ %>
+								<li>
+									<p class="iconfont icon-square"></p>
+									<p class="con"><%= products_tags[i] %></p>
+								</li>
+							<% } %>
+						<% } %>
+					</ul>
+				</div>
+			</div>
+			<div class="config">
+				<div class="config-title lj-second-title">现象描述</div>
+				<div class="mark"></div>
+				<div class="config-content">
+					<ul>
+						<li>
+							<p class="iconfont icon-square"></p>
+							<% if(result[0].question==''){ %>
+								<p class="con">暂无</p>
+							<% }else{ %>
+								<p class="con"><%- result[0].question %></p>
+							<% } %>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="config">
+				<div class="config-title lj-second-title">具体分析</div>
+				<div class="mark"></div>
+				<div class="config-content">
+					<ul>
+						<li>
+							<p class="iconfont icon-square"></p>
+							<% if(result[0].analysis==''){ %>
+								<p class="con">暂无</p>
+							<% }else{ %>
+								<p class="con"><%- result[0].analysis %></p>
+							<% } %>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="config">
+				<div class="config-title lj-second-title">解决方案</div>
+				<div class="mark"></div>
+				<div class="config-content">
+					<ul>
+						<li>
+							<p class="iconfont icon-square"></p>
+							<% if(result[0].solution==''){ %>
+								<p class="con">暂无</p>
+							<% }else{ %>
+								<p class="con"><%- result[0].solution %></p>
+							<% } %>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="download">
+				<p class="download-line"></p>
+				<p class="download-title lj-second-title">下载专区</p>
+				<p class="download-line"></p>
+			</div>
+			<div class="down-doc">
+				<div class="down-doc-title lj-second-title">相关文档</div>
+				<div class="mark"></div>
+				<div class="down-doc-content">
+					<ul class="doc">
+						
+					</ul>
+				</div>
+			</div>
+			<div class="down-doc">
+				<div class="down-doc-title lj-second-title">相关资源</div>
+				<div class="mark"></div>
+				<div class="down-doc-content">
+					<ul class="res">
+						
+					</ul>
+				</div>
+			</div>
+			<footer>
+				<p>
+					<a href="tel:0571-69958000">客服热线:0571-69958000</a>
+				</p>
+			</footer>
+		</div>
+	</div>
+	<div class="wxtip" id="JweixinTip">
+        <span class="wxtip-icon"></span>
+        <p class="wxtip-txt">点击右上角<br>选择在浏览器中打开</p>
+    </div>
+</body>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/slider.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script>
+	var documents = JSON.parse('<%- JSON.stringify(documents) %>');
+	var doc_arr = JSON.parse('<%- JSON.stringify(doc_arr) %>');
+	for (let i = 0; i < doc_arr.length; i++) {
+		try{
+			var type = doc_arr[i].slice(doc_arr[i].lastIndexOf('.'),doc_arr[i].length);
+			var str = '<li>'+
+							'<p class="down-text">'+
+								'<a href="../'+documents[i]+'">'+ doc_arr[i] +'</a>'+
+							'</p>'+
+						'</li>';
+			if(type=='.rar'||type=='.zip'){
+				$('.res').append(str);
+			}else{
+				$('.doc').append(str);
+			}
+		}catch(e){}
+	};
+	if($('.doc').html().replace(/\s/g,'')==''){
+		var str = '<p class="con">暂无</p>';
+		$('.doc').append(str);
+	}
+	if($('.res').html().replace(/\s/g,'')==''){
+		var str = '<p class="con">暂无</p>';
+		$('.res').append(str);
+	}
+	var ele = $('.res a');
+	weixinTip(ele);
+	function weixinTip(ele){
+	    var ua = navigator.userAgent;
+	    var isWeixin = /MicroMessenger/i.test(ua);
+	    if(isWeixin){
+	    	ele.on('click',function(){
+	    		document.getElementById('JweixinTip').style.display='block';
+	    	});
+	        document.getElementById('JweixinTip').onclick=function(){
+	            this.style.display='none';
+	        }
+	    }
+	}
+	var slide = new auiSlide({
+		 "container":document.getElementById("aui-slide"),
+		 // "height":240,
+        "speed":500,
+        "autoPlay": 3000, //自动播放
+        "loop":true,
+        "pageShow":true,
+        "pageStyle":'dot',
+        'dotPosition':'center'
+	});
+</script>
+</html>

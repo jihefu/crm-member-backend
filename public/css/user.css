@@ -1,0 +1,19 @@
+.user {
+    width: 100%;
+    height: 150px;
+    background: #999;
+    text-align: center;
+    padding-top: 8px;
+}
+.user img {
+    width: 80px;
+    margin: 10px auto;
+    border-radius: 50%;
+}
+.name {
+    margin-top: 8px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: bolder;
+    letter-spacing: 1px;
+}

@@ -1,0 +1,126 @@
+<html>
+<HEAD>
+<title>TeeChart JavaScript Realtime Line Series Example</TITLE>
+<script src="../js/teechart.js" type="text/javascript"></SCRIPT>
+<script type="text/javascript">
+
+var Chart1, NEWPOINTS=30;
+
+function draw() {
+  Chart1=new Tee.Chart(document.getElementById("canvas"));
+
+  addSeries(6);
+
+  setTransp(true);
+  
+  Chart1.legend.visible=false;
+  Chart1.panel.format.gradient.visible=false;
+  Chart1.panel.format.shadow.visible=false;
+
+  Chart1.axes.left.title.text="Data";
+  Chart1.title.text="";
+
+  var showCounter=new Tee.Annotation(Chart1);
+  Chart1.tools.add(showCounter);
+
+  //Chart1.aspect.clip=false;
+
+  var old=new Date().getTime(), oldx=0;
+
+  requestAnimFrame(newData, Chart1, 1);
+
+  function newData(now) {
+
+    Chart1.series.each(function(series) {
+        var d=series.data.values, x=series.data.x, t;
+
+        // for (t=0; t<NEWPOINTS; t++) {
+          // console.log(l);
+            d.shift();
+            x.shift();
+            d.push(d[d.length-1] + (Math.random()*1000)-500);
+            x.push(x[x.length-1] + 1);
+            // d[l-1]= d[ld.length-2] + (Math.random()*1000)-500;
+            // x[l-1]= x[l-2] + 1;
+        // }
+    });
+
+    Chart1.draw();
+
+    if (!now) now=new Date().getTime();
+
+    if (showCounter.visible && ((now-old)>1000) ) {
+      var x=Chart1.series.items[0].data.x, last=x[x.length-1];
+      showCounter.text=((last-oldx)).toFixed(0)+" points/sec.";
+      old=now;
+      oldx=last;
+    }
+
+    requestAnimFrame(newData,Chart1,1);
+  }
+}
+
+function addSeries() {
+
+  var num=document.getElementById('series').value,
+      points=parseInt(document.getElementById('points').value);
+
+  Chart1.series.items=[];
+
+  for(var t=0; t<num; t++)
+     Chart1.addSeries(new Tee.Line()).format.shadow.visible=false;
+
+  Chart1.series.each(function(series) {
+     series.addRandom(points,1000);  // Add random points, with range 0..1000
+     series.data.x=new Array(points);
+     for(var t=0; t<points; t++) series.data.x[t]=t;
+  });
+
+}
+
+function setTransp(value) {
+  Chart1.panel.transparent=value;
+  Chart1.walls.back.visible=!value;
+}
+
+</script>
+</HEAD>
+<BODY onload="draw()">
+
+<input type="checkbox" id="transp" onclick="setTransp(document.getElementById('transp').checked);" checked>Transparent
+</br>
+&nbsp; Series:
+<select id="series"  onchange="addSeries(); Chart1.draw();">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6" selected>6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+  <option value="9">9</option>
+  <option value="10">10</option>
+  <option value="11">11</option>
+</SELECT>
+&nbsp; with &nbsp;
+<select id="points"  onchange="addSeries(); Chart1.draw();">
+  <option value="100">100</option>
+  <option value="200">200</option>
+  <option value="500">500</option>
+  <option value="1000">1000</option>
+  <option value="2000" selected>2000</option>
+  <option value="5000">5000</option>
+  <option value="10000">10000</option>
+  <option value="20000">20000</option>
+  <option value="50000">50000</option>
+</SELECT>
+&nbsp; points each.&nbsp;
+</BR>
+<CENTER>
+<br><canvas id="canvas" width="600" height="400">
+This browser does not seem to support HTML5 Canvas.
+</canvas>
+</CENTER>
+</BODY>
+</HTML>

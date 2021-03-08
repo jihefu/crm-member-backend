@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>会员中心</title>
+	<%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+	<link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <style type="text/css">
+        .cd_portrait img {
+            position: static;
+        }
+        .cd_portrait {
+            float: none;
+            overflow: hidden;
+        }    
+        .weui-media-box__bd {
+            padding-left: 1rem;
+        }
+    </style>
+</head>
+<body style="background-color: #efeeee">
+<div class="weui-panel__bd" style="background-color: #ffffff;margin-top: 10px;margin-bottom: 20px">
+    <div class="weui-media-box weui-media-box_appmsg">
+        <div class="weui-media-box__hd">
+            <!--<img class="weui-media-box__thumb">-->
+            <!--这里给class换vip颜色-->
+            <div class="cd_portrait">
+                <% if(result.album.model==''||result.album.model=='null'||result.album.model==null){ %>
+                    <img src="../img/default_member2.jpg" alt="default">
+                <% }else{ %>
+                    <img src="../img/<%= result.album.model %>" alt="<%= result.album.model %>">
+                <% } %>
+            </div>
+        </div>
+        <div class="weui-media-box__bd">
+            <!--这里换字体颜色和文字-->
+            <h4 class="weui-media-box__title"><%= result.user_name.model %></h4>
+            <p class="weui-media-box__desc"><%= result.branch.model %></p>
+        </div>
+    </div>
+</div>
+<div class="weui-cells" style="margin-top:0 ">
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="sign();">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-sign" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>考勤</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="basicInfo();">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-ERP_shenqingren" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>个人信息</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="salaryInfo();">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-fukuansvg" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>工资单</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="mySource();">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-source" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>我的资源</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="colleague();">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-people" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>同事圈</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a>
+    <!-- <a class="weui-cell weui-cell_access" href="javascript:;" onclick="">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-handshake" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>客户圈</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a> -->
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="superAuth();">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-auth" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>超级权限</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a>
+</div>
+
+<div class="weui-cells" style="margin-top:20">
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="logout();">
+        <div class="weui-cell__hd">
+            <i class="iconfont icon-arrow" style="color:#4fc3f7"></i>
+        </div>
+        <div class="weui-cell__bd">
+            <p>安全退出</p>
+        </div>
+        <div class="weui-cell__ft"></div>
+    </a>
+</div>
+<div class="js_dialog" id="iosDialog1" style="opacity: 1;display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>
+        <div class="weui-dialog__bd">确定退出？</div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">否</a>
+            <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="sub();">是</a>
+        </div>
+    </div>
+</div>
+
+ </body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function sign(){
+        window.location.href = route('m/staff/sign');
+    }
+    function basicInfo(){
+        window.location.href = route('m/staff/basicInfo');
+    }
+    function salaryInfo(){
+        window.location.href = route('m/staff/salaryInfo');
+    }
+    function colleague(){
+        window.location.href = route('m/staff/colleagueInfo');
+    }
+    function superAuth(){
+        window.location.href = route('getSuperAuth');
+    }
+    function mySource() {
+        window.location.href = route('member/mySource');
+    }
+    function logout(){
+        $('#iosDialog1').show();
+    }
+    function cancel(){
+        $('#iosDialog1').hide();
+    }
+    function sub(){
+        cancel();
+        $.ajax({
+            url:route('deleteSuperAuth'),
+            type:'put',
+            dataType:'json',
+            timeout:30000,
+            success:function(res){
+                wxToast(res.msg);
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>会员审核</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <style>
+        .fr{
+            float: right;
+        }
+        .btn-big {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body style="background-color: #efeeee" data-name="<%= result.name %>" data-phone="<%= result.phone %>" data-job="<%= result.job %>" data-company="<%= result.company %>">
+<div class="weui-cells weui-cells_checkbox" style="margin-top: 8px;">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <% if(score<400){ %>
+                <p>白银会员</p> 
+            <% }else if(score>=400&&score<1000){ %>
+                <p>黄金会员</p> 
+            <% }else if(score>=1000&&score<2000){ %>
+                <p>铂金会员</p> 
+            <% }else{ %>
+                <p>钻石会员</p> 
+            <% } %>
+        </div>
+        <div class="weui-cell__ft">积分<%= score %></div>
+    </div>
+    <label class="weui-cell weui-check__label" for="portrait">
+        <div class="weui-cell__hd">
+            <% if(result.check_portrait==1){ %>
+                <input type="checkbox" name="portrait" class="weui-check" id="portrait" checked>
+            <% }else{ %>
+                <input type="checkbox" name="portrait" class="weui-check" id="portrait">
+            <% } %>
+            <i class="weui-icon-checked"></i>
+        </div>
+        <div class="weui-cell__bd" >
+            <p style="height: 70px;line-height: 70px;">头像：
+            <% if(result.portrait==''||result.portrait=='null'||result.portrait==null){ %>
+                <img src="../img/default_member2.jpg" alt="" width="70" height="70" style="vertical-align: middle;float: right"/>
+            <% }else{ %>
+                <img src="../img/member/<%= result.portrait %>" alt="" width="70" height="70" style="vertical-align: middle;float: right"/>
+            <% } %>
+            </p>
+        </div>
+    </label>
+    <% for(var i=0;i<check_arr.length;i++){ %>
+        <label class="weui-cell weui-check__label" for="<%= item_arr[i].key %>">
+            <div class="weui-cell__hd">
+                <% if(check_arr[i].val==1){ %>
+                    <% if(item_arr[i].key=='name'||item_arr[i].key=='phone'){ %>
+                        <input type="checkbox" class="weui-check" name="<%= item_arr[i].key %>" id="<%= item_arr[i].key %>" checked="checked" disabled>
+                    <% }else{ %>
+                        <input type="checkbox" class="weui-check" name="<%= item_arr[i].key %>" id="<%= item_arr[i].key %>" checked="checked">
+                    <% } %>
+                <% }else{ %>
+                    <input type="checkbox" class="weui-check" name="<%= item_arr[i].key %>" id="<%= item_arr[i].key %>">
+                <% } %>
+                <i class="weui-icon-checked"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p><%= name_arr[i] %>：
+                    <span class="fr"><%= item_arr[i].val %></span>
+                </p>
+            </div>
+        </label>
+    <% } %>
+</div>
+
+<div class="weui-cells">
+    <div class="weui-cell weui-cell_select">
+        <div class="weui-cell__bd" style="line-height:45px; padding-left: 50px;">
+           评估：
+            <select class="weui-select" name="select1" style="position: absolute;right: 0;top: 2px;padding-left: 85%;" data-value="<%= evaluate %>">
+                <option value="0">0</option>
+                <option value="0.1">0.1</option>
+                <option value="0.2">0.2</option>
+                <option value="0.3">0.3</option>
+                <option value="0.4">0.4</option>
+                <option value="0.5">0.5</option>
+                <option value="0.6">0.6</option>
+                <option value="0.7">0.7</option>
+                <option value="0.8">0.8</option>
+                <option value="0.9">0.9</option>
+                <option value="1.0">1.0</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="btn-groups">
+    <a href="javascript:;" class="weui-btn weui-btn_primary text btn-big" onclick="sub();">提交</a>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var v = $('select').attr('data-value');
+    $('select option').each(function(i){
+        if($(this).val()==v||1.0==v){
+            $('select option').eq(i).prop('selected',true);
+        }
+    });
+    function sub(){
+        var check = $('input[type=checkbox]:checked');
+        var checked_arr = [];
+        for (var i = 0; i < check.length; i++) {
+            var name = check.eq(i).attr('name');
+            checked_arr.push(name);
+        };
+        var notCheck = $('input[type=checkbox]').not(':checked');
+        var notChecked_arr = [];
+        for (var i = 0; i < notCheck.length; i++) {
+            var name = notCheck.eq(i).attr('name');
+            notChecked_arr.push(name);
+        };
+        var str_checked_arr = JSON.stringify(checked_arr);
+        var str_notChecked_arr = JSON.stringify(notChecked_arr);
+        var _name = $('body').attr('data-name');
+        var _phone = $('body').attr('data-phone');
+        var job = $('body').attr('data-job');
+        var company = $('body').attr('data-company');
+        var evaluate = $('select').val();
+        wxLoadToast('正在提交');
+        $.ajax({
+            url: mRoute('admin_ajax/member/sub_check'),
+            type: 'post',
+            dataType: 'json',
+            timeout: 30000,
+            data: {
+                name: _name,
+                phone: _phone,
+                job: job,
+                company: company,
+                evaluate: evaluate,
+                arr: str_checked_arr,
+                arr2: str_notChecked_arr
+            },
+            success:function(res){
+                $('#loadingToast').remove();
+                wxToast(res.msg);
+                if(res.code==-100){
+                    setTimeout(function(){
+                        window.location.reload();
+                    },2000);
+                }else{
+                    setTimeout(function(){
+                        window.location.href = route('m/admin/members');
+                    },2000);
+                }
+            }
+        });
+    }
+</script>
+</html>

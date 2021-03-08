@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>在线客服</title>
+	<%- include("../includes/styles.ejs") %>
+	<link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <link rel="stylesheet" href="../styles/aui/aui.css">
+    <link rel="stylesheet" type="text/css" href="../styles/aui/aui-pull-refresh.css" />
+    <style>
+        .bottom-bar {
+            width: 100%;
+            position: fixed;
+            bottom: 0px;
+        }
+        .chat-bar {
+            height: 3.1rem;
+            padding: 0.3125rem;
+            display: -webkit-flex;
+            display: flex;
+            background: #efeeee;
+            padding-bottom: 12px;
+        }
+        .tool-bar {
+            width: 100%;
+            height: 4rem;
+            background: #efeeee;
+            display: none;
+            padding-right: 1rem;
+            padding-left: 1rem;
+        }
+        .tool-menu {
+            width: 100%;
+        }
+        .tool-menu>div {
+            width: 25%;
+            display: inline-block;
+        }
+        .menu-item {
+            text-align: center;
+            border: 1px solid #999;
+            color: #999;
+            padding: 0px;
+            margin: 0 0.8rem;
+            border-radius: 0.3rem;
+        }
+        .bar {
+            width: 100%;
+            /* height: 60px; */
+            /* height: 2.6rem; */
+            height: 3.1rem;
+            position: fixed;
+            bottom: 0px;
+            padding: 0.3125rem;
+            display: -webkit-flex;
+            display: flex;
+            background: #efeeee;
+            padding-bottom: 12px;
+        }
+        .file {
+            width: 2.6rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #999;
+        }
+        .send {
+            width: 4.17rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1890ff;
+            color: #ffffff;
+            border-radius: 0.208rem;
+            margin-left: 0.208rem;
+        }
+        .msgContent {
+            flex: 0.052rem;
+            border: 0.052rem solid #999!important;
+            border-radius: 0.208rem;
+        }
+        .msgContent textarea {
+            height: 100%;
+        }
+    </style>
+</head>
+<body style="background-color: #efeeee">
+    <div class="aui-chat aui-refresh-content">
+        
+    </div>
+    <div class="bottom-bar">
+            <div class="chat-bar">
+                <div class="file iconfont icon-add" onclick="toolBarShow();">
+    
+                </div>
+                <div class="msgContent">
+                    <textarea placeholder="请输入..."></textarea>
+                </div>
+                <div class="send" onclick="send();">发送</div>
+            </div>
+            <div class="tool-bar">
+                <div class="tool-menu">
+                    <div>
+                        <div class="menu-item">
+                            <span class="iconfont icon-xiangce"></span>
+                            <div>
+                                <input type="file" accept="image/*" onchange="uploadFile(this);" style="width: 100%;opacity: 0;font-size: 0px;position: absolute;">
+                                相册
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="menu-item">
+                            <span class="iconfont icon-photo"></span>
+                            <div>
+                                <input id="uploaderInput" type="file" accept="image/*" onchange="uploadAlbum(this);" capture="camera" style="width: 100%;opacity: 0;font-size: 0px;position: absolute;">
+                                拍摄
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- <div class="bar">
+        <div class="file iconfont icon-photo">
+            <input type="file" id="uploadImg" onchange="uploadFile(this);" style="height:3.125rem;width:3.125rem;z-index: 1;opacity: 0; position: absolute;left: -8px" accept="image/*">
+        </div>
+        <div class="msgContent">
+            <textarea placeholder="请输入..."></textarea>
+        </div>
+        <div class="send" onclick="send();">发送</div>
+    </div> -->
+ </body>
+ <script>
+     var selfOpenId = '<%= open_id %>';
+     var album = '<%= album %>';
+ </script>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/aui/aui-pull-refresh.js"></script>
+<script src="../js/chatMoreTenp.js"></script>
+<script src="../js/temporaryLine.js"></script>
+<script src="../js/ljRotateImg.js"></script>
+</html>

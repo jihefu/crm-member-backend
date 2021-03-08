@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>杭州朗杰测控技术开发有限公司</title>
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<!-- <link href="../styles/admin.css" rel="stylesheet" /> -->
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<style type="text/css">
+		html,body {
+			height: 100%;
+		}
+		.search {
+            /* position: absolute;
+            right: 10px;
+            top: 11px; */
+            float: right;
+            width: 250px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+        .k-i-zoom {
+            margin-left: -30px;
+            cursor: pointer;
+        }
+        #search {
+            padding-right: 33px;
+            display: inline-block; 
+            width: 180px;
+        }
+        #dialog {
+        	max-height: 400px;
+    		overflow: auto;
+        }
+        .contracts_list {
+            text-align: center;
+        }
+        #dialog li {
+            list-style: none;
+            margin-bottom: 5px;
+            width: 30%;
+            float: left;
+        }
+        .check-group span {
+            display: inline-block;
+        }
+	</style>
+</head>
+<body>
+	<div id="grid"></div>
+	<!-- <h3>超信用期公司：</h3>
+	<p class="company">
+		
+	</p> -->
+</body>
+<script type="text/x-kendo-template" id="template">
+    <div class="search">
+        <input id="search" class="k-textbox" placeholder="请输入关键字">
+        <span class="k-icon k-i-zoom" onclick="search()"></span>
+    </div>
+</script>
+<script type="text/x-kendo-template" id="select">
+    <div style="margin-left: 10px;position: absolute;top: 13px;">
+        <div class="check-group">
+            <span style="font-weight: bolder">分组：</span>
+            <label>
+                <span><input type="checkbox" data-filter="group" class="filter_box checkbox" value="杭州组" /></span>
+                <span>杭州组</span>
+            </label>
+            <label style="margin-left: 10px">
+                <span><input type="checkbox" data-filter="group" class="filter_box checkbox" value="济南组" /></span>
+                <span>济南组</span>
+            </label>
+        <!-- </div> -->
+        <!-- <div class="check-group"> -->
+            <span style="font-weight: bolder;margin-left: 40px">分类：</span>
+            <label>
+                <span><input type="checkbox" data-filter="level" class="filter_box checkbox" value="A" /></span>
+                <span>A</span>
+            </label>
+            <label style="margin-left: 10px">
+                <span><input type="checkbox" data-filter="level" class="filter_box checkbox" value="B" /></span>
+                <span>B</span>
+            </label>
+            <label style="margin-left: 10px">
+                <span><input type="checkbox" data-filter="level" class="filter_box checkbox" value="C" /></span>
+                <span>C</span>
+            </label>
+        <!-- </div> -->
+        <!-- <div class="check-group"> -->
+            <span style="font-weight: bolder;margin-left: 40px">信用状态：</span>
+            <label>
+                <span><input type="checkbox" data-filter="credit_qualified" class="filter_box checkbox" value="1" /></span>
+                <span>合格</span>
+            </label>
+            <label style="margin-left: 10px">
+                <span><input type="checkbox" data-filter="credit_qualified" class="filter_box checkbox" value="0" /></span>
+                <span>不合格</span>
+            </label>
+        </div>
+    </div>
+</script>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../js/over_view.js" type="text/javascript"></script>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>后台管理系统</title>
+	<%- include("../includes/styles.ejs") %>
+	<!-- <link rel="stylesheet" href="../styles/member_mainInfo.css"> -->
+    <style>
+        body {
+            background: #efeeee;
+        }
+        .logo {
+            background: #fff;
+            padding: 15px 60px;
+        }
+        .logo img {
+            width: 100%;
+        }
+        .weui-cell__bd p {
+            text-align: center;
+        }
+        .weui-cell {
+            padding: 20px 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="logo">
+    <img src="../img/new_logo.png" alt="">
+</div>
+<div class="weui-cells" style="margin-top:0 ">
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="customers()">
+        <div class="weui-cell__hd"></div>
+        <div class="weui-cell__bd">
+            <p>客户管理系统</p>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="users()">
+        <div class="weui-cell__hd"></div>
+        <div class="weui-cell__bd">
+            <p>用户管理系统</p>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="contacts();">
+        <div class="weui-cell__hd"></div>
+        <div class="weui-cell__bd">
+            <p>联系人管理系统</p>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="employees();">
+        <div class="weui-cell__hd"></div>
+        <div class="weui-cell__bd">
+            <p>员工管理系统</p>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="member();">
+        <div class="weui-cell__hd"></div>
+        <div class="weui-cell__bd">
+            <p>会员管理系统</p>
+        </div>
+    </a>
+    <a class="weui-cell weui-cell_access" href="javascript:;" onclick="cusCat();">
+        <div class="weui-cell__hd"></div>
+        <div class="weui-cell__bd">
+            <p>客户往来管理系统</p>
+        </div>
+    </a>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function customers(){
+        window.location.href = mRoute('admin/customers');
+    }
+    function contacts(){
+        window.location.href = mRoute('admin/contacts');
+    }
+    function employees(){
+        window.location.href = mRoute('admin/employees');
+    }
+    function member(){
+        window.location.href = mRoute('admin/members');
+    }
+    function users(){
+        window.location.href = mRoute('admin/users');
+    }
+    function cusCat(){
+        window.location.href = mRoute('admin/intercourses');
+    }
+</script>
+</html>

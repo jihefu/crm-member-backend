@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title><%= pageTitle %></title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<link href="../styles/responsive.css" rel="stylesheet" />
+	<link href="../styles/vir8_info.css" rel="stylesheet" />
+	<style>
+		#grid {
+			min-height: 1rem;
+		}
+
+		.btn-groups button {
+			margin-right: 0.2rem;
+			margin-left: 0.2rem;
+			padding: 0px 1.25rem 0px 1.25rem;
+		}
+	</style>
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		<a href="<%=pageHref%>">
+			<div class="img">
+				<img src="<%=imgSrc%>" height="100%" alt="">
+			</div>
+		</a>
+		<div id="loading" style="text-align:center;">
+			<i class="weui-loading weui-icon_toast"></i>
+		</div>
+		<div id="grid" data-role="grid" data-bind="source: products"></div>
+		<div class="btn-groups">
+			<!-- <button class="k-primary" onclick="reg()" style="display:none">注册</button> -->
+			<button class="k-primary" onclick="sub()" style="display:none">提交</button>
+			<button class="cls-pass" onclick="isPass()" style="display:none">合格</button>
+			<button class="cls-notPass" onclick="notPass()" style="display:none">不合格</button>
+			<button class="cls-checkAgain" onclick="checkAgain()" style="display:none">重新检测</button>
+		</div>
+	</div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=5pMjYGfmzv0AlkNkwxyRTWWCNwpHeqlc"></script>
+<script type="text/javascript">
+	var data = JSON.parse('<%- JSON.stringify(result)%>');
+	getLocation(data);
+	checkSnAccess(data.data.serialNo);
+	setTimeout(function(){
+		$('#loading').remove();
+		var height = window.innerHeight;
+		var width = window.innerWidth;
+		var img_height = width/2.68;
+		img_height = img_height > 320 ? 320 : img_height;
+		var btnHeight = height > 900 ? 160 : 80;
+		$('.img,.img img').height(img_height);
+		var table_height = height-img_height-btnHeight;
+
+		mid = data.data.machineNo;
+		sn = data.data.serialNo;
+		// 传导航的href和name
+		var con_arr = [];
+		var con_obj = {};
+		con_obj.path = route('service/products');
+		con_obj.name = '产品服务中心';
+		con_arr.push(con_obj);
+		nav(con_arr);
+
+		var arr = [];
+		for (var key in data.label) {
+			var o = {
+				key: key,
+				name: data.label[key].name,
+				readonly: 'readonly',
+				type: 'input',
+				arr: '',
+				val: data.label[key].val
+			};
+			if (key == 'model') {
+				o.type = 'select';
+				o.arr = 'D921,D910,D900,D700';
+			} else if (key == 'storage') {
+				o.type = 'select';
+				o.arr = ',杭州办,济南办';
+			}
+			if (['batch', 'chnlNum', 'remark', 'caliCoeff', 'machineNo'].indexOf(key) != -1) {
+				o.readonly = '';
+			}
+			arr.push(o);
+		}
+
+		var temp = "<input type='#:type#' #:readonly# data-arr='#:arr#' data-key='#:key#' style='border:none;background:inherit' value=#:val# >";
+		$("#grid").kendoGrid({
+			height: table_height,
+			columns:[
+				{
+				field: "name",
+				title: "产品项目"
+				},
+				{
+				field: "val",
+				title: "产品参数",
+				template: temp
+				}
+			],
+			dataSource: {
+				data: arr
+			}
+		});
+		btnShow(data);
+		$('button').kendoButton();
+		var val_str = '';
+		$('#grid tr input').each(function(){
+			var type = $(this).attr('type');
+			if(type=='select'){
+				var str = '';
+				var str_arr = $(this).attr('data-arr');
+				var arr = str_arr.split(',');
+				var v = $(this).val();
+				var d = $(this).attr('data-key');
+				for (var i = 0; i < arr.length; i++) {
+					if (arr[i] == v) {
+						str += '<option selected>'+arr[i]+'</option>';
+					} else {
+						str += '<option>'+arr[i]+'</option>';
+					}
+				};
+				var _str = '<select style="background:inherit;width:150px;border:none;" data-key="'+d+'">'+str+'</select>';
+				$(this).parent().html(_str);
+			}
+		});
+	}, 300);
+
+	function btnShow(data) {
+		$('.btn-groups button:lt(1)').show();
+		if (data.data.isTest == 1) {
+			$('.cls-checkAgain').show();
+		} else {
+			$('.cls-pass,.cls-notPass').show();
+		}
+	}
+
+	function checkAgain() {
+		$.ajax({
+			url: route('service/product/checkAgain/' + sn),
+			type: 'put',
+			dataType:"json",
+			success: function(res) {
+				if(res.code==200){
+					setTimeout(function(){
+						window.location.reload();
+					},2000);
+				}
+				wxToast(res.msg);
+			}
+		});
+	}
+
+	function isPass() {
+		wxLoadToast('正在提交');
+		$.ajax({
+			url:route('service/product/checkPass/' + sn),
+			type:'put',
+			dataType:'json',
+			timeout:30000,
+			success:function(res){
+				$('#loadingToast').remove();
+				wxToast(res.msg);
+				if(res&&res.code==200){
+					setTimeout(function(){
+						window.location.reload();
+					},2000);
+				}
+			}
+		});
+	}
+
+function notPass() {
+	var str = '<div class="js_dialog" id="iosDialog1" style="opacity: 1;">'+
+                '<div class="weui-mask"></div>'+
+                '<div class="weui-dialog">'+
+                    '<div class="weui-dialog__hd"><strong class="weui-dialog__title">不合格备注</strong></div>'+
+                    '<div class="weui-dialog__bd">'+
+                        '<div class="weui-cell" style="display:flex;">'+
+                            // '<div class="weui-cell__hd" style="width: 70px;text-align: left;"><label class="weui-label">外出原因：</label></div>'+
+                            '<div class="weui-cell__bd">'+
+                                '<input style="border: 1px solid #d1d1d1;border-radius: 4px;" class="weui-input" name="notPassRem" placeholder="">'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="weui-dialog__ft">'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancelDialog();">否</a>'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="subNotPass();">是</a>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+    $('body').append(str);
+}
+
+function cancelDialog() {
+	$('#iosDialog1').remove();
+}
+
+function subNotPass() {
+	var notPassRem = $('input[name=notPassRem]').val();
+	if (!notPassRem) {
+		wxToast('不能为空');
+		return;
+	}
+	wxLoadToast('正在提交');
+	$.ajax({
+		url:route('service/product/checkNotPass/' + sn),
+		type:'put',
+		dataType:'json',
+		timeout:30000,
+		data: {
+			notPassRem: notPassRem
+		},
+		success:function(res){
+			cancelDialog();
+			$('#loadingToast').remove();
+			wxToast(res.msg);
+			if(res&&res.code==200){
+				setTimeout(function(){
+					window.location.reload();
+				},2000);
+			}
+		}
+	});
+}
+
+function sub() {
+	var form_data = {
+		model: $('select[data-key=model]').val(),
+		storage: $('select[data-key=storage]').val(),
+		batch: $('input[data-key=batch]').val(),
+		remark: $('input[data-key=remark]').val(),
+		chnlNum: $('input[data-key=chnlNum]').val(),
+		caliCoeff: $('input[data-key=caliCoeff]').val(),
+		// machineNo: $('input[data-key=machineNo]').val(),
+	};
+	wxLoadToast('正在提交');
+	$.ajax({
+		url:route('service/product/staffUpdateInfo'),
+		type:'put',
+		dataType:'json',
+		timeout:30000,
+		data:{
+			"form_data":JSON.stringify(form_data),
+			"sn":sn
+		},
+		success:function(res){
+			$('#loadingToast').remove();
+			if(res&&res.code==200){
+				wxToast('更新成功');
+				setTimeout(function(){
+					window.location.reload();
+				},2000);
+			}
+		}
+	});
+}
+
+function getLocation(data) {
+	if (data.data.contract_no) return;
+	const geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(r) {
+		var province = r.address.province;
+		var storage = data.data.storage;
+		if (!storage) {
+			// 还未填
+			wxToast('请更新库存地');
+		} else if (storage == '杭州办' && province == '山东省') {
+			// 位置错误
+			wxToast('请库存地为济南办');
+		} else if (storage == '济南办' && province == '浙江省') {
+			// 位置错误
+			wxToast('请库存地为杭州办');
+		}
+	});
+}
+
+function reg(){
+	window.location.href = route('service/product/reg?sn='+sn+'&mid='+mid);
+}
+
+function checkSnAccess(sn) {
+	$.ajax({
+		url:route('service/burnDisk/checkSnAccess'),
+		type:'get',
+		dataType:'json',
+		timeout:30000,
+		data:{
+			sn: sn
+		},
+		success:function(res){
+			if (res.code == 200) {
+				$('#wrap').prepend('<div id="downloadInstallDisk" class="iconfont icon-Addtodownload-copy" onclick="downloadInstallDisk();" style="width: 2rem; height: 2rem;position: fixed;left: 0.8rem;top: 0.6rem;z-index: 99;color: #3385ff;font-size: 1.4rem;"></div>');
+			}
+		}
+	});
+}
+
+function downloadInstallDisk() {
+	var sn = data.data.serialNo;
+	wxLoadToast('打包中...</br>大约需要2分钟');
+	$.ajax({
+		url:route('service/cloudDisk/download/' + sn),
+		type:'get',
+		dataType:'json',
+		timeout:30000,
+		success:function(res){
+			$('#loadingToast').remove();
+			if (res.code == 200) {
+				window.open(route('open/burnDisk/download/' + res.data));
+			} else {
+				wxToast(res.msg);
+			}
+		}
+	});
+}
+
+</script>
+</html>

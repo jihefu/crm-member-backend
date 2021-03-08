@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>同事圈</title>
+	<%- include("../includes/styles.ejs") %>
+    <link href="../styles/index.css" rel="stylesheet" />
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+    <style type="text/css">
+        .weui-cell__hd {
+            width: 5.375rem;
+            height: 5.375rem;
+            overflow: hidden;
+            padding-left: 1rem;
+        }
+        .content li .weui-cell__hd img {
+            width: 100%;
+            border-radius: 0.3125rem;
+        }
+        .weui-cell__bd {
+            padding-left: 1rem;
+        }
+        /*.weui-cell__bd p a {
+            color: #000;
+        }*/
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div class="content">
+            <ul>
+                <% for(var i=0;i<result.length;i++){ %>
+                    <li class="weui-cell weui-cell_access" style="padding-left:0px;" onclick="check(this)" data-id="<%= result[i].user_id %>">
+                        <div class="weui-cell__hd">
+                            <% if(result[i].album==''||result[i].album=='null'||result[i].album==null){ %>
+                                <img src="../img/default_member2.jpg" alt="">
+                            <% }else{ %>
+                                <img src="../img/<%= result[i].album %>" alt="">
+                            <% } %>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p>工号：<%= result[i].user_id%></p>
+                            <p>姓名：<%= result[i].user_name%></p>
+                            <p>手机：<a href="tel:<%= result[i].phone%>"><%= result[i].phone%></a></p>
+                        </div>
+                        <div class="weui-cell__ft">
+                        </div>
+                    </li>
+                <% } %>
+                <li class="weui-cell weui-cell_access li-mark"></li>
+            </ul>
+        </div>
+    </div>
+ </body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function check(obj){
+        return;
+        var id = $(obj).attr('data-id');
+        window.location.href = route('m/staff/colleagueInfo/'+id);
+    }
+    $('.weui-cell__bd p a').click(function(e){
+        e.stopPropagation();
+    });
+</script>
+</html>

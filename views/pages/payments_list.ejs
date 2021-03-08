@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>支付货款记录</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <%- include("../includes/styles.ejs") %>
+    <style type="text/css">
+        .weui-footer {
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .weui-badge {
+            margin-right: 5px;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weui-cells">
+        <div class="weui-cells__title">支付货款记录</div>
+        <% for(var i = 0;i<result.length;i++){ %>
+            <a class="weui-cell weui-cell_access">
+                <div class="weui-cell__hd"></div>
+                <div class="weui-cell__bd">
+                    <p>付款金额：￥<%= result[i].amount %></p>
+                    <p>付款方式：<%= result[i].method %></p>
+                    <p>付款日期：<%= result[i].arrival %></p>
+                </div>
+            </a>
+        <% } %>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+</html>

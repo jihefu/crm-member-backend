@@ -1,0 +1,113 @@
+@media only screen and (max-width: 335px){
+	.weui-cell__hd {
+		width: 100px;
+	}
+}
+.search {
+	height: 125px;
+}
+.select {
+	width: 90%;
+	margin: 0 auto;
+	text-align: left;
+}
+#select {
+	width: 140px;
+    height: 30px;
+    font-size: 14px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    margin-top: 10px;
+    position: relative;
+    left: 10px;
+}
+.content-cpy {
+	width: 200px;
+	white-space:nowrap; 
+	overflow:hidden; 
+	text-overflow:ellipsis;
+}
+.default_member {
+	width:122px;
+	height:88px
+}
+.default_member img,.assign_member {
+	width:74px;
+	margin-left:19px;
+	position: relative;
+	top: 7px;
+	display:block;
+}
+.content .weui-cell__hd {
+	width: 122px;
+	height: 88px;
+	text-align: center;
+}
+.assign_member {
+	width: 74px;
+	height: 74px;
+	/*max-width:96px;
+	max-height: 88px;*/
+	/*margin-right:5px;*/
+}
+#iosDialog1 .weui-dialog__hd {
+	padding: 0.8em 1.6em .5em;
+}
+#iosDialog1 .abb{
+	margin-top: 25px;
+}
+#iosDialog1 input {
+	width: 50%;
+	height: 18px;
+	padding: 5px;
+	font-size: 16px;
+	border: 1px solid #999;
+	border-radius: 4px;
+}
+#iosDialog1 .weui-dialog__bd span {
+	font-size: 16px;
+	/*margin-right: 16px;*/
+	color: #333;
+}
+#iosDialog1 .weui-dialog__bd {
+	margin-top: 20px;
+	height: 100px;
+}
+#iosDialog1 .weui-dialog__hd {
+	border-bottom: 1px solid #d5d5d6;
+}
+#iosDialog1 .weui-dialog__bd p {
+	display: -webkit-flex;
+	display: flex;
+}
+#iosDialog1 .weui-dialog__bd p span {
+	-webkit-flex:1;
+	flex:1;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+#iosDialog1 .weui-dialog__bd p input {
+	-webkit-flex:3;
+	flex:3;
+}
+.icon-verified-v {
+	color: #ffc107;
+	margin-left: 5px;
+}
+.del {
+	background: #f00;
+	position: absolute;
+	right: 0px;
+	top: 0;
+	color:#fff;
+}
+.del p {
+	text-align:center;
+	margin-top:38px;
+	letter-spacing: 2px;
+	font-size: 18px;
+}

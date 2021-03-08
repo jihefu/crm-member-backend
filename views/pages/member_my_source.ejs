@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>我的资源</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div class="weui-tab">
+        <div class="weui-navbar" style="position: fixed;">
+            <div class="weui-navbar__item weui-bar__item_on" onclick="showTemp(this);">
+                私有VTC配置模板
+            </div>
+            <div class="weui-navbar__item" onclick="showInstance(this);">
+                产品个例资源备份
+            </div>
+        </div>
+        <div class="weui-tab__panel">
+
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var resStr = '<%- JSON.stringify(result) %>';
+    resStr = resStr.replace(/\n/ig, ' ');
+    var resObj = JSON.parse(resStr);
+    // console.log(resObj.vtc);
+    renderTemp();
+
+    function showTemp(obj) {
+        $('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $(obj).addClass('weui-bar__item_on');
+        $('.weui-tab__panel').html('');
+        renderTemp();
+    }
+
+    function showInstance(obj) {
+        $('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $(obj).addClass('weui-bar__item_on');
+        $('.weui-tab__panel').html('');
+        renderInstance();
+    }
+
+    function renderTemp() {
+        if (resObj.temp.length === 0) {
+            $('.weui-tab__panel').html(`<div class="weui-loadmore weui-loadmore_line">
+                <span class="weui-loadmore__tips">暂无数据</span>
+            </div>`);
+            return;
+        }
+        var str = '';
+        for (var i = 0; i < resObj.temp.length; i++) {
+            str += `<a class="weui-cell weui-cell_access" href="javascript:;" onclick="tempClick('${resObj.temp[i].contentId}', '${resObj.temp[i].name}')">
+                        <div class="weui-cell__bd">
+                            <p>${resObj.temp[i].name}</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                        </div>
+                    </a>`;
+        }
+        $('.weui-tab__panel').html(str);
+    }
+
+    function renderInstance() {
+        var vtcStr = `<div class="weui-cells__title">vtc</div>`;
+        for (var i = 0; i < resObj.vtc.length; i++) {
+            for (var sn in resObj.vtc[i]) {
+                vtcStr += `<a class="weui-cell weui-cell_access" href="javascript:;" onclick="vtcClick('${sn}')">
+                        <div class="weui-cell__bd">
+                            <p>${sn}</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                        </div>
+                    </a>`;
+            }
+        }
+        var iniStr = `<div class="weui-cells__title">ini</div>`;
+        for (var i = 0; i < resObj.ini.length; i++) {
+            for (var sn in resObj.ini[i]) {
+                iniStr += `<a class="weui-cell weui-cell_access" href="javascript:;" onclick="iniClick('${sn}')">
+                        <div class="weui-cell__bd">
+                            <p>${sn}</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                        </div>
+                    </a>`;
+            }
+        }
+        if (resObj.vtc.length === 0) {
+            vtcStr += `<div class="weui-loadmore weui-loadmore_line">
+                <span class="weui-loadmore__tips">暂无vtc数据</span>
+            </div>`;
+        }
+        if (resObj.ini.length === 0) {
+            iniStr += `<div class="weui-loadmore weui-loadmore_line">
+                <span class="weui-loadmore__tips">暂无ini数据</span>
+            </div>`;
+        }
+        $('.weui-tab__panel').html(vtcStr + iniStr);
+    }
+
+    function tempClick(_id, name) {
+        window.location.href = route('member/tempJsonDisplay?contentId=' + _id + '&name=' + name);
+    }
+
+    function vtcClick(sn) {
+        window.location.href = route('member/vtcJsonDisplay?sn=' + sn);
+    }
+
+    function iniClick(sn) {
+        window.location.href = route('member/iniJsonDisplay?sn=' + sn);
+    }
+</script>
+
+</html>

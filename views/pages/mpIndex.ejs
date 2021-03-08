@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>朗杰测控</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/aui/aui.css">
+    <link rel="stylesheet" type="text/css" href="../styles/aui/aui-pull-refresh.css" />
+    <link rel="stylesheet" href="../styles/responsive.css">
+	<link rel="stylesheet" href="../styles/member_mainInfo.css">
+    <link rel="stylesheet" href="../styles/member_index.css">
+    <style type="text/css">
+        html,body {
+            height: 100%;
+            font-size: 1rem;
+        }
+        p {
+            color: #333;
+            font-size: 1rem;
+        }
+        .aui-refresh-content {
+            padding: 0;
+        }
+        .cpyIntro {
+            display: none;
+        }
+        .member_no {
+            width: 100%;
+            height: 5rem;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            color: #455ede;
+            font-size: 1.5rem;
+            padding-top: 1rem;
+        }
+        .cpyIntro {
+            text-indent: 2rem;
+            padding: 0.8rem 1rem 1rem 1rem;
+            letter-spacing: 0.0625rem;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body style="background-color: #efeeee">
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <div onclick="tabClick(this);" class="weui-navbar__item weui-bar__item_on">
+                会议安排
+            </div>
+            <div onclick="tabClick(this);" class="weui-navbar__item">
+                公司简介
+            </div>
+        </div>
+        <div class="weui-tab__panel">
+            <div class="aui-chat aui-refresh-content">
+                <div class="meetItem">
+                    <div class="member_no">
+                        <% if(signIn_id){ %>
+                            抽奖号：<%= signIn_id %>
+                        <% }else{ %>
+                            会员请领取抽奖号
+                        <% } %>
+                    </div>
+                    <div class="weui-cells" style="margin-top:0 ">
+                        <a class="weui-cell weui-cell_access" href="javascript:;" onclick="meetingContent();">
+                            <div class="weui-cell__hd"></div>
+                            <div class="weui-cell__bd">
+                                <p>会议流程</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                    <div class="weui-cells" style="margin-top:0 ">
+                        <a class="weui-cell weui-cell_access" href="javascript:;" onclick="outController();">
+                            <div class="weui-cell__hd"></div>
+                            <div class="weui-cell__bd">
+                                <p>威程884外置控制器</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                    <div class="weui-cells" style="margin-top:0 ">
+                        <a class="weui-cell weui-cell_access" href="javascript:;" onclick="pressController();">
+                            <div class="weui-cell__hd"></div>
+                            <div class="weui-cell__bd">
+                                <p>抗折抗压一体机控制器</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                    <div class="weui-cells" style="margin-top:0 ">
+                        <a class="weui-cell weui-cell_access" href="javascript:;" onclick="weServer();">
+                            <div class="weui-cell__hd"></div>
+                            <div class="weui-cell__bd">
+                                <p>潮科技--朗杰测控微服务2.0</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                    <div class="weui-cells" style="margin-top:0 ">
+                        <a class="weui-cell weui-cell_access" href="javascript:;" onclick="tech();">
+                            <div class="weui-cell__hd"></div>
+                            <div class="weui-cell__bd">
+                                <p>2018--朗杰技术荟萃</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                    <div class="weui-cells" style="margin-top:0 ">
+                        <a class="weui-cell weui-cell_access" href="javascript:;" onClick="goTOPeople();">
+                            <div class="weui-cell__hd"></div>
+                            <div class="weui-cell__bd">
+                                <p>与会人员</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                    <div class="weui-cells" style="margin-top:0 ">
+                        <a class="weui-cell weui-cell_access" href="javascript:;" onClick="goTOGoods();">
+                            <div class="weui-cell__hd"></div>
+                            <div class="weui-cell__bd">
+                                <p>抽奖</p>
+                            </div>
+                            <div class="weui-cell__ft"></div>
+                        </a>
+                    </div>
+                    <div class="weui-cell weui-cell_switch" style="background: #fff;">
+                        <div class="weui-cell__bd" style="margin-left: 0.25rem;">是否午宴</div>
+                        <div class="weui-cell__ft">
+                            <label for="switchCP" class="weui-switch-cp">
+                                <% if(is_lunch=='否'){ %>
+                                    <input id="switchCP" class="lunch weui-switch-cp__input" type="checkbox" onChange="isLunch(this)">
+                                <% }else{ %>
+                                    <input id="switchCP" class="lunch weui-switch-cp__input" type="checkbox" checked="checked" onChange="isLunch(this)">
+                                <% } %>
+                                <div class="weui-switch-cp__box"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="cpyIntro">
+                    <img src="https://mp.langjie.com/images/family.png" alt="">
+                    <p>
+                        杭州朗杰测控技术开发有限公司是一家专注于质量控制和工业现场自动化领域，提供精密测控产品和专业增值服务的高新技术企业。成立十余年来先后获得国家30余项自主知识产权，于2010年获评浙江省高新技术企业。目前一万多套测控产品在世界各地稳定运行，为数以千计的客户成功实施专业测试解决方案。
+                    </p>
+                    <p style="margin-top: 0.2rem">
+                        朗杰公司针对试验机行业的需求开发了UTK开放式技术平台，研制生产UTK套件系列虚拟仪器系统、MaxTC™系列网络型万能试验机测控仪、MaxTest®系列试验机控制软件、DynaImpact™仪器化冲击试验机控制系统。齐全的产品线和良好的工程业绩赢得了试验机厂家的信任，朗杰公司与国内大部分知名试验机厂家建立了多种层次的长期合作关系，成为试验机行业中配套品种最多、市场占有率领先的独立控制器供应商。
+                    </p>
+                    <p style="margin-top: 0.2rem">
+                        为了拓展测控应用领域，满足更为严格的现场测试需求，朗杰公司正在开发基于智能设备互联的ISD技术平台，推出代龙™和飞利™两个全新品牌产品。代龙™系统凭借高速率闭环控制、高分辨率采集精度和DynaLive智能数字接口,努力打造成为具有国际竞争力的动态测控品牌。朗杰公司的新产品将更多关注用户体验和时尚设计，中高端产品提供包括基于WinCE、Android和自主知识产权的SP2触控技术的多种彩屏界面。价格竞争型的数码管显示产品，采用专利的易用面板设计，透过朗杰专有的RSA技术获得类云计算功能。
+                    </p>
+                    <p style="margin-top: 0.2rem">
+                        朗杰公司在行业首创智动力™品牌的商业化服务，利用我们的综合技术优势，包括多专业研发和工程团队、UTK和ISD测控平台技术、InterMax®组网技术，为客户提供方案咨询及设计、定制及开发、现场安装调试、委托测试、培训与认证等全方位增值服务。朗杰公司的中长期目标是转型为高技术服务型企业。
+                    </p>
+                    <p style="text-align: center;text-indent: 0;margin-top: 0.8rem;color: #455ede;">
+                        <a href="tel:0571-69958000">
+                            服务电话：0571-69958000
+                        </a>
+                    </p>
+                </div>
+        </div>
+    </div>
+ </body>
+<%- include("../includes/scripts.ejs") %>
+<script src="../js/aui/aui-pull-refresh.js"></script>
+<script>
+    var unionid = '<%- unionid %>';
+    initRefresh();
+    function tabClick(obj){
+        $('.weui-navbar__item').removeClass('weui-bar__item_on');
+        $(obj).addClass('weui-bar__item_on');
+        if($(obj).html().trim()=='会议安排'){
+            $('.meetItem,.aui-refresh-content').show();
+            $('.cpyIntro').hide();
+        }else{
+            $('.meetItem,.aui-refresh-content').hide();
+            $('.cpyIntro').show();
+        }
+    }
+
+    function initRefresh(){
+        var pullRefresh = new auiPullToRefresh({
+            container: document.querySelector('.aui-refresh-content'),
+            triggerDistance: 50
+        },function(ret){
+            if(ret.status=="success"){
+                setTimeout(function(){
+                    getMemberNo(function(){
+                        wxToast('刷新成功');
+                        pullRefresh.cancelLoading(); //刷新成功后调用此方法隐藏
+                    });
+                },500);
+            }
+        });
+    }
+    function getMemberNo(cb){
+        $.ajax({
+            url:wxmpRoute('/center/mineSignInfo'),
+            type:'get',
+            dataType:'json',
+            timeout:30000,
+            data: {
+                unionid: unionid
+            },
+            success:function(body){
+                body = typeof(body)=='object'?body:JSON.parse(body);
+                var signIn_id = body.signIn_id?'抽奖号：'+body.signIn_id:'会员请领取抽奖号';
+                $('.member_no').html(signIn_id);
+                cb();
+            }
+        });
+    }
+    function isLunch(obj){
+        var checked = $('.lunch:checked').length;
+        checked = checked?'是':'否';
+        $.ajax({
+            url:wxmpRoute('/center/isLunch'),
+            type:'put',
+            dataType:'json',
+            timeout:30000,
+            data: {
+                unionid: unionid,
+                value: checked
+            },
+            success:function(res){
+                wxToast('操作成功');
+            },
+            complete: function(){
+                wxToast('操作成功');
+            }
+        });
+    }
+
+    function meetingContent(){
+        window.location.href = route('html/mpMeetingContent.html');
+    }
+
+    function goTOGoods(){
+        window.location.href = route('mp/goods');
+    }
+
+    function goTOPeople(){
+        window.location.href = route('mp/meetingPeople');
+    }
+
+    var r = 'https://mp.langjie.com';
+    function outController(){
+        window.location.href = r+'/wc884.html';
+    }
+
+    function pressController(){
+        window.location.href = r+'/pressC.html';
+    }
+
+    function weServer(){
+        window.location.href = r+'/wServer.html';
+    }
+
+    function tech(){
+        window.location.href = r+'/tech.html';
+    }
+</script>
+</html>

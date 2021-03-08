@@ -1,0 +1,91 @@
+.reg_time {
+	display: none;
+}
+.event {
+	/*margin-top: 20px;*/
+	border-top: 0.0625rem solid #999;
+	overflow: auto;
+}
+.form {
+	padding-top: 1.25rem;
+	padding-bottom: 0.9375rem;
+}
+.form p {
+	text-align: center;
+	margin-top: 1.5625rem;
+	font-size: 1.125rem;
+}
+.form p input[type=text] {
+	width: 55%;
+	height: 2.1875rem;
+    border: 0.0625rem solid #999;
+    border-radius: 0.3125rem;
+    padding-left: 0.3125rem;
+    font-size: 1rem;
+}
+.form p button{
+	width: 4.6875rem;
+}
+.event p {
+	padding:0.625rem;
+}
+.e-time {
+	color: #ff833e;
+}
+.event p:nth-child(odd){
+	background: #e6e6e6;
+}
+#main input[type=radio] {
+	width: 0.79rem;
+	height: 0.79rem;
+}
+.weui-dialog {
+	max-width: 370px;
+}
+.weui-dialog__bd {
+	font-size: 0.9375rem;
+}
+.weui-dialog__ft {
+    line-height: 3rem;
+    font-size: 1.125rem;
+}
+.sn,.mid {
+	font-size: 18px;
+	border: none;
+	background:transparent;
+	/*-webkit-appearance:none;*/
+}
+select[name=app] {
+	display: none;
+	width: 55%;
+    height: 2.1875rem;
+    border: 0.0625rem solid #999;
+    border-radius: 0.3125rem;
+    padding-left: 0.3125rem;
+    font-size: 1rem;
+}
+
+
+/*日期选择器*/
+.mbsc-mobiscroll .dwb {
+	font-size: 1rem;
+}
+.dw-bf .dw-sel {
+	height: 2.5rem;
+}
+
+@media screen and (max-width: 500px){
+    
+}
+
+@media screen and (min-width: 501px) and (max-width: 700px){
+    
+}
+
+@media screen and (min-width: 701px) and (max-width: 900px){
+    
+}
+
+@media screen and (min-width: 901px) and (max-width: 1400px){
+    
+}

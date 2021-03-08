@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title>售后知识库</title>
+	<link href="../styles/kendo/kendo.common.min.css" rel="stylesheet" />
+	<link href="../styles/kendo/kendo.default.min.css" rel="stylesheet" />
+	<link href="../styles/bootstrap.min.css" rel="stylesheet" />
+	<link href="../styles/icon/iconfont.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../styles/cd.css" />
+	<link href="../styles/admin.css" rel="stylesheet" />
+	<link href="../styles/vir8.css" rel="stylesheet" />
+	<link href="../styles/knowledge.css" rel="stylesheet" />
+	<style>
+		.my-mask {
+			left: 0px;
+		}
+		.carousel-inner .item {
+		    background: none;
+		    color: #fff;
+		    /*width: auto;*/
+		    text-align: center;
+		    /*display: inline-block;*/
+		    margin-left: 0;
+		    margin-top: 0;
+		    border-radius: 0;
+		    padding: 0;
+		}
+		.doc_search,.tag_search {
+			float:right;
+			border: 1px solid #999;
+			border-radius: 4px;
+			padding-left: 5px;
+			padding-right: 30px;
+		}
+		.icon-search {
+			position: absolute;
+		    right: 22px;
+		    top: 16px;
+		    z-index: 3;
+		    cursor: pointer;
+		}
+		.contacts ul li p:nth-child(1){
+			float:none;
+		}
+		.contacts ul li p:nth-child(2){
+			float: none;
+		    margin-right: 0px;
+		    font-size: 13px;
+		}
+		.contacts ul li p:nth-child(2):hover {
+			color: #333;
+		}
+		.input-group .item {
+			min-width: 80px;
+		}
+		.dialog-tag label {
+		     margin-bottom: 0px; 
+		     font-weight: inherit; 
+		}
+		.dialog-tag,.dialog-doc {
+			width: 800px;
+			margin-left: -400px;
+		}
+		.s-p {
+			display: flex;
+			width: 90%;
+    		margin-left: 15px;
+    		margin-bottom: 13px;
+		}
+		.s-search {
+			width: 60%;
+			display: inline-block;
+			max-width: 200px;
+		}
+		.s-search input {
+			width: 100%;
+		}
+		.s-button {
+			display: inline-block;
+			/*flex: 1;*/
+			margin-bottom: 6px;
+		}
+		.s-tag {
+			width: 30%;
+			max-width: 80px;
+			display: inline-block;
+			flex: 1;
+		}
+		#myTag {
+			margin-top: 0px;
+			top: 0px;
+			margin-left: 0px;
+		}
+		.s-p ul {
+			margin-left: 0px;
+			margin-top: -8px;
+		}
+		.my_tag {
+			margin-top: 5px;
+		}
+		.hot_tags {
+			margin-left: 20px;
+			margin-bottom: 0px;
+			font-size: 15px;
+			width: 90%;
+			height: 20px;
+		}
+		.hot_tags span {
+			cursor: pointer;
+			margin-right: 8px;
+		}
+		.more-tags {
+			min-height: 400px;
+			max-height: 500px;
+			overflow: auto;
+		    border: 1px solid #999;
+		    position: absolute;
+		    background: #fff;
+		    z-index: 11111;
+		}
+		.more-tags span {
+			display: inline-block;
+			margin: 10px;
+			font-size: 14px;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<p>售后知识库</p>
+	</header>
+	<div id="wrap">
+		<div class="left-bar">
+			<div class="bar-top">
+				<div class="s-p sear" role="search">
+					<div class="form-group s-search">
+						<input type="search" id="search" class="form-control" placeholder="标签">
+						<span class="iconfont icon-form-del" onclick="cl()"></span>
+					</div>
+					<button class="btn btn-default s-button" onclick="search()">搜索</button>
+				</div>
+				<p class="hot_tags">
+					<% for(let i = 0;i < tags.length; i++ ){ %>
+						<span onclick="addSearchTag(this);"><%= tags[i].tag %></span>
+			    	<% } %>
+			    	<span class="tag-more" onclick="tagMore(this);">更多</span>
+				</p>
+				<!-- <div class="sort search">排序</div> -->
+				<div class="dropdown sort-dropdown">
+				    <button type="button" class="btn dropdown-toggle sel" id="dropdownMenu1" data-toggle="dropdown">请选择排序方式 <span class="caret"></span>
+				    </button>
+				    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+				    	<li role="presentation" data-key="all">
+				            <a role="menuitem" tabindex="-1" href="#">请选择排序方式</a>
+				        </li>
+				        <li role="presentation" data-key="update_time">
+				            <a role="menuitem" tabindex="-1" href="#">最近更新</a>
+				        </li>
+				    </ul>
+				</div>
+				<div class="search" style="margin-top:33px">
+					<p class="list-left-tit">问题列表</p>
+					<p class="list-right-tit" onclick="add()">
+						<span class="cpy-add">新增</span>
+						<span class="iconfont icon-add"></span>
+					</p>
+				</div>
+			</div>
+			<div class="bar-bottom">
+				<ul>
+					<% for(var i = 0;i < result.length; i++){ %>
+						<li onclick="checkCpy(this);" data-id="<%= result[i].id %>">
+							<p>
+								<span><%- result[i].question %></span>
+							</p>
+						</li>
+					<% } %>
+				</ul>
+			</div>
+			<div class="page">
+				<button type="button" class="btn btn-primary prev_page" onclick="prev()">上一页</button>
+				<span>第
+					<span class="page_num">1</span>
+				页</span>
+				<button type="button" class="btn btn-primary next_page" onclick="next()">下一页</button>
+			</div>
+		</div>
+		<div class="main">
+			<div id="myCarousel" class="carousel slide" style="overflow:hidden">
+				<img src="../img/controller_system.png" alt="">
+			</div>
+			<div class="search cpy-text">
+				<p class="left-tit">详情</p>
+			</div>
+			<div class="table-wrap">
+				<div class="form-group">
+					<label>现象：</label>
+					<textarea class="form-control text-question" rows="3" oninput="q_input(this)"></textarea>
+				</div>
+				<div class="form-group">
+					<label>分析：</label>
+					<textarea class="form-control text-analysis" rows="3"></textarea>
+				</div>
+				<div class="form-group">
+					<label>解决：</label>
+					<textarea class="form-control text-solution" rows="3"></textarea>
+				</div>
+				<div class="form-group">
+					<label>标签：</label>
+					<div class="tags">
+						
+					</div>
+				</div>
+				<div class="form-group">
+					<label>文档：</label>
+					<div class="doc">
+						
+					</div>
+				</div>
+				<!-- <div class="form-group">
+					<label>资源：</label>
+					<div class="resources">
+						
+					</div>
+				</div> -->
+				<div class="form-group" style="text-align:center;">
+					<button class="alert alert-danger" onclick="del();">删除当前记录</button>
+				</div>
+			</div>
+		</div>
+		<div class="right-bar">
+			<div class="search contacts-text">关联</div>
+			<div class="contacts">
+				<ul>
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- cd写 -->
+	<div class="cd-modal">
+	    <div class="cd-img-box">
+	        <i class="iconfont icon-jinakangbaoicons18" id="cd-modal" display="block"></i>
+	        <div class="cd-img">
+	            <div class="cd-input">
+	                    <input  type="file" name="img" id="cd-file"/>
+	            </div>
+	        </div>
+
+	        <div class="cd-play">
+	          <button class="cd-button" id="cd-delete">删除</button><button class="cd-button" id="cd-cover">设为封面</button>
+	        </div>
+	    </div>
+	</div>
+
+	<div class="my-mask" onclick="cancel()"></div>
+	<div class="modal-dialog my-dialog up-dialog dialog-tag">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="myModalLabel" style="display:inline;">管理标签</h5>
+				<input type="text" class="tag_search" placeholder="搜索标签">
+				<span class="iconfont icon-search" onclick="tagSearch()"></span>
+			</div>
+			<div class="modal-body">
+				<p>正在加载...</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()">取消</button>
+				<button type="button" class="btn btn-primary" onclick="subTag()">确定</button>
+			</div>
+		</div>
+	</div>
+	<div class="modal-dialog my-dialog up-dialog dialog-doc">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="myModalLabel" style="display:inline;">添加文档</h5>
+				<input type="text" class="doc_search" placeholder="搜索文档">
+				<span class="iconfont icon-search" onclick="docSearch()"></span>
+			</div>
+			<div class="modal-body" style="padding-bottom: 45px;">
+				<p>正在加载...</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" style="float:left;" onclick="doc_prev();">上一页</button>
+				<button type="button" class="btn btn-primary" style="float:left;margin-left:15px;" onclick="doc_next();">下一页</button>
+				<input type="file" id="docFile" onchange="uploadFile()">
+				<p class="btn btn-default upload" data-dismiss="modal">上传文档</p>
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()">取消</button>
+				<button type="button" class="btn btn-primary" onclick="subDoc()">确定</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script id="info" type="text/x-dot-template">
+	<li>
+		<p>录入人：{{=it[0].insert_person}}</p>
+		<p>录入时间：{{=it[0].insert_time}}</p>
+		<p>更新人：{{=it[0].update_person}}</p>
+		<p>更新时间：{{=it[0].update_time}}</p>
+	</li>
+</script>
+<script id="show_tags" type="text/x-dot-template">
+	{{ for(let i = 0;i<it.length;i++){ }}
+		{{ if(it[i]!=''){ }}
+			<div class="item">{{=it[i]}}</div>
+		{{ } }}
+	{{ } }}
+	<div class="add-tag" onclick="addTag()">添加标签</div>
+</script>
+<script id="tags" type="text/x-dot-template">
+	<div class="p">
+		{{ for(let i = 0;i<it.length;i++ ){ }}
+			{{ if(it[i][0]!=null&&it[i][0].type=='product'){ }}
+				<p>产品标签：</p>
+			{{ }else if(it[i][0]!=null&&it[i][0].type=='part'){ }}
+				<p>部件标签：</p>
+			{{ }else if(it[i][0]!=null&&it[i][0].type=='application'){ }}
+				<p>应用标签：</p>
+			{{ }else if(it[i][0]!=null&&it[i][0].type=='function'){ }}
+				<p>功能标签：</p>
+			{{ }else if(it[i][0]!=null&&it[i][0].type=='technology'){ }}
+				<p>技术标签：</p>
+			{{ }else{ }}
+				<p>自定义：</p>
+			{{ } }}
+			<ul class="input-group" style="margin-bottom: 30px;">
+				{{ if(it[i][0]&&it[i][0].type!='custom'){ }}
+					{{ for(let j = 0;j<it[i].length;j++ ){ }}
+						<li>
+							<label>
+								<input type="checkbox" style="margin-right:0px;">
+								<div class="item">{{=it[i][j].tag}}</div>
+							</label>
+						</li>
+					{{ } }}
+				{{ }else{ }}
+					{{ for(let j = 0;j<it[i].length;j++ ){ }}
+						<li>
+							<label>
+								<input type="checkbox" style="margin-right:0px;">
+								<div class="item">{{=it[i][j].tag}}</div>
+							</label>
+						</li>
+					{{ } }}
+					 <input class="my_tag" type="text" onchange="myTag(this)" placeholder="自定义"/>
+				{{ } }}
+			</ul>
+		{{ } }}
+	</div>
+</script>
+<script id="show_doc" type="text/x-dot-template">
+	{{ for(let i = 0;i<it.doc_arr.length;i++){ }}
+		{{ if(it.doc_name_arr!=''){ }}
+			<a href = "{{=it.doc_arr[i]}}" target="_blank">
+				<div class="item">
+					{{=it.doc_name_arr[i]}}
+				</div>
+			</a>
+		{{ } }}
+	{{ } }}
+	<div class="add-tag" onclick="addDoc()">添加文档</div>
+</script>
+<script id="doc" type="text/x-dot-template">
+	<p>已有文档：</p>
+	<ul class="input-group">
+		{{ for(let i = 0;i<it.length;i++){ }}
+			{{ if(it[i]!=''){ }}
+				<li>
+					<label>
+						<input type="checkbox">
+						<span>{{=it[i].name}}.{{=it[i].type}}</span>
+					</label>
+				</li>
+			{{ } }}
+		{{ } }}
+	</ul>
+</script>
+<script id="album" type="text/x-dot-template">
+	<div class="carousel-inner">
+		{{for(var j=0;j<it.length;j++){ }}
+			{{? j==0 }}
+				{{? it[0]==''}}
+					<div class="item active">
+						<img src='../img/controller_system.png' onclick="cdIn()">
+					</div>
+				{{??}}
+					<div class="item active">
+						<img src='../img{{=it[j]}}' onclick="cdIn()">
+					</div>
+				{{?}}
+			{{?? }}
+				<div class="item">
+					<img src='../img{{=it[j]}}' onclick="cdIn()">
+				</div>
+			{{? }}
+		{{} }}
+	</div>
+	<a class="carousel-control left" href="#myCarousel" 
+	   data-slide="prev" style="font-size: 120px;">&lsaquo;</a>
+	<a class="carousel-control right" href="#myCarousel" 
+	   data-slide="next" style="font-size: 120px;">&rsaquo;</a>
+</script>
+<script src="../js/kendo/jquery.min.js" type="text/javascript"></script>
+<script src="../js/kendo/kendo.all.min.js" type="text/javascript"></script>
+<script src="../js/doT.min" type="text/javascript"></script>
+<script src="../js/base.js" type="text/javascript"></script>
+<script src="../js/common.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../js/jquery.lazyload.min.js" type="text/javascript"></script>
+<script src="../js/admin_knowledge.js" type="text/javascript"></script>
+<script src="../js/cd_knowledge.js" type="text/javascript"></script>
+<script>
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	$('#wrap').height(height-50);
+	$('body').height(height-50);
+	$('.bar-bottom').height(height-290);
+	$('.table-wrap').height(height-320);
+	$('.contacts').height(height-100);
+</script>
+</html>

@@ -1,0 +1,96 @@
+#myCarousel img {
+	height: 100%;
+}
+#myCarousel {
+	text-align: center;
+}
+.contacts ul li {
+	height: auto;
+}
+.reg-list {
+	text-align: center;
+    font-size: 16px;
+    margin-top: 14px;
+}
+.page {
+	width:100%;
+	height:50px;
+	background:#dbdbdb;
+	text-align: center;
+	padding-top: 10px;
+}
+.prev_page {
+	margin-right: 30px;
+}
+.next_page {
+	margin-left: 30px;
+}
+.inputInfo {
+	position: relative;
+	top: 10px;
+	left: 6px;
+}
+.my-dialog {
+	width: 650px;
+	position: fixed;
+    top: 5%;
+    left: 50%;
+    margin-left: -150px;
+}
+.up-dialog {
+	display: none;
+}
+.my-mask {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	background: #333;
+	opacity: 0.5;
+	top: 0;
+	left: 25%;
+	display: none;
+}
+.sns {
+	width: 100%;
+	height: 200px;
+	overflow: auto;
+	border: 1px solid #999;
+	border-radius: 4px;
+}
+.g {
+	margin: 0 auto;
+}
+.item {
+	background: #337ab7;
+    color: #fff;
+    width: 80px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 3px;
+    padding: 10px;
+}
+.item:hover {
+	cursor: pointer;
+}
+.my-dialog .input-group {
+	display: inherit;
+}
+.input-item {
+    width: 270px;
+    display: inline-block;
+    margin-top: 20px;
+}
+input[type=checkbox] {
+	width: 15px;
+	height: 15px;
+}
+.input-item>label,.input-item>div {
+	display: inline-block;
+}
+.icon-correct {
+	float: right;
+    margin-right: 10px;
+    display: none;
+}

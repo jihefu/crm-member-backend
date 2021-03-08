@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title><%= info.goodsName %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_message.css">
+    <style>
+        .description {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+        }
+        .btn {
+            padding: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <% if (info.album) { %>
+        <img style="width: 100%;" src="../img/notiClient/<%=info.album%>">
+    <% } else { %>
+        <img style="width: 100%;" src="../img/default_goods.jpg">
+    <% } %>
+    <p class="description"><%- description %></p>
+    <div class="btn">
+        <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="showExchangeDialog('<%= info.id %>', '<%= info.goodsName %>');">兑换</a>
+    </div>
+    <div id="dialog" style="opacity: 1;display: none;">
+        <div class="weui-mask"></div>
+        <div class="weui-dialog">
+            <div class="weui-dialog__bd" style="padding: 0; padding-top: 1rem;">
+                <i class="weui-icon-success weui-icon_msg" style="position: relative;top: -0.0625rem;font-size: 1.2rem;"></i>
+                <span style="font-size: 1.1rem;">兑换成功</span>
+            </div>
+            <div class="weui-dialog__bd">
+                <img style="width: 100%;" src="../img/enterprise_wx.png" alt="">
+                请添加客服发送您的收件信息
+            </div>
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="$('#dialog').hide();">知道了</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+<%- include("../includes/scripts.ejs") %>
+<script>
+    function showExchangeDialog(id, goodsName) {
+        var r = window.confirm('确定兑换' + goodsName + '？');
+        if (!r) {
+            return false;
+        }
+        $.ajax({
+            url: route('member/consumeYBScore'),
+            type: 'post',
+            data: {
+                goodsId: id,
+            },
+            success: function(res) {
+                if (res.code === 200) {
+                    $('#dialog').show();
+                    // wxToast('兑换成功，工作人员会尽快发放奖品');
+                    // setTimeout(() => {
+                    //     window.location.href = route('member/personalWallet');
+                    // }, 2000);
+                } else {
+                    wxToast(res.msg);
+                }
+            }
+        });
+    }
+</script>
+</html>

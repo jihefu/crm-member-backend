@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>钱包</title>
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <style>
+        .weui-cells__title {
+            margin-top: 2.77em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <div class="weui-navbar__item weui-bar__item_on" onclick="scoreClick(this);">
+                元宝分
+            </div>
+            <div class="weui-navbar__item" onclick="coupClick(this);">
+                抵价券
+            </div>
+        </div>
+        <div class="weui-tab__panel">
+
+        </div>
+    </div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var page = 0, pageSize = 20;
+    var isLoading = false, hasMore = true;
+    $(function () {
+        getScoreTicketByUid();
+    });
+    window.onscroll = function() {
+        var s_height = document.documentElement.scrollTop || $('body').scrollTop();
+        var b_height = $('body').height();
+        var height = window.innerHeight;
+		if (b_height - height - s_height < 20) {
+			if (!isLoading && hasMore) {
+                fetchTicket();
+            }
+		}
+    }
+
+    function getWalletCoupByOpenid() {
+        $('.weui-tab__panel').html('');
+        $.ajax({
+            url: route('member/getWalletCoupByOpenid'),
+            type: 'get',
+            success: function (res) {
+                renderCoup(res);
+            }
+        });
+    }
+
+    function getScoreTicketByUid() {
+        $('.weui-tab__panel').html(`
+            <div class="weui-form-preview">
+                <div class="weui-form-preview__hd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">可用分</label>
+                        <em class="weui-form-preview__value total_amount ticketScore"></em>
+                    </div>
+                </div>
+                <div class="weui-panel__ft">
+                    <a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link" onclick="exchangeGoods();">
+                        <div class="weui-cell__bd" style="font-size: 1.2rem;">兑换礼品</div>
+                        <span class="weui-cell__ft"></span>
+                    </a>    
+                </div>
+            </div>
+            <div class="weui-cells__title">积分明细</div><div class="weui-cells ticketList"></div>
+        `);
+        page = 0;
+        isLoading = false;
+        hasMore = true;
+        fetchTicket();
+    }
+
+    function fetchTicket() {
+        isLoading = true;
+        page++;
+        $.ajax({
+            url: route('member/getScoreTicketByUid'),
+            type: 'get',
+            data: {
+                page: page,
+                pageSize: pageSize,
+            },
+            success: function (res) {
+                isLoading = false;
+                if (res.data.ticketList.length === 0) {
+                    hasMore = false;
+                }
+                renderTicket(res.data);
+            }
+        });
+    }
+
+    function renderCoup(res) {
+        var str = '';
+        for (var i = 0; i < res.WalletCoups.length; i++) {
+            str += `<a class="weui-cell weui-cell_access" href="javascript:;" onclick="coupInfo('${res.WalletCoups[i].coupon_no}')">
+                        <div class="weui-cell__bd">
+                            <p>${res.WalletCoups[i].coupon_no}</p>
+                        </div>
+                        <div class="weui-cell__ft">
+                        </div>
+                    </a>`;
+        }
+        $('.weui-tab__panel').html(`
+            <div class="weui-form-preview">
+                <div class="weui-form-preview__hd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">总金额</label>
+                        <em class="weui-form-preview__value total_amount">${res.total_amount}</em>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">总数量</label>
+                        <em class="weui-form-preview__value total_num">${res.WalletCoups.length}</em>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cells__title">列表</div><div class="weui-cells">${str}</div>`);
+    }
+
+    function renderTicket(res) {
+        var str = '';
+        for (var i = 0; i < res.ticketList.length; i++) {
+            str += `<a class="weui-cell" href="javascript:;">
+                        <div class="weui-cell__bd">
+                            <p>
+                                <p style="color: #000;">${res.ticketList[i].rem}</p>
+                                <p style="color: #999;">${res.ticketList[i].create_time}</p>
+                            </p>
+                        </div>
+                        <div class="weui-cell__ft">
+                            <p>${res.ticketList[i].score}分</p>
+                        </div>
+                    </a>`;
+        }
+        $('.ticketList').append(str);
+        $('.ticketScore').html(res.ticketScore);
+    }
+
+    function coupInfo(no) {
+        window.location.href = route('member/resaleOrderCoupPage?no=' + no);
+    }
+
+    function ticketInfo(no) {
+        window.location.href = route('member/memberScoreTicket?no=' + no);
+    }
+
+    function coupClick(obj) {
+        getWalletCoupByOpenid();
+        $('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $(obj).addClass('weui-bar__item_on');
+    }
+
+    function scoreClick(obj) {
+        getScoreTicketByUid();
+        $('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        $(obj).addClass('weui-bar__item_on');
+    }
+
+    function exchangeGoods() {
+        window.location.href = route('member/exchangeGoodsList');
+    }
+</script>
+
+</html>

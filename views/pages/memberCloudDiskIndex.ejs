@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title>企业云盘</title>
+    <%- include("../includes/styles.ejs") %>
+    <link href="../styles/index.css" rel="stylesheet" />
+    <link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/n_index.css" rel="stylesheet" />
+    <style>
+        .weui-cells__title {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+        .content li {
+            border-top-color: #eee;
+        }
+        .icon {
+            width: 5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .icon>.iconfont {
+            font-size: 3rem;
+            color: #999;
+        }
+        .icon-star {
+            font-size: 1.2rem;
+            margin-left: 1rem;
+            color: #999;
+        }
+        .type {
+            font-size: 1rem;
+            position: relative;
+            top: -0.8rem;
+        }
+        .limit-with {
+            width: 220px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .high-light {
+            color: rgb(248, 205, 43);
+        }
+        .weui-navbar {
+            position: fixed;
+        }
+        .publicContent {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <% if (isAdmin == 0) { %>
+        <div class="weui-tab">
+            <div class="weui-navbar">
+                <div class="weui-navbar__item weui-bar__item_on" data-type="1">
+                    我的下载
+                </div>
+                <div class="weui-navbar__item" data-type="2">
+                    公共下载
+                </div>
+            </div>
+            <div class="weui-tab__panel">
+                <div style="display: none;" class="weui-cells__title">
+                    <% if (isAdmin == 0) { %>
+                        <span>占用空间：
+                            <% if (totalSize < 1024 * 1024) { %>
+                                <%= (totalSize / 1024).toFixed(2) %> KB
+                            <% } else { %>
+                                <%= (totalSize / 1024 / 1024).toFixed(2) %> MB
+                            <% } %>
+                        </span>
+                    <% } %>
+                    <span>文件总数：<%= totalNum %></span>
+                </div>
+                <div class="content">
+                    <% if (list.length === 0) { %>
+                    <div class="loadmore">
+                        <div class="weui-loadmore weui-loadmore_line">
+                            <span class="weui-loadmore__tips">暂无资源</span>
+                        </div>
+                    </div>
+                    <% } else { %>
+                    <ul style="border-top: 1px solid #eee;">
+                    <% for (var i = 0; i < list.length; i++) { %>
+                    <li class="weui-cell weui-cell_access" style="padding-left: 0px;padding-top: 0px;padding-bottom: 0px;" onclick="moreInfo('<%= list[i]._id %>')">
+                        <% if (isAdmin == 0) { %>
+                            <% if (list[i].isStar) { %>
+                                <div data-id="<%= list[i]._id %>" onclick="star('<%= list[i]._id %>', '<%= list[i].isStar %>')" class="iconfont icon-star high-light"></div>
+                            <% } else { %>
+                                <div data-id="<%= list[i]._id %>" onclick="star('<%= list[i]._id %>', '<%= list[i].isStar %>')" class="iconfont icon-star"></div>
+                            <% } %>
+                        <% } %>
+                        <div class="weui-cell__hd icon">
+                            <% if ([ '.xlsx', '.xls'].indexOf(list[i].suffixName) !== -1) { %>
+                                <span class="iconfont icon-excel"></span>
+                            <% } else if ([ '.doc', '.docx'].indexOf(list[i].suffixName) !== -1) { %>
+                                <span class="iconfont icon-word"></span>
+                            <% } else if ([ '.ppt', '.pptx'].indexOf(list[i].suffixName) !== -1) { %>
+                                <span class="iconfont icon-file1"></span>
+                            <% } else if ([ '.pdf'].indexOf(list[i].suffixName) !== -1) { %>
+                                <span class="iconfont icon-pdf" style="font-size: 3.2rem;"></span>
+                            <% } else if ([ '.tar', '.gz', '.zip', '.rar'].indexOf(list[i].suffixName) !== -1) { %>
+                                <span class="iconfont icon-yasuobao"></span>
+                            <% } else if ([ '.gallery'].indexOf(list[i].suffixName) !== -1) { %>
+                                <span class="iconfont icon-gallery1"></span>
+                            <% } else if ([ '.installDisk'].indexOf(list[i].suffixName) !== -1) { %>
+                                <span class="iconfont icon-cd"></span>
+                            <% } else { %>
+                                <span class="iconfont icon-file1"></span>
+                            <% } %>
+                            <span class="type"><%= list[i].type %></span>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <p class="limit-with fileName">
+                                <% if (list[i].version) { %>
+                                    <%= list[i].fileName %>（<%= list[i].version %>）
+                                <% } else { %>
+                                    <%= list[i].fileName %>
+                                <% } %>
+                            </p>
+                            <p style="color: #999;"><%= list[i].uploadTime %></p>
+                            <p style="color: #999;" class="limit-with"><%= list[i].remark %></p>
+                        </div>
+                        <div class="weui-cell__ft">
+                        </div>
+                    </li>
+                    <% } %>
+                    </ul>
+                    <% } %>
+                </div>
+                <div class="publicContent">
+                    <ul style="border-top: 1px solid #eee;">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="weui-cells__title">
+            <span>文件总数：<%= totalNum %></span>
+        </div>
+        <div class="content">
+            <% if (list.length === 0) { %>
+            <div class="loadmore">
+                <div class="weui-loadmore weui-loadmore_line">
+                    <span class="weui-loadmore__tips">暂无资源</span>
+                </div>
+            </div>
+            <% } else { %>
+            <ul style="border-top: 1px solid #eee;">
+            <% for (var i = 0; i < list.length; i++) { %>
+            <li class="weui-cell weui-cell_access" style="padding-left: 0px;padding-top: 0px;padding-bottom: 0px;" onclick="moreInfo('<%= list[i]._id %>')">
+                <% if (isAdmin == 0) { %>
+                    <% if (list[i].isStar) { %>
+                        <div data-id="<%= list[i]._id %>" onclick="star('<%= list[i]._id %>', '<%= list[i].isStar %>')" class="iconfont icon-star high-light"></div>
+                    <% } else { %>
+                        <div data-id="<%= list[i]._id %>" onclick="star('<%= list[i]._id %>', '<%= list[i].isStar %>')" class="iconfont icon-star"></div>
+                    <% } %>
+                <% } %>
+                <div class="weui-cell__hd icon">
+                    <% if ([ '.xlsx', '.xls'].indexOf(list[i].suffixName) !== -1) { %>
+                        <span class="iconfont icon-excel"></span>
+                    <% } else if ([ '.doc', '.docx'].indexOf(list[i].suffixName) !== -1) { %>
+                        <span class="iconfont icon-word"></span>
+                    <% } else if ([ '.ppt', '.pptx'].indexOf(list[i].suffixName) !== -1) { %>
+                        <span class="iconfont icon-file1"></span>
+                    <% } else if ([ '.pdf'].indexOf(list[i].suffixName) !== -1) { %>
+                        <span class="iconfont icon-pdf" style="font-size: 3.2rem;"></span>
+                    <% } else if ([ '.tar', '.gz', '.zip', '.rar'].indexOf(list[i].suffixName) !== -1) { %>
+                        <span class="iconfont icon-yasuobao"></span>
+                    <% } else if ([ '.gallery'].indexOf(list[i].suffixName) !== -1) { %>
+                        <span class="iconfont icon-gallery1"></span>
+                    <% } else if ([ '.installDisk'].indexOf(list[i].suffixName) !== -1) { %>
+                        <span class="iconfont icon-cd"></span>
+                    <% } else { %>
+                        <span class="iconfont icon-file1"></span>
+                    <% } %>
+                    <span class="type"><%= list[i].type %></span>
+                </div>
+                <div class="weui-cell__bd">
+                    <p class="limit-with fileName">
+                        <% if (list[i].version) { %>
+                            <%= list[i].fileName %>（<%= list[i].version %>）
+                        <% } else { %>
+                            <%= list[i].fileName %>
+                        <% } %>
+                    </p>
+                    <p style="color: #999;"><%= list[i].uploadTime %></p>
+                    <p style="color: #999;" class="limit-with"><%= list[i].remark %></p>
+                </div>
+                <div class="weui-cell__ft">
+                </div>
+            </li>
+            <% } %>
+            </ul>
+            <% } %>
+        </div>
+    <% } %>
+    
+</body>
+<%- include("../includes/scripts.ejs") %>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.3.0.js"></script>
+<script>
+    var isStaring = false;
+    var page = 1, pageSize = 15;
+    var isLoading = false, hasMore = true;
+    var isPrivatePage = true;
+    $(function() {
+        var w = window.innerWidth;
+        var starWidth = $('.icon-star').width();
+        var iconWidth = $('.icon').width();
+        $('.limit-with').width(w-starWidth-iconWidth-60);
+        $('.weui-navbar__item').on('click', function() {
+            $('.weui-bar__item_on').removeClass('weui-bar__item_on');
+            $(this).addClass('weui-bar__item_on');
+            if ($(this).attr('data-type') == 1) {
+                $('.content').show();
+                $('.publicContent').hide();
+                isPrivatePage = true;
+            } else {
+                $('.content').hide();
+                $('.publicContent').show();
+                isPrivatePage = false;
+                fetchPublicList();
+            }
+        });
+    });
+
+    window.onscroll = function() {
+        if (!isPrivatePage) {
+            return;
+        }
+        var s_height = document.documentElement.scrollTop || $('body').scrollTop();
+        var b_height = $('body').height();
+        var height = window.innerHeight;
+		if (b_height - height - s_height < 20) {
+			if (!isLoading && hasMore) {
+                fetch();
+            }
+		}
+    }
+
+    function fetch() {
+        page++;
+        isLoading = true;
+        $.ajax({
+            url:route('service/cloudDisk/index'),
+            type:'get',
+            dataType:'json',
+            data:{
+                page: page,
+                pageSize: pageSize,
+            },
+            success:function(res){
+                isLoading = false;
+                if (res.list.length === 0) {
+                    hasMore = false;
+                } else {
+                    render(res.list, res.isAdmin);
+                }
+            }
+        });
+    }
+
+    function fetchPublicList() {
+        if ($('.publicContent ul').html().trim() != '') {
+            return;
+        }
+        $.ajax({
+            url:route('service/cloudDisk/getPublicList'),
+            type:'get',
+            dataType:'json',
+            data: {
+                page: 1,
+                pageSize: 100,
+            },
+            success:function(res) {
+                render(res.data.data, 1, 1);
+            }
+        });
+    }
+
+    function render(list, isAdmin, isPublic) {
+        var str = '';
+        for (var i = 0; i < list.length; i++) {
+            var starStr = '', iconStr = '', versionStr = '', remarkStr = '';
+            if (isAdmin == 0) {
+                if (list[i].isStar) {
+                    starStr = '<div data-id="'+list[i]._id+'" onclick="star(\''+list[i]._id+'\', \''+list[i].isStar+'\')" class="iconfont icon-star high-light"></div>';
+                } else {
+                    starStr = '<div data-id="'+list[i]._id+'" onclick="star(\''+list[i]._id+'\', \''+list[i].isStar+'\')" class="iconfont icon-star"></div>';
+                }
+            }
+            if ([ '.xlsx', '.xls'].indexOf(list[i].suffixName) !== -1) {
+                iconStr = '<span class="iconfont icon-excel"></span>';
+            } else if ([ '.doc', '.docx'].indexOf(list[i].suffixName) !== -1) {
+                iconStr = '<span class="iconfont icon-word"></span>';
+            } else if ([ '.ppt', '.pptx'].indexOf(list[i].suffixName) !== -1) {
+                iconStr = '<span class="iconfont icon-file1"></span>';
+            } else if ([ '.pdf'].indexOf(list[i].suffixName) !== -1) {
+                iconStr = '<span class="iconfont icon-pdf"></span>';
+            } else if ([ '.tar', '.gz', '.zip', '.rar'].indexOf(list[i].suffixName) !== -1) {
+                iconStr = '<span class="iconfont icon-yasuobao"></span>';
+            } else if ([ '.gallery'].indexOf(list[i].suffixName) !== -1) {
+                iconStr = '<span class="iconfont icon-gallery1"></span>';
+            } else if ([ '.installDisk'].indexOf(list[i].suffixName) !== -1) {
+                iconStr = '<span class="iconfont icon-cd"></span>';
+            } else {
+                iconStr = '<span class="iconfont icon-file1"></span>';
+            }
+            if (list[i].version) {
+                versionStr = list[i].fileName + '（' + list[i].version + '）';
+            } else {
+                versionStr = list[i].fileName;
+            }
+            if (list[i].remark) {
+                remarkStr = '<p style="color: #999;" class="limit-with">'+list[i].remark+'</p>';
+            }
+            str += '<li class="weui-cell weui-cell_access" style="padding-left: 0px;padding-top: 0px;padding-bottom: 0px;" onclick="moreInfo(\''+list[i]._id+'\')">'+starStr+
+                '<div class="weui-cell__hd icon">' + iconStr + '<span class="type">'+list[i].type+'</span></div>'+
+                '<div class="weui-cell__bd">'+
+                    '<p class="limit-with fileName">'+versionStr+'</p>'+
+                    '<p style="color: #999;">'+list[i].uploadTime+'</p>'+remarkStr+
+                '</div>'+
+                '<div class="weui-cell__ft"></div>'+
+            '</li>';
+        }
+        if (isPublic) {
+            $('.publicContent ul').append(str);
+        } else {
+            $('.content ul').append(str);
+        }
+    }
+
+    function star(_id, isStar) {
+        isStaring = true;
+        var star;
+        if (isStar === 'false') {
+            star = true;
+        } else {
+            star = false;
+        }
+        $.ajax({
+            url:route('service/cloudDisk/star'),
+            type:'put',
+            dataType:'json',
+            timeout:30000,
+            data: {
+                _id: _id,
+                star: star
+            },
+            success:function(res){
+                wxToast(res.msg);
+                isStaring = false;
+                if ($('.icon-star[data-id="'+_id+'"]').hasClass('high-light')) {
+                    $('.icon-star[data-id="'+_id+'"]').removeClass('high-light');
+                } else {
+                    $('.icon-star[data-id="'+_id+'"]').addClass('high-light');
+                }
+            }
+        });
+    }
+
+    function moreInfo(fileId) {
+        if (isStaring) {
+            return;
+        }
+        window.location.href = route('service/cloudDisk/info?fileId=' + fileId);
+    }
+</script>
+
+</html>

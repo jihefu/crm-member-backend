@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>员工管理</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <%- include("../includes/styles.ejs") %>
+    <link rel="stylesheet" href="../styles/responsive.css">
+    <link rel="stylesheet" href="../styles/member_message.css">
+    <style>
+        .msg {
+            margin-top: 0.625rem;
+            text-indent: 1.625rem;
+        }
+        .icon-star {
+            color: #BBB;
+            position: relative;
+            left: 0.5rem;
+            top: -0.05rem;
+            font-size: 1.2rem;
+        }
+        .mark {
+            color: #FFD94A;
+        }
+    </style>
+</head>
+<body style="background-color: #efeeee;" data-scroll="0">
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell weui-cell_switch">
+            <div class="weui-cell__bd">认证通过</div>
+            <div class="weui-cell__ft">
+                <% if(info[0].checked){ %>
+                    <input class="weui-switch reg" type="checkbox" checked onchange="checkFun();">
+                <% }else{ %>
+                    <input class="weui-switch reg" type="checkbox" onchange="checkFun();">
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells__title">职位列表</div>
+    <div class="weui-cells weui-cells_checkbox">
+        <% for(var i = 0;i<jobArr.length;i++){ %>
+        <label class="weui-cell weui-check__label">
+            <div class="weui-cell__hd">
+                <input type="checkbox" class="weui-check _job" name="<%= jobArr[i] %>">
+                <i class="weui-icon-checked"></i>
+            </div>
+            <div class="weui-cell__bd">
+                <p><%= jobArr[i] %></p>
+            </div>
+        </label>
+        <% } %>
+    </div>
+    <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips" onclick="sub()">确定</a>
+        <a class="weui-btn weui-btn_plain-primary" href="javascript:" onclick="msgList()">查看消息动态</a>
+    </div>
+</body>
+
+<%- include("../includes/scripts.ejs") %>
+<script>
+    var render_data = JSON.parse('<%- JSON.stringify(msg)%>');
+    var checkedJobArr = JSON.parse('<%- JSON.stringify(checkedJobArr)%>');
+</script>
+<script src="../js/member_dynamic_msg.js"></script>
+</html>

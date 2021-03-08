@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title><%- goodsName %></title>
+	<%- include("../includes/styles.ejs") %>
+	<link href="../styles/responsive.css" rel="stylesheet" />
+    <link href="../styles/vir8_info.css" rel="stylesheet" />
+    <link href="../styles/slider.css" rel="stylesheet" />
+    <style>
+        .img {
+            background: none;
+        }
+        #iosDialog1 {
+            display: none;
+        }
+        .icon-photo {
+            position: absolute;
+            z-index: 111;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #999;
+        }
+        .btn-groups button {
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        #uploaderInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+        <input id="uploaderInput" onchange="uploadImg(this);" type="file" accept="image/*">
+        <i class="iconfont icon-photo" onclick="photoEdit();"></i>
+        <div class="img" id="aui-slide" style="background:none">
+            <div class="aui-slide-wrap">
+                <div class="aui-slide-node">
+                    <img src="../img/no_img.png" height="100%">
+                </div>
+            </div>
+            <div class="aui-slide-page-wrap"><!--分页容器--></div>
+        </div>
+		<div id="loading" style="text-align:center;">
+			<i class="weui-loading weui-icon_toast"></i>
+		</div>
+		<div id="grid" data-role="grid" data-bind="source: products"></div>
+		<div class="btn-groups">
+            <button class="k-primary applyBorrow" onclick="applyBorrow()" style="display:none">申请接手</button>
+            <button class="k-primary dealBorrow" onclick="dealBorrow()" style="display:none">处理接手</button>
+            <button class="k-primary applydel" onclick="applydel()" style="display:none">申请出库</button>
+            <button class="k-primary dealdel" onclick="dealdel()" style="display:none">处理出库</button>
+            <button class="edit" onclick="edit()" style="display:none">编辑</button>
+            <button class="borrowHistory" onclick="borrowHistory()" style="display:none">责任记录</button>
+		</div>
+	</div>
+</div>
+<div class="js_dialog" id="iosDialog1" style="opacity: 1;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        
+    </div>
+</div>
+</body>
+<%- include("../includes/scripts.ejs") %>
+<%- include("../includes/kendo.ejs") %>
+<script src="../js/slider.js" type="text/javascript"></script>
+<script src="../js/ljRotateImg.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#loading').remove();
+    var table_height;
+    var data = JSON.parse('<%- JSON.stringify(result)%>');
+    var mainArr = data.mainArr;
+    var followArr = data.followArr;
+    var isNew = '<%- isNew %>';
+    sort();
+    var recordId = '<%- recordId %>';
+    var _user = '<%- _user %>';
+    var showCode = JSON.parse('<%- JSON.stringify(showCode)%>');
+    var staffArr = JSON.parse('<%- JSON.stringify(staffArr)%>');
+
+    $(function(){
+        var height = window.innerHeight;
+        var width = window.innerWidth;
+        var img_height = width/2.68;
+        $('.img,.img img').height(img_height);
+        table_height = height-img_height-80;
+        var arr = [];
+        for(var i in data){
+            var obj = init(i);
+            if(i=='isBorrow'||i=='isdel'){
+                obj.val = data[i]==1 ? '是' : '否';
+            }else if(i=='updateTime'){
+                obj.val = time(data[i]);
+            }else if(i=='mainArr'||i=='followArr'){
+                obj.val = data[i].join();
+            }else{
+                obj.val = (data[i]!='null'&&data[i]!=null&&data[i]!='undefined')?data[i]:'';
+            }
+            if(obj.name!='其他'){
+                arr.push(obj);
+            }
+        }
+        $("#grid").kendoGrid({
+            height: table_height,
+            columns:[
+                {
+                field: "name",
+                title: "物品项目"
+                },
+                {
+                field: "val",
+                title: "物品参数",
+                }
+            ],
+            dataSource: {
+                data: arr
+            }
+        });
+        $('button').kendoButton();
+        $('.borrowHistory').show();
+        initImg();
+        if (isNew) {
+            initDirector();
+        }
+        if(showCode.indexOf(-1)!=-1) return;
+        if(showCode.indexOf(5)!=-1) $('.edit').show();
+        if(showCode.indexOf(1)!=-1){
+            if(mainArr.length==0) $('.applyBorrow').show();
+        }else if(showCode.indexOf(2)!=-1){
+            $('.dealBorrow').show();
+        }else if(showCode.indexOf(3)!=-1){
+            if(mainArr.length==0) $('.applydel').show();
+        }else if(showCode.indexOf(4)!=-1){
+            $('.dealdel').show();
+        }
+    });
+
+    function initDirector() {
+        $('#iosDialog1').show();
+        var optionStr = '';
+        for (var i = 0; i < staffArr.length; i++) {
+            optionStr += '<option value="'+staffArr[i].user_id+'">'+staffArr[i].user_name+'</option>';
+        }
+        var str = '<div class="weui-dialog__hd"><strong class="weui-dialog__title">责任人</strong></div>'+
+                    '<div class="weui-dialog__bd">'+
+                        '<div class="weui-cell" style="display:flex;">'+
+                            '<div class="weui-cell__bd">'+
+                                '<select style="width: 100%" name="direct">'+optionStr+'</select>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="weui-dialog__ft">'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">取消</a>'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="subInitDirector();">确定</a>'+
+                    '</div>';
+        $('.weui-dialog').html(str);
+    }
+
+    function subInitDirector() {
+        var borrowUserId = $('select[name=direct]').val();
+        cancel();
+        $.ajax({
+            url: route('gc/directBorrow'),
+            type: 'post',
+            data: {
+                id: data.id,
+                borrowUserId: borrowUserId
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000);
+            }
+        });
+    }
+
+    // 申请借用
+    function applyBorrow() {
+        $('#iosDialog1').show();
+        var str = '<div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>'+
+                    '<div class="weui-dialog__bd">确定申请？</div>'+
+                    '<div class="weui-dialog__ft">'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">取消</a>'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="subApplyBorrow();">确定</a>'+
+                    '</div>';
+        $('.weui-dialog').html(str);
+    }
+
+    function subApplyBorrow() {
+        cancel();
+        $.ajax({
+            url: route('gc/applyBorrow'),
+            type: 'put',
+            data: {
+                id: data.id
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000);
+            }
+        });
+    }
+
+    // 处理借用
+    function dealBorrow() {
+        $('#iosDialog1').show();
+        var str = '<div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>'+
+                    '<div class="weui-dialog__bd">是否接手给'+_user+'？</div>'+
+                    '<div class="weui-dialog__ft">'+
+                            '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="notAggreBorrow();">不同意</a>'+
+                            '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="aggreeBorrow();">同意</a>'+
+                            '</div>';
+        $('.weui-dialog').html(str);
+    }
+
+    function aggreeBorrow() {
+        cancel();
+        $.ajax({
+            url: route('gc/aggreeBorrow'),
+            type: 'put',
+            data: {
+                id: data.id,
+                recordId: recordId
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000);
+            }
+        });
+    }
+
+    function notAggreBorrow() {
+        cancel();
+        $.ajax({
+            url: route('gc/notAggreBorrow'),
+            type: 'put',
+            data: {
+                id: data.id
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000);
+            }
+        });
+    }
+
+    // 申请出库
+    function applydel() {
+        $('#iosDialog1').show();
+        var str = '<div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>'+
+                    '<div class="weui-dialog__bd">'+
+                        '<div class="weui-cell" style="display:flex;">'+
+                            '<div class="weui-cell__hd" style="width: 70px;text-align: left;">'+
+                                '<label class="weui-label">出库去处：</label>'+
+                            '</div>'+
+                            '<div class="weui-cell__bd">'+
+                                '<input style="border: 1px solid #d1d1d1;border-radius: 4px;" class="weui-input" name="delRem" placeholder="">'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="weui-dialog__ft">'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancel();">取消</a>'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="subApplyDel();">确定</a>'+
+                    '</div>';
+        $('.weui-dialog').html(str);
+    }
+    
+    function subApplyDel() {
+        var delRem = $('input[name=delRem]').val();
+        if(!delRem.trim()){
+            wxToast('不能为空');
+            return;
+        }
+        cancel();
+        $.ajax({
+            url: route('gc/applyDel'),
+            type: 'put',
+            data: {
+                id: data.id,
+                delRem: delRem
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000);
+            }
+        });
+    }
+
+    // 处理出库
+    function dealdel() {
+        $('#iosDialog1').show();
+        var str = '<div class="weui-dialog__hd"><strong class="weui-dialog__title">提醒</strong></div>'+
+                    '<div class="weui-dialog__bd">'+
+                        '<p>确定同意出库？</p>'+
+                        '<p>出库去向：'+data.delRem+'</p>'+
+                    '</div>'+
+                    '<div class="weui-dialog__ft">'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" onclick="cancelDealdel();">不同意</a>'+
+                        '<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" onclick="subDealdel();">同意</a>'+
+                    '</div>';
+        $('.weui-dialog').html(str);
+    }
+
+    function subDealdel() {
+        cancel();
+        $.ajax({
+            url: route('gc/dealDel'),
+            type: 'put',
+            data: {
+                id: data.id
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000);
+            }
+        });
+    }
+
+    function cancelDealdel() {
+        cancel();
+        $.ajax({
+            url: route('gc/cancelDealDel'),
+            type: 'put',
+            data: {
+                id: data.id
+            },
+            dataType:"json",
+            success: function(res) {
+                wxToast(res.msg);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000);
+            }
+        });
+    }
+
+    // 编辑责任类型，存放点，借用截止期
+    function edit() {
+        window.location.href = route('gc/editBorrow?id='+recordId+'&numbering='+data.numbering);
+    }
+
+    // 借用历史
+    function borrowHistory(){
+        window.location.href = route('borrowHistory/'+data.numbering);
+    }
+
+    function cancel(){
+        $('#iosDialog1').hide();
+    }
+
+    function sort(){
+        var sortArr = ['id','numbering','goodsName','goodsType','model','serialNo','fromMethod','proof','purchaseTime',
+        'originalValue','presentValue','manager','type','location','borrowExpectTime','borrowStatus','isdel','delRem',
+        'insertPerson','insertTime','updatePerson','updateTime','album','mainArr','followArr'];
+        var _d = {};
+        for (var i = 0; i < sortArr.length; i++) {
+            _d[sortArr[i]] = data[sortArr[i]];
+        }
+        data = _d;
+    }
+
+    function init(i) {
+        switch(i){
+            case 'numbering':
+                return {
+                    'key':'numbering',
+                    'name':'编号',
+                }
+                break;
+            case 'goodsName':
+                return {
+                    'key':'goodsName',
+                    'name':'名称',
+                }
+                break;
+            case 'goodsType':
+                return {
+                    'key':'goodsType',
+                    'name':'分类',
+                }
+                break;
+            case 'model':
+                return {
+                    'key':'model',
+                    'name':'规格型号',
+                }
+                break;
+            case 'serialNo':
+                return {
+                    'key':'serialNo',
+                    'name':'序列号',
+                }
+                break;
+            case 'originalValue':
+                return {
+                    'key':'originalValue',
+                    'name':'原值',
+                }
+                break;
+            case 'presentValue':
+                return {
+                    'key':'presentValue',
+                    'name':'现值',
+                }
+                break;
+            // case 'isBorrow':
+            //     return {
+            //         'key':'isBorrow',
+            //         'name':'允许借用',
+            //     }
+            //     break;
+            // case 'management':
+            //     return {
+            //         'key':'management',
+            //         'name':'管理部门',
+            //     }
+            //     break;
+            case 'manager':
+                return {
+                    'key':'manager',
+                    'name':'责任人',
+                }
+                break;
+            // case 'user':
+            //     return {
+            //         'key':'user',
+            //         'name':'借用人',
+            //     }
+            //     break;
+            case 'location':
+                return {
+                    'key':'location',
+                    'name':'存放地点',
+                }
+                break;
+            case 'type':
+                return {
+                    'key':'type',
+                    'name':'责任类型',
+                }
+                break;
+            case 'borrowExpectTime':
+                return {
+                    'key':'borrowExpectTime',
+                    'name':'借用截止期',
+                }
+                break;
+            // case 'borrowStatus':
+            //     return {
+            //         'key':'borrowStatus',
+            //         'name':'借用状态',
+            //     }
+            //     break;
+            case 'purchaseTime':
+                return {
+                    'key':'purchaseTime',
+                    'name':'使用时间',
+                }
+                break;
+            case 'insertPerson':
+                return {
+                    'key':'insertPerson',
+                    'name':'入库人',
+                }
+                break;
+            case 'insertTime':
+                return {
+                    'key':'insertTime',
+                    'name':'入库时间',
+                }
+                break;
+            case 'updatePerson':
+                return {
+                    'key':'updatePerson',
+                    'name':'更新人',
+                }
+                break;
+            case 'updateTime':
+                return {
+                    'key':'updateTime',
+                    'name':'更新时间',
+                }
+                break;
+            case 'fromMethod':
+                return {
+                    'key':'fromMethod',
+                    'name':'来源',
+                }
+                break;
+            case 'delRem':
+                return {
+                    'key':'delRem',
+                    'name':'出库去向',
+                }
+                break;
+            case 'proof':
+                return {
+                    'key':'proof',
+                    'name':'入库单据',
+                }
+                break;
+            case 'isdel':
+                return {
+                    'key':'isdel',
+                    'name':'是否出库',
+                }
+                break;
+            case 'mainArr':
+                return {
+                    'key':'mainArr',
+                    'name':'从属于',
+                }
+                break;
+            case 'followArr':
+                return {
+                    'key':'followArr',
+                    'name':'下属物品',
+                }
+                break;
+            default :
+                return {
+                    'key': i,
+                    'name': '其他'
+                }
+                break;
+	    }
+    }
+
+    function initImg() {
+        var album = data.album;
+        if(!album) return;
+        var albumArr = [];
+        try{
+            albumArr = album.split(',');
+            var str = '';
+            for (var i = 0; i < albumArr.length; i++) {
+                str += '<div class="aui-slide-node">'+
+                            '<img src="../img/goods/'+albumArr[i]+'" data-fileName="'+albumArr[i]+'" onclick="phoneInfo(this);" height="100%">'+
+                        '</div>';
+            }
+            $('.aui-slide-wrap').html(str);
+        }catch(e){
+
+        }
+        new auiSlide({
+		    "container":document.getElementById("aui-slide"),
+            // "height":240,
+            "speed":500,
+            "autoPlay": 3000, //自动播放
+            "loop":true,
+            "pageShow":true,
+            "pageStyle":'dot',
+            'dotPosition':'center'
+        });
+    }
+
+    function photoEdit() {
+        // window.location.href = route('gc/photoEdit?numbering='+data.numbering);
+        $('#uploaderInput').trigger('click');
+    }
+
+    function uploadImg(fileObj) {
+        var file = document.getElementById('uploaderInput');
+        ljDealerPhoto(fileObj, function(dataUrl){
+            var formData = new FormData();
+            formData.append("file", dataURLtoBlob(dataUrl), file.files[0]);
+            wxLoadToast('正在上传');
+            $.ajax({
+                url: route('gc/uploadImg'),
+                type: 'POST',
+                data: formData,
+                dataType:"json",
+                cache: false,
+                contentType: false, //不可缺参数
+                processData: false, //不可缺参数
+                success: function(res) {
+                    $('#loadingToast').remove();
+                    if(res.code==200){
+                        $.ajax({
+                            url: route('gc/updateAlbum'),
+                            type: 'put',
+                            data: {
+                                id: data.id,
+                                album: res.data[0]
+                            },
+                            dataType:"json",
+                            success: function(res) {
+                                if(res.code==200){
+                                    setTimeout(function(){
+                                        window.location.reload();
+                                    //     window.location.href = route('g/'+numbering);
+                                    },2000);
+                                }
+                                wxToast(res.msg);
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    
+                }
+            });
+        });
+    }
+
+    function phoneInfo(obj) {
+        var fileName = $(obj).attr('data-fileName');
+        var title = $('title').text();
+        window.location.href = route('gc/getPhotoInfo?fileName='+fileName+'&title='+title);
+    }
+
+</script>
+</html>
